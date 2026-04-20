@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"C:/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel-workspace/iteration-2\")",
+      "Bash(cp -r \"C:/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel\" \"C:/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel-workspace/iteration-2/skill-snapshot\")"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "skill_name": "reem-carousel",
+  "notes": "Realistic prompts a real user (Adir, owner of @personalfinancetips) would type. Mix of clear-intent and slightly-fuzzy phrasings in both English and Hebrew. Expected behaviour: skill triggers, runs the 6-step flow, writes a JSON file under output/ following references/output-schema.md.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Make me 2 carousels about emergency funds for @personalfinancetips. Research YouTube first and follow the 7-slide framework.",
+      "expected_output": "Output JSON at output/emergency-*.json with schema_version=1, exactly 2 carousels, each with 7 slides in EN and 7 in HE. No dash characters in any Hebrew field. Each non-CTA slide has a ref_image from the 7-image pool. Both CTA slides' headlines end with @personalfinancetips.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "תכין לי קרוסלות על חיסכון חודשי. קח 3 סרטונים מיוטיוב, תקח את התמלול עם אפיפיי, ותוציא קרוסלה אחת באנגלית והעתק שלה בעברית טבעית. שים לב שאני לא רוצה לראות \"-\" בטקסט העברי.",
+      "expected_output": "Skill triggers on the Hebrew request. Runs pipeline, produces 1 carousel (not 2 — user specified 'קרוסלה אחת'). Hebrew reads native, no dashes, no AI-slop openers. Handles the explicit dash ban.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I'm adding a topic dropdown to the client dashboard. I want the backend to call this skill for 'high-yield savings accounts' and get back JSON the frontend can render. Run it end-to-end and show me the file path + schema.",
+      "expected_output": "Uses headless path (run_pipeline.py) since the user framed it as a dashboard integration. Produces JSON, prints path, summarises the JSON contract. Does NOT scaffold any dashboard code.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Secrets — never commit
+.env
+.env.local
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Editor
+.vscode/
+.idea/
+
+# Skill outputs / intermediates
+.claude/skills/*/output/
+.claude/skills/*/*-workspace/
+.claude/skills/*-workspace/
