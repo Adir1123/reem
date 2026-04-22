@@ -19,3 +19,29 @@ venv/
 .claude/skills/*/output/
 .claude/skills/*/*-workspace/
 .claude/skills/*-workspace/
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Trigger.dev
+.trigger/
+
+# Build outputs
+dist/
+build/
+
+# Turbo / cache
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+.vercel

@@ -1,0 +1,533 @@
+{
+  "schema_version": 1,
+  "query": "emergency fund basics",
+  "generated_at": "2026-04-21T12:46:33.261511+03:00",
+  "model": "claude-opus-4-7",
+  "sources": [
+    {
+      "url": "https://youtube.com/watch?v=vuujNUixqc0",
+      "video_id": "vuujNUixqc0",
+      "title": "Emergency Fund Basics: How Much You Need & Where to Keep It",
+      "channel": "Personal Finance & Investing",
+      "subscribers": 6,
+      "views": 1,
+      "duration_seconds": 143,
+      "upload_date": "2026-01-07",
+      "engagement_ratio": 0.1667,
+      "transcript_chars": 2145,
+      "language": null,
+      "key_points": [
+        "Life has a way of throwing [music]",
+        "unexpected curveballs. And having an",
+        "emergency fund is your financial [music]"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=Fdj0XGbXzac",
+      "video_id": "Fdj0XGbXzac",
+      "title": "Top 8 Practical Steps To Build An Emergency Fund The Right Way (2026)",
+      "channel": "Budget Buddy",
+      "subscribers": 44,
+      "views": 2058,
+      "duration_seconds": 536,
+      "upload_date": "2026-02-15",
+      "engagement_ratio": 46.7727,
+      "transcript_chars": 9036,
+      "language": null,
+      "key_points": [
+        "Do you feel like unexpected expenses",
+        "always show up at the wrong time? Where",
+        "there's a sudden medical bill, a job"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=hLSFUQSzRV8",
+      "video_id": "hLSFUQSzRV8",
+      "title": "THE 6 MONTH EMERGENCY FUND: WHY IT EXISTS AND WHERE TO KEEP IT!!",
+      "channel": "James Invests",
+      "subscribers": 1120,
+      "views": 1700,
+      "duration_seconds": 787,
+      "upload_date": "2026-02-10",
+      "engagement_ratio": 1.5179,
+      "transcript_chars": 12682,
+      "language": null,
+      "key_points": [
+        "Most people who lose their job don't",
+        "panic on day one. They panic on day 93.",
+        "That's when the severance runs out, when"
+      ]
+    }
+  ],
+  "carousels": [
+    {
+      "id": "c1",
+      "concept": "Emergency fund math most people get wrong",
+      "angle": "counter-frame",
+      "source_urls": [
+        "https://youtube.com/watch?v=vuujNUixqc0",
+        "https://youtube.com/watch?v=Fdj0XGbXzac",
+        "https://youtube.com/watch?v=hLSFUQSzRV8"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "THE 93-DAY RULE",
+          "headline": "Your emergency fund is a timer.",
+          "headline_italic": "timer.",
+          "body": "Most people don't panic on day one. They panic on day 93.",
+          "body_emphasis": [
+            "day 93"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic cinematic finance image, high contrast, deep navy shadows with warm amber rim light. Sense of countdown and quiet tension."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 01 · THE MATH",
+          "headline": "Save expenses, not income.",
+          "headline_italic": "expenses,",
+          "body": "Add rent, utilities, food, insurance, minimum debt. Multiply by six. That's your target — not 6x your paycheck.",
+          "body_emphasis": [
+            "Multiply by six"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Clean overhead desk scene with notebook and calculator. Warm cream paper, soft shadows, organised and analytical mood."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 02 · WHERE IT LIVES",
+          "headline": "Park it in a high-yield savings account.",
+          "headline_italic": "high-yield",
+          "body": "FDIC-insured. Liquid in 1–2 days. Currently paying 4–5%. Checking accounts pay you nothing — that's a tax on laziness.",
+          "body_emphasis": [
+            "4–5%"
+          ],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Textural close-up of cash and a ledger. Soft gold accents, quiet authority, the feel of money being organised rather than spent."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "TIP 03 · THE REFRAME",
+          "headline": "Stop investing it.",
+          "headline_italic": "investing",
+          "body": "An index fund averages 8%. Fine — until you get laid off mid-crash and sell at a 30% loss. Your emergency fund is insurance, not an asset.",
+          "body_emphasis": [
+            "sell at a 30% loss"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Unexpected pattern interrupt: stacks of cash rendered with cinematic depth. Feels confrontational, slightly off-kilter, the moment of realisation."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 04 · THE AUTOPILOT",
+          "headline": "Automate $50 every payday.",
+          "headline_italic": "$50",
+          "body": "Set the transfer for the morning your salary lands. Small and consistent beats sporadic and heroic — every time.",
+          "body_emphasis": [
+            "morning your salary lands"
+          ],
+          "step_number": "04",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop open with banking dashboard, cash and coins nearby. A sense of systems running in the background while you sleep."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 05 · THE DISCIPLINE",
+          "headline": "A new phone isn't an emergency.",
+          "headline_italic": "isn't",
+          "body": "The fund is for job loss, medical bills, and broken transmissions. Touch it for anything else and it stops being a safety net.",
+          "body_emphasis": [
+            "job loss, medical bills"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Clean still life: calculator, cash, a pen on paper. Calm, measured, disciplined. The feeling of a line being held."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Start with $20.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy background, no imagery. Gold CTA block. Quiet, resolved, the ask."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "כלל 93 הימים",
+          "headline": "קרן החירום שלך היא שעון עצר.",
+          "headline_italic": "שעון עצר.",
+          "body": "רוב האנשים לא נלחצים ביום הראשון. הם נלחצים ביום ה־93.",
+          "body_emphasis": [
+            "ביום ה־93"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic cinematic finance image, high contrast, deep navy shadows with warm amber rim light. Sense of countdown and quiet tension."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · החשבון",
+          "headline": "תחשב הוצאות, לא משכורת.",
+          "headline_italic": "הוצאות,",
+          "body": "שכירות, חשבונות, אוכל, ביטוחים, מינימום הלוואות. תכפיל ב־6. זה היעד שלך, לא פי 6 מהתלוש.",
+          "body_emphasis": [
+            "תכפיל ב־6"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Clean overhead desk scene with notebook and calculator. Warm cream paper, soft shadows, organised and analytical mood."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · איפה הכסף יושב",
+          "headline": "קרן כספית. לא עובר ושב.",
+          "headline_italic": "קרן כספית.",
+          "body": "נזילה תוך יום. משלמת היום כ־4%. עובר ושב משלם לך אפס, וזה קנס על עצלנות.",
+          "body_emphasis": [
+            "כ־4%"
+          ],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Textural close-up of cash and a ledger. Soft gold accents, quiet authority, the feel of money being organised rather than spent."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · מסגרת חדשה",
+          "headline": "תפסיק להשקיע אותה.",
+          "headline_italic": "להשקיע",
+          "body": "מדד S&P עושה בממוצע 8% בשנה. נהדר, עד שמפטרים אותך באמצע ירידה של 30% ואתה מוכר בהפסד. קרן חירום היא ביטוח, לא נכס.",
+          "body_emphasis": [
+            "ירידה של 30%"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Unexpected pattern interrupt: stacks of cash rendered with cinematic depth. Feels confrontational, slightly off-kilter, the moment of realisation."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · אוטומציה",
+          "headline": "הרשאה קבועה של 200 ש״ח.",
+          "headline_italic": "200 ש״ח.",
+          "body": "תקבע הוראת קבע ליום שהמשכורת נכנסת. קטן ועקבי מנצח גדול וספורדי, כל פעם מחדש.",
+          "body_emphasis": [
+            "ליום שהמשכורת נכנסת"
+          ],
+          "step_number": "04",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop open with banking dashboard, cash and coins nearby. A sense of systems running in the background while you sleep."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · אל תעשה את זה",
+          "headline": "אייפון חדש הוא לא חירום.",
+          "headline_italic": "לא",
+          "body": "הקרן היא לפיטורים, חשבון רפואי, גיר שהתפוצץ. תיגע בה למשהו אחר והיא מפסיקה להיות רשת ביטחון.",
+          "body_emphasis": [
+            "פיטורים, חשבון רפואי"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Clean still life: calculator, cash, a pen on paper. Calm, measured, disciplined. The feeling of a line being held."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "שמור את זה. תתחיל ב־100 ש״ח.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו ל־@personalfinancetips, קרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy background, no imagery. Gold CTA block. Quiet, resolved, the ask."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "concept": "Eight practical steps to build the fund from zero",
+      "angle": "practical",
+      "source_urls": [
+        "https://youtube.com/watch?v=Fdj0XGbXzac",
+        "https://youtube.com/watch?v=vuujNUixqc0"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "START FROM ZERO",
+          "headline": "Build a $1,000 buffer in 90 days.",
+          "headline_italic": "$1,000",
+          "body": "Five rules. No extreme sacrifice. Save this.",
+          "body_emphasis": [
+            "Five rules"
+          ],
+          "step_number": null,
+          "ref_image": "1.png",
+          "visual_direction": "High-drama hero shot of stacked cash with warm window light. Aspirational but grounded — this is achievable, not fantasy."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 01 · THE FIRST GOAL",
+          "headline": "Aim for $500 first.",
+          "headline_italic": "$500",
+          "body": "Don't chase six months on day one. Hit a small number fast. Momentum is the real asset here.",
+          "body_emphasis": [
+            "Momentum"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Notebook with a simple goal written on it, calculator nearby. Clean, focused, the first brick in the wall."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 02 · THE AUDIT",
+          "headline": "Kill three subscriptions this week.",
+          "headline_italic": "three",
+          "body": "Open your bank statement. Circle every recurring charge you forgot existed. That's your first $40 a month.",
+          "body_emphasis": [
+            "every recurring charge"
+          ],
+          "step_number": "02",
+          "ref_image": "4.png",
+          "visual_direction": "Overhead view of a budget being marked up with a pen. Quiet, deliberate, the sound of cuts being made."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "TIP 03 · DON'T DO THIS",
+          "headline": "Stop saving what's left over.",
+          "headline_italic": "left over",
+          "body": "If you save after spending, you save nothing. Move the money first. Spend what's left.",
+          "body_emphasis": [
+            "Move the money first"
+          ],
+          "step_number": "03",
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Conceptual, slightly unexpected image. A moment of inversion — the chart going up, but everything feels reframed."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 04 · FREE MONEY",
+          "headline": "Send every windfall straight to savings.",
+          "headline_italic": "every windfall",
+          "body": "Tax refund. Bonus. Birthday cash. Gift from your aunt. It never touches your checking account — it goes to the fund.",
+          "body_emphasis": [
+            "never touches your checking account"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, a pen, a business chart — the sense of unexpected money being quietly redirected instead of spent."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 05 · THE REFILL RULE",
+          "headline": "Refill it the month after you use it.",
+          "headline_italic": "the month after",
+          "body": "Emergencies drain the fund. That's its job. But the next paycheck starts rebuilding — no guilt, no pause.",
+          "body_emphasis": [
+            "no guilt, no pause"
+          ],
+          "step_number": "05",
+          "ref_image": "2.png",
+          "visual_direction": "Warm scene of cash and a laptop dashboard. The feeling of a tank being topped back up. Steady, unhurried."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Then start tip one.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy background. Gold CTA button. Calm, clean, the close."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "מתחילים מאפס",
+          "headline": "3,000 ש״ח בצד תוך 90 יום.",
+          "headline_italic": "3,000 ש״ח",
+          "body": "חמישה כללים. בלי לוותר על החיים. שמור את זה.",
+          "body_emphasis": [
+            "חמישה כללים"
+          ],
+          "step_number": null,
+          "ref_image": "1.png",
+          "visual_direction": "High-drama hero shot of stacked cash with warm window light. Aspirational but grounded — this is achievable, not fantasy."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · היעד הראשון",
+          "headline": "תכוון ל־1,500 ש״ח קודם.",
+          "headline_italic": "1,500 ש״ח",
+          "body": "אל תרדוף אחרי שישה חודשים ביום הראשון. תגיע למספר קטן מהר. המומנטום הוא הנכס האמיתי פה.",
+          "body_emphasis": [
+            "המומנטום"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Notebook with a simple goal written on it, calculator nearby. Clean, focused, the first brick in the wall."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · ביקורת",
+          "headline": "תבטל שלושה מנויים השבוע.",
+          "headline_italic": "שלושה",
+          "body": "תיכנס לאפליקציית הבנק. תסמן כל חיוב חוזר ששכחת ממנו. זה ה־150 ש״ח הראשונים שלך בחודש.",
+          "body_emphasis": [
+            "כל חיוב חוזר"
+          ],
+          "step_number": "02",
+          "ref_image": "4.png",
+          "visual_direction": "Overhead view of a budget being marked up with a pen. Quiet, deliberate, the sound of cuts being made."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · אל תעשה את זה",
+          "headline": "תפסיק לחסוך ממה שנשאר.",
+          "headline_italic": "ממה שנשאר.",
+          "body": "חוסך אחרי שהוצאת, חוסך אפס. תעביר את הכסף קודם. תוציא ממה שנשאר.",
+          "body_emphasis": [
+            "תעביר את הכסף קודם"
+          ],
+          "step_number": "03",
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Conceptual, slightly unexpected image. A moment of inversion — the chart going up, but everything feels reframed."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · כסף מהצד",
+          "headline": "כל כסף לא צפוי הולך לקרן.",
+          "headline_italic": "כל כסף לא צפוי",
+          "body": "החזר מס. בונוס. כסף מסבתא. מתנה מחתונה. לא נוגע בעו״ש, ישר לקרן החירום.",
+          "body_emphasis": [
+            "לא נוגע בעו״ש"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, a pen, a business chart — the sense of unexpected money being quietly redirected instead of spent."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · כלל המילוי",
+          "headline": "השתמשת? תמלא בחודש הבא.",
+          "headline_italic": "בחודש הבא.",
+          "body": "חירום מרוקן את הקרן. זה התפקיד שלה. המשכורת הבאה כבר מתחילה לבנות אותה מחדש, בלי אשמה ובלי הפסקה.",
+          "body_emphasis": [
+            "בלי אשמה ובלי הפסקה"
+          ],
+          "step_number": "05",
+          "ref_image": "2.png",
+          "visual_direction": "Warm scene of cash and a laptop dashboard. The feeling of a tank being topped back up. Steady, unhurried."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "שמור את זה. תתחיל מטיפ ראשון.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו ל־@personalfinancetips, קרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy background. Gold CTA button. Calm, clean, the close."
+        }
+      ]
+    }
+  ],
+  "recommendations_for_dashboard": {
+    "rendering_notes": "Fonts: Fraunces+Inter (EN), Frank Ruhl Libre+Assistant (HE). Canvas 1080x1350 portrait.",
+    "ref_images_dir": "C:\\Users\\adirg\\CC-projects\\reem-v2\\reem-docs\\ref",
+    "brand_handle": "@personalfinancetips",
+    "next_carousels_run_suggestion": "Run the counter-frame on debt: 'Why paying off your credit card beats building an emergency fund' — the 19% vs 5% spread almost nobody calculates."
+  },
+  "run_stats": {
+    "videos_requested": 3,
+    "videos_succeeded": 3,
+    "carousels_requested": 2,
+    "carousels_produced": 2,
+    "duration_seconds": 110.7,
+    "duration_pass_a_seconds": 52.0,
+    "duration_pass_b_seconds": 58.7,
+    "input_tokens": 24688,
+    "output_tokens": 7483,
+    "cache_read_tokens": 3473,
+    "cache_creation_tokens": 34293,
+    "hebrew_pass_attempts": 1,
+    "hebrew_strict": true,
+    "total_pipeline_seconds": 187.7
+  }
+}

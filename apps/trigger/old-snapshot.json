@@ -1,0 +1,458 @@
+{
+  "run": {
+    "id": "9ab92078-9690-413e-89b8-84cb60b49a27",
+    "topic_id": "5620ff58-3583-47e7-9346-c003aec79798",
+    "status": "success"
+  },
+  "topic": {
+    "id": "5620ff58-3583-47e7-9346-c003aec79798",
+    "he_label": "קרן חירום למתחילים",
+    "en_query": "emergency fund basics",
+    "status": "pending_review"
+  },
+  "carousels": [
+    {
+      "id": "c3190fbb-6c42-4e53-a78d-08876e63b630",
+      "idx": 0,
+      "concept": "Why 6 months of expenses is the real emergency fund target",
+      "angle": "counter-frame",
+      "slides_he": [
+        {
+          "n": 1,
+          "body": "ביום הזה החיסכון נגמר. זאת הקרן שקונה לך זמן.",
+          "role": "HOOK",
+          "eyebrow": "כלל 93 הימים",
+          "headline": "רוב הפיטורים כואבים רק ביום 93.",
+          "ref_image": "nano_banana_pro.png",
+          "step_number": null,
+          "body_emphasis": [
+            "קונה לך זמן"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "ביום 93.",
+          "visual_direction": "Dramatic gold arrow climbing over a dark skyline. High contrast, cinematic, scroll-stopping. Navy base with warm gold glow."
+        },
+        {
+          "n": 2,
+          "body": "אם שכירות, אוכל וחשבונות עולים לך 10,000 ש״ח בחודש, היעד הוא 60,000 ש״ח. זאת הרצפה האמיתית.",
+          "role": "TIP",
+          "eyebrow": "טיפ 01 · המספר",
+          "headline": "תחסוך 6 חודשי הוצאות.",
+          "ref_image": "3.png",
+          "step_number": "01",
+          "body_emphasis": [
+            "60,000 ש״ח"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "6 חודשי",
+          "visual_direction": "Warm overhead shot of notebook, calculator, and finance plan paper. Clean, planning-mode energy."
+        },
+        {
+          "n": 3,
+          "body": "תשואה של 4% ומעלה, נזיל תוך 48 שעות, בלי כרטיס צמוד. לא עו״ש, לא מניות.",
+          "role": "TIP",
+          "eyebrow": "טיפ 02 · איפה לשים",
+          "headline": "תחנה את זה בקרן כספית.",
+          "ref_image": "5.png",
+          "step_number": "02",
+          "body_emphasis": [
+            "4% ומעלה"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "קרן כספית.",
+          "visual_direction": "Cash stack beside a clipboard chart and gold pen. Warm tones, trust and stability."
+        },
+        {
+          "n": 4,
+          "body": "לשוק לא אכפת שפיטרו אותך. משברים מכריחים אותך למכור בדיוק בחודש שאתה צריך את המזומן.",
+          "role": "TIP",
+          "eyebrow": "טיפ 03 · אל תעשה את זה",
+          "headline": "תפסיק להחזיק את זה בסנופי.",
+          "ref_image": "1.png",
+          "step_number": "03",
+          "body_emphasis": [
+            "בדיוק בחודש"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "בסנופי.",
+          "visual_direction": "Cash stacks on a desk beside a laptop. Conceptual pattern interrupt — lots of money visible but locked in place."
+        },
+        {
+          "n": 5,
+          "body": "תכוון את ההעברה לבוקר של יום המשכורת. תוך שנה יש לך 36,000 ש״ח בלי להרגיש.",
+          "role": "TIP",
+          "eyebrow": "טיפ 04 · אוטומציה",
+          "headline": "הוראת קבע של 700 ש״ח בשבוע.",
+          "ref_image": "2.png",
+          "step_number": "04",
+          "body_emphasis": [
+            "36,000 ש״ח"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "700 ש״ח בשבוע.",
+          "visual_direction": "Laptop with budget dashboard open, cash and coins nearby. Active, hands-off-automation energy."
+        },
+        {
+          "n": 6,
+          "body": "שכירות, ארנונה, אוכל, תחבורה, ביטוחים, מינימום חובות. שום דבר אחר. תכפיל בשש וזה היעד.",
+          "role": "TIP",
+          "eyebrow": "טיפ 05 · מספר ההישרדות",
+          "headline": "תדע את מספר המינימום שלך.",
+          "ref_image": "4.png",
+          "step_number": "05",
+          "body_emphasis": [
+            "תכפיל בשש"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "מספר המינימום",
+          "visual_direction": "Calculator, cash fan, and a small wooden growth chart. Clean resolution — the payoff image."
+        },
+        {
+          "n": 7,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה בשבוע.",
+          "role": "CTA",
+          "eyebrow": null,
+          "headline": "תשמור. ותפתח את החשבון היום.",
+          "ref_image": null,
+          "step_number": null,
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "visual_energy": "LOW",
+          "headline_italic": null,
+          "visual_direction": "Solid deep navy. Gold CTA button with the handle. No image."
+        }
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "body": "That's when savings run out. Here's the fund that buys you time.",
+          "role": "HOOK",
+          "eyebrow": "THE 93-DAY RULE",
+          "headline": "Most layoffs don't hurt until day 93.",
+          "ref_image": "nano_banana_pro.png",
+          "step_number": null,
+          "body_emphasis": [
+            "buys you time"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "day 93.",
+          "visual_direction": "Dramatic gold arrow climbing over a dark skyline. High contrast, cinematic, scroll-stopping. Navy base with warm gold glow."
+        },
+        {
+          "n": 2,
+          "body": "If rent, food, and bills run $3,000/month, your target is $18,000. That's the real floor.",
+          "role": "TIP",
+          "eyebrow": "TIP 01 · THE NUMBER",
+          "headline": "Save 6 months of expenses.",
+          "ref_image": "3.png",
+          "step_number": "01",
+          "body_emphasis": [
+            "$18,000"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "6 months",
+          "visual_direction": "Warm overhead shot of notebook, calculator, and finance plan paper. Clean, planning-mode energy."
+        },
+        {
+          "n": 3,
+          "body": "Aim for 4%+ APY. FDIC-insured, liquid in 48 hours, and no debit card attached.",
+          "role": "TIP",
+          "eyebrow": "TIP 02 · WHERE TO PARK IT",
+          "headline": "Use a high-yield savings account.",
+          "ref_image": "5.png",
+          "step_number": "02",
+          "body_emphasis": [
+            "4%+ APY"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "high-yield",
+          "visual_direction": "Cash stack beside a clipboard chart and gold pen. Warm tones, trust and stability."
+        },
+        {
+          "n": 4,
+          "body": "The market doesn't care that you got laid off. Recessions force you to sell the exact month you need the cash.",
+          "role": "TIP",
+          "eyebrow": "TIP 03 · DON'T DO THIS",
+          "headline": "Stop parking it in index funds.",
+          "ref_image": "1.png",
+          "step_number": "03",
+          "body_emphasis": [
+            "sell the exact month"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "index funds.",
+          "visual_direction": "Cash stacks on a desk beside a laptop. Conceptual pattern interrupt — lots of money visible but locked in place."
+        },
+        {
+          "n": 5,
+          "body": "Set the transfer for the morning your salary lands. $200 weekly builds a $10,000 cushion in a year.",
+          "role": "TIP",
+          "eyebrow": "TIP 04 · AUTOMATE",
+          "headline": "Move $200 every payday.",
+          "ref_image": "2.png",
+          "step_number": "04",
+          "body_emphasis": [
+            "$10,000 cushion"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "every payday.",
+          "visual_direction": "Laptop with budget dashboard open, cash and coins nearby. Active, hands-off-automation energy."
+        },
+        {
+          "n": 6,
+          "body": "Rent, utilities, food, transport, insurance, minimum debt. Nothing else. Multiply by six — that's the goal.",
+          "role": "TIP",
+          "eyebrow": "TIP 05 · CALCULATE THE FLOOR",
+          "headline": "Know your survival number.",
+          "ref_image": "4.png",
+          "step_number": "05",
+          "body_emphasis": [
+            "Multiply by six"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "survival number.",
+          "visual_direction": "Calculator, cash fan, and a small wooden growth chart. Clean resolution — the payoff image."
+        },
+        {
+          "n": 7,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "role": "CTA",
+          "eyebrow": null,
+          "headline": "Save this. Then open the account.",
+          "ref_image": null,
+          "step_number": null,
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "visual_energy": "LOW",
+          "headline_italic": null,
+          "visual_direction": "Solid deep navy. Gold CTA button with the handle. No image."
+        }
+      ],
+      "status": "pending_review"
+    },
+    {
+      "id": "48ccd5d1-9e37-4122-9db6-231580fe59eb",
+      "idx": 1,
+      "concept": "The first $1,000 — how to actually start an emergency fund from zero",
+      "angle": "practical",
+      "slides_he": [
+        {
+          "n": 1,
+          "body": "חמש פעולות. בלי עבודה שנייה. בלי העלאה. תשמור לפני המשכורת הבאה.",
+          "role": "HOOK",
+          "eyebrow": "מאפס לקרן",
+          "headline": "ככה חסכתי 3,500 ש״ח ב־90 יום.",
+          "ref_image": "nano_banana_pro.png",
+          "step_number": null,
+          "body_emphasis": [
+            "חמש פעולות"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "ב־90 יום.",
+          "visual_direction": "Gold arrow climbing over a city — aspirational, scroll-stopping. Same energy register as the exemplar hook."
+        },
+        {
+          "n": 2,
+          "body": "בבנק אחר מהעו״ש. בלי כרטיס אשראי. החיכוך הוא הפיצ׳ר, לא הבאג.",
+          "role": "TIP",
+          "eyebrow": "טיפ 01 · תתחיל קטן",
+          "headline": "תפתח חשבון נפרד.",
+          "ref_image": "5.png",
+          "step_number": "01",
+          "body_emphasis": [
+            "החיכוך הוא הפיצ׳ר"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "חשבון נפרד.",
+          "visual_direction": "Cash, green passport-style notebook, gold pen. Setting-up-something-new energy."
+        },
+        {
+          "n": 3,
+          "body": "תקבע את ההעברה לבוקר יום המשכורת. תוך 20 שבועות יש לך 3,500 ש״ח בלי לחשוב פעם אחת.",
+          "role": "TIP",
+          "eyebrow": "טיפ 02 · אוטומציה",
+          "headline": "הרשאה לחיוב של 175 ש״ח בשבוע.",
+          "ref_image": "2.png",
+          "step_number": "02",
+          "body_emphasis": [
+            "20 שבועות"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "175 ש״ח בשבוע.",
+          "visual_direction": "Laptop with budgeting dashboard, cash and coins. Automation, dashboards, quiet systems."
+        },
+        {
+          "n": 4,
+          "body": "חירום זה רפואה, שכירות או אובדן הכנסה. מבצע של בלאק פריידיי זה לא חירום. חופש בחו״ל זה לא חירום.",
+          "role": "TIP",
+          "eyebrow": "טיפ 03 · אל תעשה את זה",
+          "headline": "תפסיק לגעת בזה בשביל ימי הולדת.",
+          "ref_image": "1.png",
+          "step_number": "03",
+          "body_emphasis": [
+            "זה לא חירום"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "ימי הולדת.",
+          "visual_direction": "Stacks of cash piled high. Visual reminder that the pile only grows if you leave it alone."
+        },
+        {
+          "n": 5,
+          "body": "החזרי מס, בונוסים, מתנות חתונה, דמי הבראה. ישר לקרן לפני שזה נוחת בעו״ש.",
+          "role": "TIP",
+          "eyebrow": "טיפ 04 · כסף מהשמיים",
+          "headline": "100% מכל החזר הולך פנימה.",
+          "ref_image": "4.png",
+          "step_number": "04",
+          "body_emphasis": [
+            "לפני שזה נוחת בעו״ש"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "100%",
+          "visual_direction": "Cash fan, calculator, small growth chart. Unexpected money turning into progress."
+        },
+        {
+          "n": 6,
+          "body": "תפתח את אפליקציית הבנק. תבטל כל דבר שלא פתחת ב־30 יום האחרונים. זאת ההפקדה של החודש הבא.",
+          "role": "TIP",
+          "eyebrow": "טיפ 05 · תבטל",
+          "headline": "תסרוק מנויים ותחזיר 300 ש״ח.",
+          "ref_image": "3.png",
+          "step_number": "05",
+          "body_emphasis": [
+            "ההפקדה של החודש הבא"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "300 ש״ח.",
+          "visual_direction": "Notebook, calculator, finance plan page. Clean, resolved, audit-mode clarity."
+        },
+        {
+          "n": 7,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה בשבוע.",
+          "role": "CTA",
+          "eyebrow": null,
+          "headline": "תשמור. ותפתח את החשבון היום.",
+          "ref_image": null,
+          "step_number": null,
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "visual_energy": "LOW",
+          "headline_italic": null,
+          "visual_direction": "Solid deep navy. Gold CTA button with the handle. No image, no texture."
+        }
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "body": "Five moves. No side hustle. No raise. Save this for the next paycheck.",
+          "role": "HOOK",
+          "eyebrow": "START FROM ZERO",
+          "headline": "How I saved my first $1,000 in 90 days.",
+          "ref_image": "nano_banana_pro.png",
+          "step_number": null,
+          "body_emphasis": [
+            "Five moves"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "90 days.",
+          "visual_direction": "Gold arrow climbing over a city — aspirational, scroll-stopping. Same energy register as the exemplar hook."
+        },
+        {
+          "n": 2,
+          "body": "Different bank from your checking. No debit card. Friction is the feature, not the bug.",
+          "role": "TIP",
+          "eyebrow": "TIP 01 · START SMALL",
+          "headline": "Open a separate account.",
+          "ref_image": "5.png",
+          "step_number": "01",
+          "body_emphasis": [
+            "Friction is the feature"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "separate account.",
+          "visual_direction": "Cash, green passport-style notebook, gold pen. Setting-up-something-new energy."
+        },
+        {
+          "n": 3,
+          "body": "Schedule it for payday morning. You hit $1,000 in 20 weeks without thinking about it once.",
+          "role": "TIP",
+          "eyebrow": "TIP 02 · AUTOMATE",
+          "headline": "Auto-transfer $50 weekly.",
+          "ref_image": "2.png",
+          "step_number": "02",
+          "body_emphasis": [
+            "20 weeks"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "$50 weekly.",
+          "visual_direction": "Laptop with budgeting dashboard, cash and coins. Automation, dashboards, quiet systems."
+        },
+        {
+          "n": 4,
+          "body": "Emergency means medical, rent, or lost income. A sale isn't an emergency. A vacation isn't an emergency.",
+          "role": "TIP",
+          "eyebrow": "TIP 03 · DON'T DO THIS",
+          "headline": "Stop touching it for birthdays.",
+          "ref_image": "1.png",
+          "step_number": "03",
+          "body_emphasis": [
+            "isn't an emergency"
+          ],
+          "visual_energy": "HIGH",
+          "headline_italic": "birthdays.",
+          "visual_direction": "Stacks of cash piled high. Visual reminder that the pile only grows if you leave it alone."
+        },
+        {
+          "n": 5,
+          "body": "Tax refunds, bonuses, rebates, gifts. Route them straight to the fund before they hit your checking.",
+          "role": "TIP",
+          "eyebrow": "TIP 04 · WINDFALLS",
+          "headline": "Send 100% of refunds in.",
+          "ref_image": "4.png",
+          "step_number": "04",
+          "body_emphasis": [
+            "before they hit your checking"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "100%",
+          "visual_direction": "Cash fan, calculator, small growth chart. Unexpected money turning into progress."
+        },
+        {
+          "n": 6,
+          "body": "Open your bank app. Cancel everything you haven't used in 30 days. That's your next month's deposit.",
+          "role": "TIP",
+          "eyebrow": "TIP 05 · CANCEL",
+          "headline": "Audit subscriptions for $80 back.",
+          "ref_image": "3.png",
+          "step_number": "05",
+          "body_emphasis": [
+            "next month's deposit"
+          ],
+          "visual_energy": "MEDIUM",
+          "headline_italic": "$80 back.",
+          "visual_direction": "Notebook, calculator, finance plan page. Clean, resolved, audit-mode clarity."
+        },
+        {
+          "n": 7,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "role": "CTA",
+          "eyebrow": null,
+          "headline": "Save this. Then open the account.",
+          "ref_image": null,
+          "step_number": null,
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "visual_energy": "LOW",
+          "headline_italic": null,
+          "visual_direction": "Solid deep navy. Gold CTA button with the handle. No image, no texture."
+        }
+      ],
+      "status": "pending_review"
+    }
+  ],
+  "snapped_at": "2026-04-21T09:40:57.764Z"
+}

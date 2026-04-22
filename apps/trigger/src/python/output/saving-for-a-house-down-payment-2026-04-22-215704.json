@@ -1,0 +1,543 @@
+{
+  "schema_version": 1,
+  "query": "saving for a house down payment",
+  "generated_at": "2026-04-22T22:01:18.146189+03:00",
+  "model": "claude-opus-4-7",
+  "sources": [
+    {
+      "url": "https://youtube.com/watch?v=SBCArsCM_jg",
+      "video_id": "SBCArsCM_jg",
+      "title": "$75,000 Home Down Payment! Saving For A Home As A Single Mom & Single Income!",
+      "channel": "My Money Diary",
+      "subscribers": 6050,
+      "views": 8818,
+      "duration_seconds": 759,
+      "upload_date": "2024-10-21",
+      "engagement_ratio": 1.4575,
+      "transcript_chars": 8433,
+      "language": null,
+      "key_points": [
+        "Hello everybody welcome back to my",
+        "channel today's video is a little bit",
+        "different I am going to update you guys"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=m_8FLZwcpRc",
+      "video_id": "m_8FLZwcpRc",
+      "title": "Should I Stop Investing to Save For a House Down Payment?",
+      "channel": "Ramsey Everyday Millionaires",
+      "subscribers": 288000,
+      "views": 54903,
+      "duration_seconds": 170,
+      "upload_date": "2021-10-15",
+      "engagement_ratio": 0.1906,
+      "transcript_chars": 2840,
+      "language": null,
+      "key_points": [
+        "[Music]",
+        "wiley is with us in reno nevada hi wiley",
+        "how are you"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=rlOOCRWrAn4",
+      "video_id": "rlOOCRWrAn4",
+      "title": "How To Save Up For A House Down Payment | Clever Girl Finance",
+      "channel": "Clever Girl Finance",
+      "subscribers": 217000,
+      "views": 24986,
+      "duration_seconds": 564,
+      "upload_date": "2023-06-04",
+      "engagement_ratio": 0.1151,
+      "transcript_chars": 10197,
+      "language": null,
+      "key_points": [
+        "so purchasing a home is a big Financial",
+        "step and the amount you need to save for",
+        "the down payment can seem daunting"
+      ]
+    }
+  ],
+  "carousels": [
+    {
+      "id": "c1",
+      "concept": "Five rules for stacking a house down payment without burning out",
+      "angle": "practical",
+      "source_urls": [
+        "https://youtube.com/watch?v=SBCArsCM_jg",
+        "https://youtube.com/watch?v=m_8FLZwcpRc",
+        "https://youtube.com/watch?v=rlOOCRWrAn4"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "BEFORE YOU BUY",
+          "headline": "5 rules that built my $75,000 down payment.",
+          "headline_italic": "$75,000",
+          "body": "Single income. No lottery. Just a plan that ran on autopilot.",
+          "body_emphasis": [
+            "autopilot"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic skyline + rising gold arrow. High contrast, cinematic glow. Stop-the-scroll energy."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 01 · SEPARATE ACCOUNT",
+          "headline": "Open a house-only savings account.",
+          "headline_italic": "house-only",
+          "body": "High-yield. No debit card attached. A mixed-use account gets raided every Friday night.",
+          "body_emphasis": [
+            "No debit card"
+          ],
+          "step_number": "01",
+          "ref_image": "1.png",
+          "visual_direction": "Warm desk scene, cash stacked near a laptop. Focused, textural, quietly ambitious."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 02 · AUTOMATE",
+          "headline": "Transfer the day payday lands.",
+          "headline_italic": "payday",
+          "body": "Route a fixed amount from each paycheck straight into the house account. You can't spend what you never see.",
+          "body_emphasis": [
+            "fixed amount"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with budgeting dashboard, cash and coins spread around. Clean productivity energy."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "TIP 03 · THE REFRAME",
+          "headline": "Pause investing. On purpose.",
+          "headline_italic": "On purpose.",
+          "body": "A short gap year between debt-free and the down payment is not failure.",
+          "body_emphasis": [
+            "gap year"
+          ],
+          "step_number": "03",
+          "ref_image": "ref.png",
+          "visual_direction": "Hands writing on budget paper, coins and bills nearby. Contemplative, serious, slightly different palette from the others."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 04 · STACK FREE MONEY",
+          "headline": "Hunt grants before you save more.",
+          "headline_italic": "grants",
+          "body": "First-time buyer and healthcare grants can add $30K–$80K. Research early — the best ones run out in weeks.",
+          "body_emphasis": [
+            "$30K–$80K",
+            "run out in weeks"
+          ],
+          "step_number": "04",
+          "ref_image": "3.png",
+          "visual_direction": "Finance plan notebook, calculator, coffee. Planning-mode aesthetic, neutral cream tones."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 05 · KNOW YOUR CEILING",
+          "headline": "Pick the mortgage first, then the house.",
+          "headline_italic": "then the house.",
+          "body": "Decide what you'll pay each month. Reverse-engineer the down payment from that number.",
+          "body_emphasis": [
+            "Reverse-engineer"
+          ],
+          "step_number": "05",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, coins, green notebook with dollar sign, business chart. Grounded, wealth-forward, resolved."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Then open the account.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No image. Gold CTA button. Quiet, confident close."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "לפני שקונים דירה",
+          "headline": "5 כללים שבנו לי 300,000 ש״ח הון עצמי.",
+          "headline_italic": "300,000 ש״ח",
+          "body": "משכורת אחת. בלי ירושה, בלי לוטו. תוכנית שרצה על טייס אוטומטי.",
+          "body_emphasis": [
+            "טייס אוטומטי"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic skyline + rising gold arrow. High contrast, cinematic glow. Stop-the-scroll energy."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · חשבון נפרד",
+          "headline": "חשבון חיסכון רק לדירה.",
+          "headline_italic": "רק לדירה.",
+          "body": "קרן כספית בבנק אחר, בלי כרטיס אשראי מחובר.\nחשבון משולב עם העו״ש נשחק כל יום שישי בערב, בלי ששמת לב.",
+          "body_emphasis": [
+            "בלי כרטיס אשראי מחובר"
+          ],
+          "step_number": "01",
+          "ref_image": "1.png",
+          "visual_direction": "Warm desk scene, cash stacked near a laptop. Focused, textural, quietly ambitious."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · אוטומציה",
+          "headline": "הוראת קבע ביום שהמשכורת נכנסת.",
+          "headline_italic": "ביום שהמשכורת נכנסת.",
+          "body": "סכום קבוע, ה־1 בחודש, ישר לחשבון הדירה.\nמה שלא עובר מול העיניים בעו״ש, פשוט לא מבוזבז.",
+          "body_emphasis": [
+            "סכום קבוע"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with budgeting dashboard, cash and coins spread around. Clean productivity energy."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · הפריים שמשנה הכל",
+          "headline": "תעצור את ההשקעות. בכוונה.",
+          "headline_italic": "בכוונה.",
+          "body": "שנה בלי להזרים כסף לקרן השתלמות או לפנסיה מעבר לחובה זה לא כישלון.\nזו שנה אחת שמתועלת למטרה אחת: המפתחות ביד.",
+          "body_emphasis": [
+            "שנה אחת"
+          ],
+          "step_number": "03",
+          "ref_image": "ref.png",
+          "visual_direction": "Hands writing on budget paper, coins and bills nearby. Contemplative, serious, slightly different palette from the others."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · כסף שמגיע לך",
+          "headline": "תרדוף אחרי מענקים לפני שתחסוך עוד.",
+          "headline_italic": "מענקים",
+          "body": "מענק מקום, סיוע בשכר דירה, פיקדון חיילים משוחררים. יחד: 20,000 עד 60,000 ש״ח.\nהטפסים לוקחים שבועיים. הכסף נשאר איתך לנצח.",
+          "body_emphasis": [
+            "20,000 עד 60,000 ש״ח"
+          ],
+          "step_number": "04",
+          "ref_image": "3.png",
+          "visual_direction": "Finance plan notebook, calculator, coffee. Planning-mode aesthetic, neutral cream tones."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · דע את התקרה",
+          "headline": "קודם המשכנתא, אחר כך הדירה.",
+          "headline_italic": "אחר כך הדירה.",
+          "body": "תחליט כמה אתה מוכן להחזיר כל חודש. 30% מהנטו, לא יותר.\nמהמספר הזה תעבוד אחורה לגובה ההון העצמי שאתה צריך.",
+          "body_emphasis": [
+            "30% מהנטו"
+          ],
+          "step_number": "05",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, coins, green notebook with dollar sign, business chart. Grounded, wealth-forward, resolved."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור את זה. תפתח את החשבון היום.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No image. Gold CTA button. Quiet, confident close."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "concept": "The order people save for a house in is backwards — here's the fix",
+      "angle": "counter-frame",
+      "source_urls": [
+        "https://youtube.com/watch?v=m_8FLZwcpRc",
+        "https://youtube.com/watch?v=rlOOCRWrAn4",
+        "https://youtube.com/watch?v=SBCArsCM_jg"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "A BETTER APPROACH",
+          "headline": "Most people save for a house backwards.",
+          "headline_italic": "backwards.",
+          "body": "Here are the 5 steps in the order that actually works.",
+          "body_emphasis": [
+            "5 steps"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Skyline with rising chart. Cinematic, high-contrast, premium. The hook image of the set."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP 01 · KNOW THE NUMBER",
+          "headline": "Price the house before the dream.",
+          "headline_italic": "before the dream.",
+          "body": "Get preapproved. Look at real listings. A vague goal saves zero dollars.",
+          "body_emphasis": [
+            "preapproved"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Finance plan notebook and calculator. Analytical, quiet, grounded."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP 02 · PICK THE LOAN",
+          "headline": "The loan type sets the target.",
+          "headline_italic": "sets the target.",
+          "body": "Conventional: ~3% down. FHA: ~3.5%. 20% dodges mortgage insurance. Your number changes with your choice.",
+          "body_emphasis": [
+            "3%",
+            "3.5%",
+            "20%"
+          ],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, coins, business chart, pen. Decision-making energy."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "STEP 03 · THE REFRAME",
+          "headline": "Your credit score saves more than your budget.",
+          "headline_italic": "credit score",
+          "body": "Half a percentage point on your rate is tens of thousands over 30 years. Fix the score before you hunt the house.",
+          "body_emphasis": [
+            "tens of thousands"
+          ],
+          "step_number": "03",
+          "ref_image": "ref.png",
+          "visual_direction": "Hand writing on documents, coins, calculator nearby. Moody, editorial, slightly different from sibling slides."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP 04 · BUDGET THE LINE",
+          "headline": "Add a line called \"house.\"",
+          "headline_italic": "\"house.\"",
+          "body": "Not a category. A named line item with a monthly number attached. Automate the transfer so it moves itself.",
+          "body_emphasis": [
+            "named line item"
+          ],
+          "step_number": "04",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with budget app open, cash and coins around it. Clean, organized, in-motion."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP 05 · BUDGET THE EXTRAS",
+          "headline": "Save past the down payment.",
+          "headline_italic": "past the down payment.",
+          "body": "Closing costs. Inspection. Moving. Furniture. Plan 3–5% extra or you'll move in broke.",
+          "body_emphasis": [
+            "3–5% extra"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Calculator, cash, tiny rising bar chart, penny. Resolution image — the plan pays off."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Then start step one.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No image. Gold CTA button. Calm close."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "גישה אחרת",
+          "headline": "רוב האנשים חוסכים לדירה הפוך.",
+          "headline_italic": "הפוך.",
+          "body": "זה הסדר שבאמת עובד, ב־5 שלבים.",
+          "body_emphasis": [
+            "5 שלבים"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Skyline with rising chart. Cinematic, high-contrast, premium. The hook image of the set."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · דע את המספר",
+          "headline": "תתמחר את הדירה לפני החלום.",
+          "headline_italic": "לפני החלום.",
+          "body": "פגישה עם יועץ משכנתאות בבנק, לראות מה מאשרים לך בפועל.\nחצי שעה ביד2 באזור שאתה רוצה לגור בו. יעד מעורפל חוסך אפס שקלים.",
+          "body_emphasis": [
+            "יועץ משכנתאות"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Finance plan notebook and calculator. Analytical, quiet, grounded."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · תמהיל המשכנתא",
+          "headline": "התמהיל קובע כמה תצטרך.",
+          "headline_italic": "כמה תצטרך.",
+          "body": "דירה ראשונה: עד 75% מימון, כלומר 25% הון עצמי.\nדירה שנייה: 50% בלבד. הון עצמי של 30% ומעלה פותח לך ריביות נמוכות ב־0.5%.",
+          "body_emphasis": [
+            "25%",
+            "50%",
+            "30%"
+          ],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Cash, coins, business chart, pen. Decision-making energy."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · הפריים שמשנה הכל",
+          "headline": "דירוג האשראי חוסך יותר מהתקציב.",
+          "headline_italic": "דירוג האשראי",
+          "body": "חצי אחוז פחות על המשכנתא זה 150,000 ש״ח על פני 25 שנה.\nתסגור חובות פתוחים ותסדר דירוג לפני שתצא לחפש דירה, לא תוך כדי.",
+          "body_emphasis": [
+            "150,000 ש״ח"
+          ],
+          "step_number": "03",
+          "ref_image": "ref.png",
+          "visual_direction": "Hand writing on documents, coins, calculator nearby. Moody, editorial, slightly different from sibling slides."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · סעיף בתקציב",
+          "headline": "תוסיף שורה בשם \"דירה\".",
+          "headline_italic": "\"דירה\".",
+          "body": "לא קטגוריה כללית. שורה עם שם ועם סכום חודשי ספציפי.\nהוראת קבע קבועה דואגת שהיא תזוז לבד, בלי שתתחבט בזה כל חודש.",
+          "body_emphasis": [
+            "שורה עם שם"
+          ],
+          "step_number": "04",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with budget app open, cash and coins around it. Clean, organized, in-motion."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · מעבר להון העצמי",
+          "headline": "תחסוך גם מעבר להון העצמי.",
+          "headline_italic": "מעבר להון העצמי.",
+          "body": "שמאות, עו״ד, מס רכישה, מתווך, ריהוט, ארנונה.\nתתקצב 5% עד 8% נוספים מעל מחיר הדירה, אחרת נכנסת למפתחות בלי אגורה.",
+          "body_emphasis": [
+            "5% עד 8% נוספים"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Calculator, cash, tiny rising bar chart, penny. Resolution image — the plan pays off."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור את זה. תתחיל משלב אחד.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No image. Gold CTA button. Calm close."
+        }
+      ]
+    }
+  ],
+  "recommendations_for_dashboard": {
+    "rendering_notes": "Fonts: Fraunces+Inter (EN), Frank Ruhl Libre+Assistant (HE). Canvas 1080x1350 portrait.",
+    "ref_images_dir": "C:\\Users\\adirg\\CC-projects\\reem-v2\\reem-docs\\ref",
+    "brand_handle": "@personalfinancetips",
+    "next_carousels_run_suggestion": "Run a counter-frame on renting — the math where renting beats buying, and the three numbers that tell you which side you're on this year."
+  },
+  "run_stats": {
+    "videos_requested": 3,
+    "videos_succeeded": 3,
+    "carousels_requested": 2,
+    "carousels_produced": 2,
+    "duration_seconds": 101.0,
+    "duration_pass_a_seconds": 50.8,
+    "duration_pass_b_seconds": 50.2,
+    "input_tokens": 30794,
+    "output_tokens": 7510,
+    "cache_read_tokens": 17146,
+    "cache_creation_tokens": 20620,
+    "hebrew_pass_attempts": 2,
+    "hebrew_strict": true,
+    "total_pipeline_seconds": 254.0
+  },
+  "warnings": [
+    "Pass B attempt 1 failed: c2.slides_he[5].body contains banned dash character. Hard fail — regenerate.",
+    "No results within 6 months; fell back to all-time."
+  ]
+}

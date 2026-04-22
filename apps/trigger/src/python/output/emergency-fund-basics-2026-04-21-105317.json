@@ -1,0 +1,492 @@
+{
+  "schema_version": 1,
+  "query": "emergency fund basics",
+  "generated_at": "2026-04-21T10:56:13.439876+03:00",
+  "model": "claude-opus-4-7",
+  "sources": [
+    {
+      "url": "https://youtube.com/watch?v=vuujNUixqc0",
+      "video_id": "vuujNUixqc0",
+      "title": "Emergency Fund Basics: How Much You Need & Where to Keep It",
+      "channel": "Personal Finance & Investing",
+      "subscribers": 6,
+      "views": 1,
+      "duration_seconds": 143,
+      "upload_date": "2026-01-07",
+      "engagement_ratio": 0.1667,
+      "transcript_chars": 2145,
+      "language": null,
+      "key_points": [
+        "Life has a way of throwing [music]",
+        "unexpected curveballs. And having an",
+        "emergency fund is your financial [music]"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=Fdj0XGbXzac",
+      "video_id": "Fdj0XGbXzac",
+      "title": "Top 8 Practical Steps To Build An Emergency Fund The Right Way (2026)",
+      "channel": "Budget Buddy",
+      "subscribers": 44,
+      "views": 2058,
+      "duration_seconds": 536,
+      "upload_date": "2026-02-15",
+      "engagement_ratio": 46.7727,
+      "transcript_chars": 9036,
+      "language": null,
+      "key_points": [
+        "Do you feel like unexpected expenses",
+        "always show up at the wrong time? Where",
+        "there's a sudden medical bill, a job"
+      ]
+    },
+    {
+      "url": "https://youtube.com/watch?v=hLSFUQSzRV8",
+      "video_id": "hLSFUQSzRV8",
+      "title": "THE 6 MONTH EMERGENCY FUND: WHY IT EXISTS AND WHERE TO KEEP IT!!",
+      "channel": "James Invests",
+      "subscribers": 1120,
+      "views": 1700,
+      "duration_seconds": 787,
+      "upload_date": "2026-02-10",
+      "engagement_ratio": 1.5179,
+      "transcript_chars": 12682,
+      "language": null,
+      "key_points": [
+        "Most people who lose their job don't",
+        "panic on day one. They panic on day 93.",
+        "That's when the severance runs out, when"
+      ]
+    }
+  ],
+  "carousels": [
+    {
+      "id": "c1",
+      "concept": "The emergency fund is a countdown timer, not a virtue",
+      "angle": "counter-frame",
+      "source_urls": [
+        "https://youtube.com/watch?v=hLSFUQSzRV8",
+        "https://youtube.com/watch?v=vuujNUixqc0"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "THE REAL REASON",
+          "headline": "Your emergency fund is a timer.",
+          "headline_italic": "a timer.",
+          "body": "Most people find out on day 93.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic skyline with warm gold backlight. High contrast, cinematic. The image carries weight; text sits lower-left with generous breathing room."
+        },
+        {
+          "n": 2,
+          "role": "CONTEXT",
+          "visual_energy": "LOW",
+          "eyebrow": "WHY IT EXISTS",
+          "headline": "Severance runs out. Bills don't.",
+          "headline_italic": "Bills don't.",
+          "body": "The median job search takes 3 to 5 months. Half take longer.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "3.png",
+          "visual_direction": "Clean overhead notebook/budget composition. Dark navy overlay. Low-key, lots of negative space. Text anchored upper-left."
+        },
+        {
+          "n": 3,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "THE MATH",
+          "headline": "Six months isn't arbitrary.",
+          "headline_italic": "arbitrary.",
+          "body": "It's the buffer between selective and desperate. Enough time to find the right job, not the first one.",
+          "body_emphasis": [],
+          "step_number": "01",
+          "ref_image": "5.png",
+          "visual_direction": "Warm textural close-up of cash and ledger. Navy gradient overlay to deepen contrast. Large gold '01' marker top-right."
+        },
+        {
+          "n": 4,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "THE HIDDEN COST",
+          "headline": "Unemployment makes expenses grow.",
+          "headline_italic": "grow.",
+          "body": "COBRA premiums. Interview costs. Stress spending. Six months of expenses is really closer to four.",
+          "body_emphasis": [
+            "COBRA premiums",
+            "Interview costs",
+            "Stress spending"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Desk scene with laptop and scattered cash, darkened. Warmer tone than slide 3. Gold '02' marker top-right for rhythm."
+        },
+        {
+          "n": 5,
+          "role": "TENSION",
+          "visual_energy": "HIGH",
+          "eyebrow": "THE TRAP",
+          "headline": "Cash in checking slowly dies.",
+          "headline_italic": "dies.",
+          "body": "Inflation eats 3% a year. A mattress fund loses a third of itself over a decade.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "1.png",
+          "visual_direction": "Conceptual: stacks of cash under warm low light, shadowed edges. Feels different from earlier slides — moodier, more abstract. Text bottom-left."
+        },
+        {
+          "n": 6,
+          "role": "PAYOFF",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "WHERE TO PARK IT",
+          "headline": "High-yield savings. Boring on purpose.",
+          "headline_italic": "on purpose.",
+          "body": "FDIC insured. Liquid in a day. Earning 4%+ instead of zero. Boring is the feature.",
+          "body_emphasis": [
+            "FDIC insured",
+            "Liquid",
+            "4%+"
+          ],
+          "step_number": null,
+          "ref_image": "4.png",
+          "visual_direction": "Calculator, pen, cash — clean, resolved composition. Even light. Feels like the tension has released. Text upper-left."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": "SAVE & SHARE",
+          "headline": "Save this before you need it.",
+          "headline_italic": "need it.",
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No photography. Gold CTA button bottom-left with handle. Quiet, resolved, brand-forward."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "הסיבה האמיתית",
+          "headline": "קרן החירום שלך היא שעון עצר.",
+          "headline_italic": "שעון עצר.",
+          "body": "רוב האנשים מגלים את זה ביום ה־93.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic skyline with warm gold backlight. High contrast, cinematic. The image carries weight; text sits lower-left with generous breathing room."
+        },
+        {
+          "n": 2,
+          "role": "CONTEXT",
+          "visual_energy": "LOW",
+          "eyebrow": "למה היא קיימת",
+          "headline": "פיצויים נגמרים. חשבונות לא.",
+          "headline_italic": "חשבונות לא.",
+          "body": "חיפוש עבודה לוקח בממוצע 3 עד 5 חודשים. לחצי מהאנשים יותר.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "3.png",
+          "visual_direction": "Clean overhead notebook/budget composition. Dark navy overlay. Low-key, lots of negative space. Text anchored upper-left."
+        },
+        {
+          "n": 3,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "החשבון",
+          "headline": "שישה חודשים זה לא מספר רנדומלי.",
+          "headline_italic": "רנדומלי.",
+          "body": "זה המרווח בין לבחור עבודה לבין להתחנן לאחת. מספיק זמן למצוא את הנכונה, לא את הראשונה.",
+          "body_emphasis": [],
+          "step_number": "01",
+          "ref_image": "5.png",
+          "visual_direction": "Warm textural close-up of cash and ledger. Navy gradient overlay to deepen contrast. Large gold '01' marker top-right."
+        },
+        {
+          "n": 4,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "העלות הנסתרת",
+          "headline": "כשאין עבודה, ההוצאות גדלות.",
+          "headline_italic": "גדלות.",
+          "body": "ביטוח בריאות פרטי. הוצאות על ראיונות. קניות מלחץ. שישה חודשי הוצאות מתכווצים לארבעה.",
+          "body_emphasis": [
+            "ביטוח בריאות פרטי",
+            "הוצאות על ראיונות",
+            "קניות מלחץ"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Desk scene with laptop and scattered cash, darkened. Warmer tone than slide 3. Gold '02' marker top-right for rhythm."
+        },
+        {
+          "n": 5,
+          "role": "TENSION",
+          "visual_energy": "HIGH",
+          "eyebrow": "המלכודת",
+          "headline": "כסף בעובר ושב פשוט מת.",
+          "headline_italic": "מת.",
+          "body": "האינפלציה אוכלת 3% בשנה. קרן מתחת למזרן מאבדת שליש מעצמה בעשור.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "1.png",
+          "visual_direction": "Conceptual: stacks of cash under warm low light, shadowed edges. Feels different from earlier slides — moodier, more abstract. Text bottom-left."
+        },
+        {
+          "n": 6,
+          "role": "PAYOFF",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "איפה לשים את זה",
+          "headline": "פיקדון יומי. משעמם בכוונה.",
+          "headline_italic": "בכוונה.",
+          "body": "מבוטח בבנק. נזיל תוך יום. מרוויח 4% במקום אפס. השעמום הוא היתרון.",
+          "body_emphasis": [
+            "מבוטח בבנק",
+            "נזיל",
+            "4%"
+          ],
+          "step_number": null,
+          "ref_image": "4.png",
+          "visual_direction": "Calculator, pen, cash — clean, resolved composition. Even light. Feels like the tension has released. Text upper-left."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור את זה לפני שתצטרך אותו.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No photography. Gold CTA button bottom-left with handle. Quiet, resolved, brand-forward."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "concept": "Build the fund in small, compounding steps",
+      "angle": "practical",
+      "source_urls": [
+        "https://youtube.com/watch?v=Fdj0XGbXzac",
+        "https://youtube.com/watch?v=vuujNUixqc0"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "START SMALL",
+          "headline": "Don't save six months. Save one week.",
+          "headline_italic": "one week.",
+          "body": "The order is what actually builds the fund.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "2.png",
+          "visual_direction": "Overhead desk scene with cash, coins, laptop. Warm gold highlights. High contrast, scroll-stopping. Text bottom-left."
+        },
+        {
+          "n": 2,
+          "role": "CONTEXT",
+          "visual_energy": "LOW",
+          "eyebrow": "WHY PEOPLE FAIL",
+          "headline": "The goal is too big to start.",
+          "headline_italic": "to start.",
+          "body": "Six months of expenses sounds like a house. Nobody starts a house with the roof.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "3.png",
+          "visual_direction": "Clean notebook and budget chart, navy overlay. Minimal composition, generous white space around the headline."
+        },
+        {
+          "n": 3,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP ONE",
+          "headline": "Hit $500 before anything else.",
+          "headline_italic": "anything else.",
+          "body": "Small win, fast. Enough to survive a car repair without a credit card. Momentum is the real asset.",
+          "body_emphasis": [],
+          "step_number": "01",
+          "ref_image": "4.png",
+          "visual_direction": "Close-up of cash, calculator, pen, wooden arrow. Warm tones. Gold '01' top-right. Text left-aligned."
+        },
+        {
+          "n": 4,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "STEP TWO",
+          "headline": "Automate it and forget it.",
+          "headline_italic": "forget it.",
+          "body": "Direct debit on payday. Fifty dollars you never see is fifty dollars you never spend.",
+          "body_emphasis": [],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Cash bundle, gold dollar sign, pen on ledger. Cooler than slide 3 for contrast. Gold '02' top-right."
+        },
+        {
+          "n": 5,
+          "role": "TENSION",
+          "visual_energy": "HIGH",
+          "eyebrow": "THE REAL NUMBER",
+          "headline": "Your income isn't the target.",
+          "headline_italic": "isn't the target.",
+          "body": "Six months of expenses, not six months of salary. Most people calculate the wrong number and quit halfway.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Conceptual city skyline with rising chart. High drama, warm gold. Feels different from the practical slides before it — the reframe hits here."
+        },
+        {
+          "n": 6,
+          "role": "PAYOFF",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "THE PAYOFF",
+          "headline": "Emergency fund buys you time.",
+          "headline_italic": "time.",
+          "body": "Not wealth. Not status. Just the one thing you can't borrow when the bill arrives.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "ref.png",
+          "visual_direction": "Hand writing over a budget with coins and cash. Resolved, quiet, warm. Text left-aligned with generous space."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": "SAVE & SHARE",
+          "headline": "Save this. Then start step one.",
+          "headline_italic": "step one.",
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No photography. Gold CTA button with handle, bottom-left. Clean and quiet."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "תתחיל קטן",
+          "headline": "אל תחסוך לחצי שנה. תחסוך לשבוע.",
+          "headline_italic": "לשבוע.",
+          "body": "הסדר הוא מה שבונה את הקרן.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "2.png",
+          "visual_direction": "Overhead desk scene with cash, coins, laptop. Warm gold highlights. High contrast, scroll-stopping. Text bottom-left."
+        },
+        {
+          "n": 2,
+          "role": "CONTEXT",
+          "visual_energy": "LOW",
+          "eyebrow": "למה אנשים נכשלים",
+          "headline": "המטרה גדולה מדי בשביל להתחיל.",
+          "headline_italic": "להתחיל.",
+          "body": "שישה חודשי הוצאות נשמעים כמו בית שלם. אף אחד לא בונה בית מהגג.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "3.png",
+          "visual_direction": "Clean notebook and budget chart, navy overlay. Minimal composition, generous white space around the headline."
+        },
+        {
+          "n": 3,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "צעד ראשון",
+          "headline": "תגיע ל־2,000 ש״ח קודם כל.",
+          "headline_italic": "קודם כל.",
+          "body": "ניצחון קטן, מהיר. מספיק בשביל לשרוד פאנצ׳ר בלי להיכנס לאוברדראפט. התאוצה היא הנכס האמיתי.",
+          "body_emphasis": [],
+          "step_number": "01",
+          "ref_image": "4.png",
+          "visual_direction": "Close-up of cash, calculator, pen, wooden arrow. Warm tones. Gold '01' top-right. Text left-aligned."
+        },
+        {
+          "n": 4,
+          "role": "BUILD",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "צעד שני",
+          "headline": "הוראת קבע. ותשכח מזה.",
+          "headline_italic": "תשכח מזה.",
+          "body": "הוראת קבע ביום המשכורת. 200 ש״ח שלא ראית הם 200 ש״ח שלא תבזבז.",
+          "body_emphasis": [],
+          "step_number": "02",
+          "ref_image": "5.png",
+          "visual_direction": "Cash bundle, gold dollar sign, pen on ledger. Cooler than slide 3 for contrast. Gold '02' top-right."
+        },
+        {
+          "n": 5,
+          "role": "TENSION",
+          "visual_energy": "HIGH",
+          "eyebrow": "המספר האמיתי",
+          "headline": "המשכורת היא לא היעד.",
+          "headline_italic": "היעד.",
+          "body": "שישה חודשי הוצאות, לא שישה חודשי משכורת. רוב האנשים מחשבים את המספר הלא נכון ונשברים באמצע.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Conceptual city skyline with rising chart. High drama, warm gold. Feels different from the practical slides before it — the reframe hits here."
+        },
+        {
+          "n": 6,
+          "role": "PAYOFF",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "השורה התחתונה",
+          "headline": "קרן חירום קונה לך זמן.",
+          "headline_italic": "זמן.",
+          "body": "לא עושר. לא סטטוס. רק את הדבר שאי אפשר ללוות כשהחשבון מגיע.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": "ref.png",
+          "visual_direction": "Hand writing over a budget with coins and cash. Resolved, quiet, warm. Text left-aligned with generous space."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור. ותתחיל מהצעד הראשון.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid deep navy. No photography. Gold CTA button with handle, bottom-left. Clean and quiet."
+        }
+      ]
+    }
+  ],
+  "recommendations_for_dashboard": {
+    "rendering_notes": "Fonts: Fraunces+Inter (EN), Frank Ruhl Libre+Assistant (HE). Canvas 1080x1350 portrait.",
+    "ref_images_dir": "C:\\Users\\adirg\\CC-projects\\reem-v2\\reem-docs\\ref",
+    "brand_handle": "@personalfinancetips",
+    "next_carousels_run_suggestion": "Run a counter-frame on the six-month rule itself — when paying off high-interest debt first actually beats building the full emergency fund."
+  },
+  "run_stats": {
+    "videos_requested": 3,
+    "videos_succeeded": 3,
+    "carousels_requested": 2,
+    "carousels_produced": 2,
+    "duration_seconds": 104.1,
+    "duration_pass_a_seconds": 51.3,
+    "duration_pass_b_seconds": 52.8,
+    "input_tokens": 21046,
+    "output_tokens": 7089,
+    "cache_read_tokens": 3473,
+    "cache_creation_tokens": 34293,
+    "hebrew_pass_attempts": 1,
+    "hebrew_strict": true,
+    "total_pipeline_seconds": 175.5
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "reem-v2",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:trigger": "pnpm --filter trigger dev",
+    "build": "pnpm -r --filter \"./apps/*\" build",
+    "lint": "pnpm -r --filter \"./apps/*\" lint",
+    "typecheck": "pnpm -r exec tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@depot/cli",
+      "esbuild",
+      "protobufjs",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}

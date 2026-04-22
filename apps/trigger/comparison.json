@@ -1,0 +1,378 @@
+{
+  "topic": {
+    "id": "5620ff58-3583-47e7-9346-c003aec79798",
+    "he_label": "קרן חירום למתחילים",
+    "en_query": "emergency fund basics",
+    "status": "pending_review"
+  },
+  "old_run_id": "9ab92078-9690-413e-89b8-84cb60b49a27",
+  "new_run_id": "b4960e91-06d2-4055-8b0e-b4e7b1c00a09",
+  "carousels": [
+    {
+      "idx": 0,
+      "old": {
+        "concept": "Why 6 months of expenses is the real emergency fund target",
+        "angle": "counter-frame",
+        "slides_he": [
+          {
+            "n": 1,
+            "role": "HOOK",
+            "eyebrow": "כלל 93 הימים",
+            "headline": "רוב הפיטורים כואבים רק ביום 93.",
+            "headline_italic": "ביום 93.",
+            "body": "ביום הזה החיסכון נגמר. זאת הקרן שקונה לך זמן.",
+            "body_emphasis": [
+              "קונה לך זמן"
+            ],
+            "step_number": null
+          },
+          {
+            "n": 2,
+            "role": "TIP",
+            "eyebrow": "טיפ 01 · המספר",
+            "headline": "תחסוך 6 חודשי הוצאות.",
+            "headline_italic": "6 חודשי",
+            "body": "אם שכירות, אוכל וחשבונות עולים לך 10,000 ש״ח בחודש, היעד הוא 60,000 ש״ח. זאת הרצפה האמיתית.",
+            "body_emphasis": [
+              "60,000 ש״ח"
+            ],
+            "step_number": "01"
+          },
+          {
+            "n": 3,
+            "role": "TIP",
+            "eyebrow": "טיפ 02 · איפה לשים",
+            "headline": "תחנה את זה בקרן כספית.",
+            "headline_italic": "קרן כספית.",
+            "body": "תשואה של 4% ומעלה, נזיל תוך 48 שעות, בלי כרטיס צמוד. לא עו״ש, לא מניות.",
+            "body_emphasis": [
+              "4% ומעלה"
+            ],
+            "step_number": "02"
+          },
+          {
+            "n": 4,
+            "role": "TIP",
+            "eyebrow": "טיפ 03 · אל תעשה את זה",
+            "headline": "תפסיק להחזיק את זה בסנופי.",
+            "headline_italic": "בסנופי.",
+            "body": "לשוק לא אכפת שפיטרו אותך. משברים מכריחים אותך למכור בדיוק בחודש שאתה צריך את המזומן.",
+            "body_emphasis": [
+              "בדיוק בחודש"
+            ],
+            "step_number": "03"
+          },
+          {
+            "n": 5,
+            "role": "TIP",
+            "eyebrow": "טיפ 04 · אוטומציה",
+            "headline": "הוראת קבע של 700 ש״ח בשבוע.",
+            "headline_italic": "700 ש״ח בשבוע.",
+            "body": "תכוון את ההעברה לבוקר של יום המשכורת. תוך שנה יש לך 36,000 ש״ח בלי להרגיש.",
+            "body_emphasis": [
+              "36,000 ש״ח"
+            ],
+            "step_number": "04"
+          },
+          {
+            "n": 6,
+            "role": "TIP",
+            "eyebrow": "טיפ 05 · מספר ההישרדות",
+            "headline": "תדע את מספר המינימום שלך.",
+            "headline_italic": "מספר המינימום",
+            "body": "שכירות, ארנונה, אוכל, תחבורה, ביטוחים, מינימום חובות. שום דבר אחר. תכפיל בשש וזה היעד.",
+            "body_emphasis": [
+              "תכפיל בשש"
+            ],
+            "step_number": "05"
+          },
+          {
+            "n": 7,
+            "role": "CTA",
+            "eyebrow": null,
+            "headline": "תשמור. ותפתח את החשבון היום.",
+            "headline_italic": null,
+            "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה בשבוע.",
+            "body_emphasis": [
+              "@personalfinancetips"
+            ],
+            "step_number": null
+          }
+        ]
+      },
+      "new": {
+        "concept": "Emergency fund math most people get wrong",
+        "angle": "counter-frame",
+        "slides_he": [
+          {
+            "n": 1,
+            "role": "HOOK",
+            "eyebrow": "כלל 93 הימים",
+            "headline": "קרן החירום שלך היא שעון עצר.",
+            "headline_italic": "שעון עצר.",
+            "body": "רוב האנשים לא נלחצים ביום הראשון. הם נלחצים ביום ה־93.",
+            "body_emphasis": [
+              "ביום ה־93"
+            ],
+            "step_number": null
+          },
+          {
+            "n": 2,
+            "role": "TIP",
+            "eyebrow": "טיפ 01 · החשבון",
+            "headline": "תחשב הוצאות, לא משכורת.",
+            "headline_italic": "הוצאות,",
+            "body": "שכירות, חשבונות, אוכל, ביטוחים, מינימום הלוואות. תכפיל ב־6. זה היעד שלך, לא פי 6 מהתלוש.",
+            "body_emphasis": [
+              "תכפיל ב־6"
+            ],
+            "step_number": "01"
+          },
+          {
+            "n": 3,
+            "role": "TIP",
+            "eyebrow": "טיפ 02 · איפה הכסף יושב",
+            "headline": "קרן כספית. לא עובר ושב.",
+            "headline_italic": "קרן כספית.",
+            "body": "נזילה תוך יום. משלמת היום כ־4%. עובר ושב משלם לך אפס, וזה קנס על עצלנות.",
+            "body_emphasis": [
+              "כ־4%"
+            ],
+            "step_number": "02"
+          },
+          {
+            "n": 4,
+            "role": "TIP",
+            "eyebrow": "טיפ 03 · מסגרת חדשה",
+            "headline": "תפסיק להשקיע אותה.",
+            "headline_italic": "להשקיע",
+            "body": "מדד S&P עושה בממוצע 8% בשנה. נהדר, עד שמפטרים אותך באמצע ירידה של 30% ואתה מוכר בהפסד. קרן חירום היא ביטוח, לא נכס.",
+            "body_emphasis": [
+              "ירידה של 30%"
+            ],
+            "step_number": "03"
+          },
+          {
+            "n": 5,
+            "role": "TIP",
+            "eyebrow": "טיפ 04 · אוטומציה",
+            "headline": "הרשאה קבועה של 200 ש״ח.",
+            "headline_italic": "200 ש״ח.",
+            "body": "תקבע הוראת קבע ליום שהמשכורת נכנסת. קטן ועקבי מנצח גדול וספורדי, כל פעם מחדש.",
+            "body_emphasis": [
+              "ליום שהמשכורת נכנסת"
+            ],
+            "step_number": "04"
+          },
+          {
+            "n": 6,
+            "role": "TIP",
+            "eyebrow": "טיפ 05 · אל תעשה את זה",
+            "headline": "אייפון חדש הוא לא חירום.",
+            "headline_italic": "לא",
+            "body": "הקרן היא לפיטורים, חשבון רפואי, גיר שהתפוצץ. תיגע בה למשהו אחר והיא מפסיקה להיות רשת ביטחון.",
+            "body_emphasis": [
+              "פיטורים, חשבון רפואי"
+            ],
+            "step_number": "05"
+          },
+          {
+            "n": 7,
+            "role": "CTA",
+            "eyebrow": null,
+            "headline": "שמור את זה. תתחיל ב־100 ש״ח.",
+            "headline_italic": null,
+            "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו ל־@personalfinancetips, קרוסלה אחת בשבוע.",
+            "body_emphasis": [
+              "@personalfinancetips"
+            ],
+            "step_number": null
+          }
+        ]
+      }
+    },
+    {
+      "idx": 1,
+      "old": {
+        "concept": "The first $1,000 — how to actually start an emergency fund from zero",
+        "angle": "practical",
+        "slides_he": [
+          {
+            "n": 1,
+            "role": "HOOK",
+            "eyebrow": "מאפס לקרן",
+            "headline": "ככה חסכתי 3,500 ש״ח ב־90 יום.",
+            "headline_italic": "ב־90 יום.",
+            "body": "חמש פעולות. בלי עבודה שנייה. בלי העלאה. תשמור לפני המשכורת הבאה.",
+            "body_emphasis": [
+              "חמש פעולות"
+            ],
+            "step_number": null
+          },
+          {
+            "n": 2,
+            "role": "TIP",
+            "eyebrow": "טיפ 01 · תתחיל קטן",
+            "headline": "תפתח חשבון נפרד.",
+            "headline_italic": "חשבון נפרד.",
+            "body": "בבנק אחר מהעו״ש. בלי כרטיס אשראי. החיכוך הוא הפיצ׳ר, לא הבאג.",
+            "body_emphasis": [
+              "החיכוך הוא הפיצ׳ר"
+            ],
+            "step_number": "01"
+          },
+          {
+            "n": 3,
+            "role": "TIP",
+            "eyebrow": "טיפ 02 · אוטומציה",
+            "headline": "הרשאה לחיוב של 175 ש״ח בשבוע.",
+            "headline_italic": "175 ש״ח בשבוע.",
+            "body": "תקבע את ההעברה לבוקר יום המשכורת. תוך 20 שבועות יש לך 3,500 ש״ח בלי לחשוב פעם אחת.",
+            "body_emphasis": [
+              "20 שבועות"
+            ],
+            "step_number": "02"
+          },
+          {
+            "n": 4,
+            "role": "TIP",
+            "eyebrow": "טיפ 03 · אל תעשה את זה",
+            "headline": "תפסיק לגעת בזה בשביל ימי הולדת.",
+            "headline_italic": "ימי הולדת.",
+            "body": "חירום זה רפואה, שכירות או אובדן הכנסה. מבצע של בלאק פריידיי זה לא חירום. חופש בחו״ל זה לא חירום.",
+            "body_emphasis": [
+              "זה לא חירום"
+            ],
+            "step_number": "03"
+          },
+          {
+            "n": 5,
+            "role": "TIP",
+            "eyebrow": "טיפ 04 · כסף מהשמיים",
+            "headline": "100% מכל החזר הולך פנימה.",
+            "headline_italic": "100%",
+            "body": "החזרי מס, בונוסים, מתנות חתונה, דמי הבראה. ישר לקרן לפני שזה נוחת בעו״ש.",
+            "body_emphasis": [
+              "לפני שזה נוחת בעו״ש"
+            ],
+            "step_number": "04"
+          },
+          {
+            "n": 6,
+            "role": "TIP",
+            "eyebrow": "טיפ 05 · תבטל",
+            "headline": "תסרוק מנויים ותחזיר 300 ש״ח.",
+            "headline_italic": "300 ש״ח.",
+            "body": "תפתח את אפליקציית הבנק. תבטל כל דבר שלא פתחת ב־30 יום האחרונים. זאת ההפקדה של החודש הבא.",
+            "body_emphasis": [
+              "ההפקדה של החודש הבא"
+            ],
+            "step_number": "05"
+          },
+          {
+            "n": 7,
+            "role": "CTA",
+            "eyebrow": null,
+            "headline": "תשמור. ותפתח את החשבון היום.",
+            "headline_italic": null,
+            "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה בשבוע.",
+            "body_emphasis": [
+              "@personalfinancetips"
+            ],
+            "step_number": null
+          }
+        ]
+      },
+      "new": {
+        "concept": "Eight practical steps to build the fund from zero",
+        "angle": "practical",
+        "slides_he": [
+          {
+            "n": 1,
+            "role": "HOOK",
+            "eyebrow": "מתחילים מאפס",
+            "headline": "3,000 ש״ח בצד תוך 90 יום.",
+            "headline_italic": "3,000 ש״ח",
+            "body": "חמישה כללים. בלי לוותר על החיים. שמור את זה.",
+            "body_emphasis": [
+              "חמישה כללים"
+            ],
+            "step_number": null
+          },
+          {
+            "n": 2,
+            "role": "TIP",
+            "eyebrow": "טיפ 01 · היעד הראשון",
+            "headline": "תכוון ל־1,500 ש״ח קודם.",
+            "headline_italic": "1,500 ש״ח",
+            "body": "אל תרדוף אחרי שישה חודשים ביום הראשון. תגיע למספר קטן מהר. המומנטום הוא הנכס האמיתי פה.",
+            "body_emphasis": [
+              "המומנטום"
+            ],
+            "step_number": "01"
+          },
+          {
+            "n": 3,
+            "role": "TIP",
+            "eyebrow": "טיפ 02 · ביקורת",
+            "headline": "תבטל שלושה מנויים השבוע.",
+            "headline_italic": "שלושה",
+            "body": "תיכנס לאפליקציית הבנק. תסמן כל חיוב חוזר ששכחת ממנו. זה ה־150 ש״ח הראשונים שלך בחודש.",
+            "body_emphasis": [
+              "כל חיוב חוזר"
+            ],
+            "step_number": "02"
+          },
+          {
+            "n": 4,
+            "role": "TIP",
+            "eyebrow": "טיפ 03 · אל תעשה את זה",
+            "headline": "תפסיק לחסוך ממה שנשאר.",
+            "headline_italic": "ממה שנשאר.",
+            "body": "חוסך אחרי שהוצאת, חוסך אפס. תעביר את הכסף קודם. תוציא ממה שנשאר.",
+            "body_emphasis": [
+              "תעביר את הכסף קודם"
+            ],
+            "step_number": "03"
+          },
+          {
+            "n": 5,
+            "role": "TIP",
+            "eyebrow": "טיפ 04 · כסף מהצד",
+            "headline": "כל כסף לא צפוי הולך לקרן.",
+            "headline_italic": "כל כסף לא צפוי",
+            "body": "החזר מס. בונוס. כסף מסבתא. מתנה מחתונה. לא נוגע בעו״ש, ישר לקרן החירום.",
+            "body_emphasis": [
+              "לא נוגע בעו״ש"
+            ],
+            "step_number": "04"
+          },
+          {
+            "n": 6,
+            "role": "TIP",
+            "eyebrow": "טיפ 05 · כלל המילוי",
+            "headline": "השתמשת? תמלא בחודש הבא.",
+            "headline_italic": "בחודש הבא.",
+            "body": "חירום מרוקן את הקרן. זה התפקיד שלה. המשכורת הבאה כבר מתחילה לבנות אותה מחדש, בלי אשמה ובלי הפסקה.",
+            "body_emphasis": [
+              "בלי אשמה ובלי הפסקה"
+            ],
+            "step_number": "05"
+          },
+          {
+            "n": 7,
+            "role": "CTA",
+            "eyebrow": null,
+            "headline": "שמור את זה. תתחיל מטיפ ראשון.",
+            "headline_italic": null,
+            "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו ל־@personalfinancetips, קרוסלה אחת בשבוע.",
+            "body_emphasis": [
+              "@personalfinancetips"
+            ],
+            "step_number": null
+          }
+        ]
+      }
+    }
+  ]
+}

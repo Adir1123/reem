@@ -1,0 +1,522 @@
+{
+  "schema_version": 1,
+  "query": "50 30 20 budget rule",
+  "generated_at": "2026-04-22T23:22:09.293321+03:00",
+  "model": "claude-opus-4-7",
+  "sources": [
+    {
+      "url": "https://youtube.com/watch?v=vvszJLzRnrQ",
+      "video_id": "vvszJLzRnrQ",
+      "title": "The 50/30/20 Rule: How to Budget (Even on a Low Income)",
+      "channel": "Ryan Invests Hacks",
+      "subscribers": 395,
+      "views": 347,
+      "duration_seconds": 1053,
+      "upload_date": "2025-12-11",
+      "engagement_ratio": 0.8785,
+      "transcript_chars": 15750,
+      "language": null,
+      "key_points": [
+        "Ever feel like your paycheck is playing",
+        "hideand seek with your bills and winning",
+        "every single time? You get paid, you're"
+      ]
+    }
+  ],
+  "carousels": [
+    {
+      "id": "c1",
+      "concept": "The 50/30/20 rule, rebuilt as five screenshot-worthy moves.",
+      "angle": "practical",
+      "source_urls": [
+        "https://youtube.com/watch?v=vvszJLzRnrQ"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "BEFORE YOUR NEXT PAYDAY",
+          "headline": "Your paycheck has a leak.",
+          "headline_italic": "a leak.",
+          "body": "Five fixes. One for each slide. Screenshot the one that hits.",
+          "body_emphasis": [
+            "Five fixes"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic gold-on-navy cityscape chart. High contrast, cinematic. The scroll-stopper."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 01 · THE SPLIT",
+          "headline": "Spend 50, play 30, keep 20.",
+          "headline_italic": "keep 20.",
+          "body": "Needs under half your take-home. Wants under a third. The last 20% leaves the account before you see it.",
+          "body_emphasis": [
+            "under half",
+            "under a third",
+            "before you see it"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Notebook + calculator + finance plan sketch. Warm, planning-desk energy."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 02 · AUTOMATE",
+          "headline": "Move the 20% on payday.",
+          "headline_italic": "on payday.",
+          "body": "Set a standing transfer the morning your salary lands. If it sits in checking, it gets spent.",
+          "body_emphasis": [
+            "standing transfer",
+            "the morning"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with banking dashboard beside stacks of cash and coins. Tech-meets-money, focused."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "TIP 03 · THE REFRAME",
+          "headline": "Starbucks isn't a need.",
+          "headline_italic": "isn't a need.",
+          "body": "Rent, groceries, utilities, transport, insurance — that's needs. Everything else is a want wearing a disguise.",
+          "body_emphasis": [
+            "that's needs",
+            "a disguise"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Stacked bills beside a laptop, warm window light. Conceptual — the 'aha' image. Slight pattern interrupt."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 04 · KILL THE DRAG",
+          "headline": "Debt at 22% eats the plan.",
+          "headline_italic": "eats the plan.",
+          "body": "If a card charges more than your savings earn, redirect the 20% there first. The math won't work until that hole is closed.",
+          "body_emphasis": [
+            "redirect the 20%",
+            "first"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash stack, coins, pen, business chart. Clean desk composition. Focused, decisive."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 05 · START SMALL",
+          "headline": "$50 a month becomes $8,300.",
+          "headline_italic": "$8,300.",
+          "body": "Ten years. Seven percent return. That's the math on starting small and not stopping.",
+          "body_emphasis": [
+            "Ten years",
+            "Seven percent"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Wooden upward chart, coin, hundred-dollar bills, calculator. Growth imagery. Resolved, clear."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Run payday one.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid Deep Navy. Cream headline, gold CTA button. No background photo."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "לפני המשכורת הבאה",
+          "headline": "במשכורת שלך יש דליפה.",
+          "headline_italic": "דליפה.",
+          "body": "חמישה תיקונים. אחד בכל שקף. תצלם את זה שהכי מדבר אליך.",
+          "body_emphasis": [
+            "חמישה תיקונים"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Dramatic gold-on-navy cityscape chart. High contrast, cinematic. The scroll-stopper."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · החלוקה",
+          "headline": "50 לחובה, 30 לכיף, 20 לך.",
+          "headline_italic": "20 לך.",
+          "body": "חצי מהנטו לחשבונות הקבועים. שליש למותרות. 20% עוברים לחיסכון בהוראת קבע, לפני שאתה רואה אותם.",
+          "body_emphasis": [
+            "חצי מהנטו",
+            "שליש למותרות",
+            "לפני שאתה רואה אותם"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Notebook + calculator + finance plan sketch. Warm, planning-desk energy."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · אוטומציה",
+          "headline": "הוראת קבע ב־1 לחודש.",
+          "headline_italic": "ב־1 לחודש.",
+          "body": "תגדיר העברה אוטומטית לקרן כספית בבוקר שהמשכורת נכנסת. כסף שיושב בעו״ש נגמר עד סוף החודש.",
+          "body_emphasis": [
+            "הוראת קבע",
+            "בבוקר שהמשכורת נכנסת"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop with banking dashboard beside stacks of cash and coins. Tech-meets-money, focused."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · תמסגר מחדש",
+          "headline": "ארומה זה לא חשבון חובה.",
+          "headline_italic": "לא חשבון חובה.",
+          "body": "שכירות, סופר, חשבונות, תחבורה, ביטוחים. זו רשימת החובה. כל השאר זה רצון שמתחפש לצורך.",
+          "body_emphasis": [
+            "רשימת החובה",
+            "מתחפש לצורך"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Stacked bills beside a laptop, warm window light. Conceptual — the 'aha' image. Slight pattern interrupt."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · תסגור את החור",
+          "headline": "מינוס ב־12% אוכל את הכל.",
+          "headline_italic": "אוכל את הכל.",
+          "body": "אם האשראי גובה ממך יותר ממה שהחיסכון מרוויח, ה־20% הולכים לסגור אותו קודם. שום חישוב לא יעבוד עד שהחור סגור.",
+          "body_emphasis": [
+            "הולכים לסגור אותו קודם"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash stack, coins, pen, business chart. Clean desk composition. Focused, decisive."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · תתחיל בקטן",
+          "headline": "200 ש״ח בחודש = 33,000.",
+          "headline_italic": "33,000.",
+          "body": "עשר שנים, 7% תשואה שנתית. קרן כספית או ETF סנופי, בלי לגעת, בלי להפסיק.",
+          "body_emphasis": [
+            "עשר שנים",
+            "7% תשואה שנתית"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Wooden upward chart, coin, hundred-dollar bills, calculator. Growth imagery. Resolved, clear."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור. ותריץ ב־1 לחודש.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid Deep Navy. Cream headline, gold CTA button. No background photo."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "concept": "Rent is eating your budget — five moves when 50% doesn't fit.",
+      "angle": "counter-frame",
+      "source_urls": [
+        "https://youtube.com/watch?v=vvszJLzRnrQ"
+      ],
+      "slides_en": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "WHEN THE RULE BREAKS",
+          "headline": "Rent ate 60% of your paycheck.",
+          "headline_italic": "60%",
+          "body": "The 50/30/20 rule can't fix that alone. Here's what does.",
+          "body_emphasis": [
+            "can't fix that alone"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Cinematic navy city skyline with rising chart. Tension, scale, pressure. The scroll-stopper."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 01 · ZERO THE WANTS",
+          "headline": "Wants budget goes to zero.",
+          "headline_italic": "zero.",
+          "body": "Not forever. Just until needs drop below half your income. Every cancelled subscription is rent money back.",
+          "body_emphasis": [
+            "Not forever",
+            "below half"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Open notebook with budget sketches, coffee, calculator. Planning mode. Quiet focus."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 02 · PAY YOURSELF FIRST",
+          "headline": "Save $10 before you pay rent.",
+          "headline_italic": "$10",
+          "body": "Transfer it the second your salary hits. You'll adjust to what's left faster than you think.",
+          "body_emphasis": [
+            "the second",
+            "what's left"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop banking dashboard, cash stacks, handwritten notes. Action-oriented desk scene."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "TIP 03 · THE CONTRARIAN",
+          "headline": "Stop cutting. Start earning.",
+          "headline_italic": "Start earning.",
+          "body": "You can only cut down to zero. Income has no ceiling. One extra shift beats a month of skipped coffees.",
+          "body_emphasis": [
+            "only cut to zero",
+            "no ceiling"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Stacked bills with laptop, warm light through window. The reframe moment. Different energy from prior slides."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 04 · THE ENVELOPE",
+          "headline": "Cash envelopes beat willpower.",
+          "headline_italic": "beat willpower.",
+          "body": "Withdraw your wants budget in cash on day one. When the envelope is empty, the month is over.",
+          "body_emphasis": [
+            "on day one",
+            "the month is over"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash bundle, coins, green notebook, pen on business chart. Tactile, analog, disciplined."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "TIP 05 · THE BUFFER",
+          "headline": "Three months in a high-yield account.",
+          "headline_italic": "Three months",
+          "body": "Not under a mattress. Not in checking. A separate high-yield savings account, named something boring so you don't touch it.",
+          "body_emphasis": [
+            "separate",
+            "named something boring"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Wooden upward chart with bills and coin. Growth, stability, resolution."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "Save this. Rework the month.",
+          "headline_italic": null,
+          "body": "Money explained like math, not morality. Follow @personalfinancetips for one carousel a week.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid Deep Navy. Cream headline, gold CTA button. No background photo."
+        }
+      ],
+      "slides_he": [
+        {
+          "n": 1,
+          "role": "HOOK",
+          "visual_energy": "HIGH",
+          "eyebrow": "כשהכלל נשבר",
+          "headline": "שכירות אוכלת 60% מהנטו?",
+          "headline_italic": "60%",
+          "body": "50/30/20 לא יסדר לך את זה לבד. חמישה מהלכים שכן.",
+          "body_emphasis": [
+            "לא יסדר לך את זה לבד"
+          ],
+          "step_number": null,
+          "ref_image": "nano_banana_pro.png",
+          "visual_direction": "Cinematic navy city skyline with rising chart. Tension, scale, pressure. The scroll-stopper."
+        },
+        {
+          "n": 2,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 01 · לאפס מותרות",
+          "headline": "תקציב המותרות יורד לאפס.",
+          "headline_italic": "לאפס.",
+          "body": "לא לתמיד. רק עד שהחובה יורדת מתחת לחצי מהנטו. כל מנוי שביטלת חוזר כשקל לשכירות.",
+          "body_emphasis": [
+            "לא לתמיד",
+            "מתחת לחצי מהנטו"
+          ],
+          "step_number": "01",
+          "ref_image": "3.png",
+          "visual_direction": "Open notebook with budget sketches, coffee, calculator. Planning mode. Quiet focus."
+        },
+        {
+          "n": 3,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 02 · תשלם לעצמך קודם",
+          "headline": "50 ש״ח לחיסכון לפני השכירות.",
+          "headline_italic": "50 ש״ח",
+          "body": "הוראת קבע לקרן כספית, בשנייה שהמשכורת נכנסת. תתרגל לחיות ממה שנשאר מהר ממה שחשבת.",
+          "body_emphasis": [
+            "בשנייה שהמשכורת נכנסת",
+            "ממה שנשאר"
+          ],
+          "step_number": "02",
+          "ref_image": "2.png",
+          "visual_direction": "Laptop banking dashboard, cash stacks, handwritten notes. Action-oriented desk scene."
+        },
+        {
+          "n": 4,
+          "role": "TIP",
+          "visual_energy": "HIGH",
+          "eyebrow": "טיפ 03 · הפוך מהמקובל",
+          "headline": "תפסיק לקצץ. תתחיל להרוויח.",
+          "headline_italic": "תתחיל להרוויח.",
+          "body": "אפשר לקצץ עד אפס. להכנסה אין תקרה. משמרת אחת נוספת שווה יותר מחודש של ויתור על קפה.",
+          "body_emphasis": [
+            "אפשר לקצץ עד אפס",
+            "אין תקרה"
+          ],
+          "step_number": "03",
+          "ref_image": "1.png",
+          "visual_direction": "Stacked bills with laptop, warm light through window. The reframe moment. Different energy from prior slides."
+        },
+        {
+          "n": 5,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 04 · שיטת המעטפות",
+          "headline": "מזומן במעטפה מנצח כוח רצון.",
+          "headline_italic": "מנצח כוח רצון.",
+          "body": "תמשוך את תקציב המותרות במזומן ב־1 לחודש. כשהמעטפה ריקה, החודש נגמר. בלי להתווכח עם עצמך.",
+          "body_emphasis": [
+            "ב־1 לחודש",
+            "החודש נגמר"
+          ],
+          "step_number": "04",
+          "ref_image": "5.png",
+          "visual_direction": "Cash bundle, coins, green notebook, pen on business chart. Tactile, analog, disciplined."
+        },
+        {
+          "n": 6,
+          "role": "TIP",
+          "visual_energy": "MEDIUM",
+          "eyebrow": "טיפ 05 · כרית ביטחון",
+          "headline": "שלושה חודשים בקרן כספית.",
+          "headline_italic": "שלושה חודשים",
+          "body": "לא מתחת למזרן. לא בעו״ש. חשבון נפרד בקרן כספית, עם שם משעמם בכוונה שלא תתפתה לגעת בו.",
+          "body_emphasis": [
+            "חשבון נפרד",
+            "שם משעמם בכוונה"
+          ],
+          "step_number": "05",
+          "ref_image": "4.png",
+          "visual_direction": "Wooden upward chart with bills and coin. Growth, stability, resolution."
+        },
+        {
+          "n": 7,
+          "role": "CTA",
+          "visual_energy": "LOW",
+          "eyebrow": null,
+          "headline": "תשמור. ותבנה את החודש מחדש.",
+          "headline_italic": null,
+          "body": "כסף מוסבר כמו מתמטיקה, לא כמו מוסר. עקבו אחרי @personalfinancetips לקרוסלה אחת בשבוע.",
+          "body_emphasis": [
+            "@personalfinancetips"
+          ],
+          "step_number": null,
+          "ref_image": null,
+          "visual_direction": "Solid Deep Navy. Cream headline, gold CTA button. No background photo."
+        }
+      ]
+    }
+  ],
+  "recommendations_for_dashboard": {
+    "rendering_notes": "Fonts: Fraunces+Inter (EN), Frank Ruhl Libre+Assistant (HE). Canvas 1080x1350 portrait.",
+    "ref_images_dir": "C:\\Users\\adirg\\CC-projects\\reem-v2\\reem-docs\\ref",
+    "brand_handle": "@personalfinancetips",
+    "next_carousels_run_suggestion": "Run a debt-payoff counter-frame carousel: why the avalanche method beats the snowball on paper but loses to it in real life — five behavioral rules for actually killing a credit card."
+  },
+  "run_stats": {
+    "videos_requested": 3,
+    "videos_succeeded": 1,
+    "carousels_requested": 2,
+    "carousels_produced": 2,
+    "duration_seconds": 97.0,
+    "duration_pass_a_seconds": 50.3,
+    "duration_pass_b_seconds": 46.7,
+    "input_tokens": 29476,
+    "output_tokens": 7410,
+    "cache_read_tokens": 20017,
+    "cache_creation_tokens": 23491,
+    "hebrew_pass_attempts": 2,
+    "hebrew_strict": true,
+    "total_pipeline_seconds": 208.1
+  },
+  "warnings": [
+    "c2.slides_en[3] body_emphasis 'only cut to zero' not found in body",
+    "c1.slides_he[2] body_emphasis 'הוראת קבע' not found in body",
+    "Pass B attempt 1 failed: c2.slides_he[0].body opens with `הנה` — AI-slop marker. Hard fail — regenerate. text='הכלל של 50/30/20 לא יפתור את זה לבד. הנה חמישה מהלכים שכן.'",
+    "c1.slides_he[2] body_emphasis 'הוראת קבע' not found in body",
+    "Only 1 fresh videos available after exclusions (requested 3); proceeding with what's available."
+  ]
+}

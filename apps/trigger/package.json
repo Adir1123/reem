@@ -1,0 +1,25 @@
+{
+  "name": "trigger",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "trigger dev",
+    "deploy": "trigger deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@trigger.dev/sdk": "4.4.4",
+    "@trigger.dev/python": "4.4.4",
+    "@anthropic-ai/sdk": "^0.90.0",
+    "@supabase/supabase-js": "^2.104.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@trigger.dev/build": "4.4.4",
+    "@types/node": "^20.16.10",
+    "trigger.dev": "4.4.4",
+    "typescript": "^5.6.2",
+    "tsx": "^4.19.1"
+  }
+}
