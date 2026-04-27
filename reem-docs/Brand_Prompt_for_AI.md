@@ -14,9 +14,6 @@ Use this brand system for every piece of content you create for me.
 - Warm Cream #F5F1EA — text on dark, breathing space
 - Soft Gold #C9A961 — headlines, key numbers, CTAs, highlights
 
-## TYPOGRAPHY (Google Fonts)
-- Headlines: Fraunces, Bold (700). Use italic for emphasis words.
-- Body: Inter, Regular (400) and Medium (500).
 
 Carousel sizes (1080x1080 px):
 - Headline: 72–96 pt, Fraunces Bold
