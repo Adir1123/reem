@@ -30,9 +30,24 @@ export async function triggerGenerationAction(formData: FormData) {
     .eq("id", topicId)
     .eq("client_id", CLIENT_ID)
     .eq("status", "available");
-  if (lockErr) throw new Error(`failed to lock topic: ${lockErr.message}`);
+if (lockErr) throw new Error(`failed to lock topic: ${lockErr.message}`);
 
-  await tasks.trigger(TASK_ID, { topicId, clientId: CLIENT_ID });
+  console.log("[DIAG] About to call tasks.trigger", {
+    taskId: TASK_ID,
+    topicId,
+    clientId: CLIENT_ID,
+    hasSecretKey: !!process.env.TRIGGER_SECRET_KEY,
+    secretKeyPrefix: process.env.TRIGGER_SECRET_KEY?.slice(0, 12),
+  });
+
+  try {
+    const handle = await tasks.trigger(TASK_ID, { topicId, clientId: CLIENT_ID });
+    console.log("[DIAG] tasks.trigger SUCCESS", { runId: handle.id });
+  } catch (err) {
+    console.error("[DIAG] tasks.trigger FAILED", err);
+    await sb.from("topics").update({ status: "available" }).eq("id", topicId).eq("client_id", CLIENT_ID);
+    throw err;
+  }
 
   revalidatePath("/topics");
 }
