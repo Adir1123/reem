@@ -1,22 +1,9 @@
 import { defineConfig } from "@trigger.dev/sdk/v3";
 import { pythonExtension } from "@trigger.dev/python/extension";
 
-// Per-client value. Read from env so the same code works for every client.
-// At build time the Trigger.dev GitHub integration exposes env vars whose
-// names start with `TRIGGER_BUILD_` — the prefix is stripped on the build
-// server, so `TRIGGER_BUILD_PROJECT_REF` becomes available as `PROJECT_REF`.
-// For local manual deploys, set PROJECT_REF in apps/trigger/.env.
-const PROJECT_REF = process.env.PROJECT_REF;
-if (!PROJECT_REF) {
-  throw new Error(
-    "PROJECT_REF env var is not set. " +
-      "On Trigger.dev cloud builds, set TRIGGER_BUILD_PROJECT_REF in the project's " +
-      "Environment Variables. For local deploys, add PROJECT_REF=proj_... to apps/trigger/.env.",
-  );
-}
 
 export default defineConfig({
-  project: PROJECT_REF,
+  project: "proj_cbulaxaierwlqqllaahv",
   dirs: ["./src/tasks"],
   runtime: "node",
   logLevel: "info",
