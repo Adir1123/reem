@@ -25,7 +25,7 @@ from pathlib import Path
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = SKILL_ROOT / "output"
-REF_DIR = Path("C:/Users/adirg/CC-projects/reem-v2/reem-docs/ref")
+REF_DIR = SKILL_ROOT / "reem-docs" / "ref"
 
 NAVY = "#0F1B2D"
 CREAM = "#F5EFE4"

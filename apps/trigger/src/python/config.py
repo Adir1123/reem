@@ -1,10 +1,8 @@
 """Env loader for reem-carousel.
 
-Loads from C:/Users/adirg/CC-projects/reem-v2/.env (the project env for reem-v2),
-then from a skill-local .env (optional per-skill overrides).
-
-Per global CLAUDE.md: all secrets live in .env, validated on startup via
-get_required(key). Never hardcoded.
+Resolves paths relative to this file so the same code works on a Windows
+laptop and a Linux Trigger.dev worker. Per CLAUDE.md: secrets from .env,
+validated at startup via get_required(key). Never hardcoded.
 """
 from __future__ import annotations
 
@@ -13,12 +11,14 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-_SKILL_DIR = Path(__file__).parent
-_PROJECT_ENV = Path("C:/Users/adirg/CC-projects/reem-v2/.env")
+_SKILL_DIR = Path(__file__).resolve().parent
 _LOCAL_ENV = _SKILL_DIR / ".env"
 
-if _PROJECT_ENV.exists():
-    load_dotenv(_PROJECT_ENV)
+# When running locally the dev may have a project-wide .env at the repo root;
+# load it if present, but never depend on it (the deployed worker won't have it).
+_PROJECT_ENV_CANDIDATE = _SKILL_DIR.parents[3] / ".env" if len(_SKILL_DIR.parents) >= 4 else None
+if _PROJECT_ENV_CANDIDATE and _PROJECT_ENV_CANDIDATE.exists():
+    load_dotenv(_PROJECT_ENV_CANDIDATE)
 if _LOCAL_ENV.exists():
     # Skill-local .env wins over the project .env so you can override specific
     # keys (e.g. a fresh ANTHROPIC_API_KEY) without touching the project file.
@@ -28,10 +28,7 @@ if _LOCAL_ENV.exists():
 def get_required(key: str) -> str:
     val = os.getenv(key)
     if not val:
-        raise RuntimeError(
-            f"Missing required env var: {key}. "
-            f"Set it in {_PROJECT_ENV} or {_LOCAL_ENV}."
-        )
+        raise RuntimeError(f"Missing required env var: {key}.")
     return val
 
 
@@ -39,10 +36,13 @@ def get_optional(key: str, default: str) -> str:
     return os.getenv(key, default)
 
 
+# reem-docs ships inside the python skill folder; resolve relative so it works
+# in the deployed Linux container as well as on Windows.
 REEM_DOCS_DIR = Path(get_optional(
     "REEM_DOCS_DIR",
-    "C:/Users/adirg/CC-projects/reem-v2/reem-docs",
+    str(_SKILL_DIR / "reem-docs"),
 ))
+
 APIFY_TRANSCRIPT_ACTOR = get_optional(
     "APIFY_TRANSCRIPT_ACTOR", "pintostudio/youtube-transcript-scraper"
 )
