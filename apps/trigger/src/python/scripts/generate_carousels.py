@@ -464,8 +464,8 @@ def _pass_b_hebrew(client, carousels_en, model, he_exemplar_images, system_block
 
 def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_strict=True):
     """Two-pass generation: EN authored in Pass A, HE re-authored (not
-    translated) in Pass B using the Hebrew voice exemplars. Pass B retries
-    once on a Hebrew hard-fail."""
+    translated) in Pass B using the Hebrew voice exemplars. Pass A retries up
+    to 4 times on hard-fail; Pass B retries up to 5 times on Hebrew hard-fail."""
     from anthropic import Anthropic
 
     client = Anthropic(api_key=require_anthropic_key())
@@ -478,12 +478,12 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
 
     warnings: list[str] = []
 
-    # ---- Pass A (with 1 retry on hard-fail) ----
+    # ---- Pass A (up to 4 attempts on hard-fail) ----
     en_attempts = 0
     en_data = None
     usage_a = None
     dur_a = 0
-    while en_attempts < 2:
+    while en_attempts < 4:
         en_attempts += 1
         en_data, usage_a, dur_a = _pass_a_english(
             client, transcripts, n_carousels, model,
@@ -495,14 +495,14 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
         except ValueError as e:
             warnings.append(f"Pass A attempt {en_attempts} failed: {e}")
             print(f"[Pass A] attempt {en_attempts} failed: {e}", file=sys.stderr)
-            if en_attempts >= 2:
+            if en_attempts >= 4:
                 raise
     carousels = en_data["carousels"]
 
-    # ---- Pass B (with 1 retry on hard-fail) ----
+    # ---- Pass B (up to 5 attempts on hard-fail) ----
     attempts = 0
     last_error = None
-    while attempts < 2:
+    while attempts < 5:
         attempts += 1
         try:
             slides_he_by_id, usage_b, dur_b = _pass_b_hebrew(
@@ -521,7 +521,7 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
             last_error = e
             warnings.append(f"Pass B attempt {attempts} failed: {e}")
             print(f"[Pass B] attempt {attempts} failed: {e}", file=sys.stderr)
-            if attempts >= 2:
+            if attempts >= 5:
                 # Give up — raise so the caller knows the Hebrew is suspect.
                 raise
     # (If we broke out cleanly, last_error is None.)
