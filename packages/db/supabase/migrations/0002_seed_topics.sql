@@ -1,16 +1,17 @@
--- Seed: single dev client + 40 curated topics across 5 themes.
--- Client UUID matches CLIENT_ID in .env (will be aligned with auth.users.id
--- once the operator signs in for the first time).
+-- Seed: 40 curated topics across 5 themes for the (single) client in this DB.
+--
+-- Convention: the `clients` row is inserted at onboarding time (see
+-- HANDOFF.md §6.3), NOT here. This migration runs against whichever client
+-- row exists in the database. That keeps the migration generic and safe to
+-- share across all client deployments — no hardcoded UUIDs, emails, or names.
+--
+-- If multiple client rows ever exist in one DB, this seed will only target
+-- the first one (by id ordering). That's fine for the current single-tenant
+-- model; revisit if/when we go multi-tenant per Supabase project.
 
-insert into clients (id, email, display_name)
-values ('2ba3a610-1753-427f-a95c-c91fcbc98a04', 'adirgabay9@gmail.com', 'Reem (dev)')
-on conflict (email) do nothing;
-
-insert into app_settings (client_id)
-values ('2ba3a610-1753-427f-a95c-c91fcbc98a04')
-on conflict (client_id) do nothing;
-
-with c as (select '2ba3a610-1753-427f-a95c-c91fcbc98a04'::uuid as cid)
+with c as (
+  select id as cid from clients order by id limit 1
+)
 insert into topics (client_id, he_label, en_query, theme, source) values
   -- saving (8)
   ((select cid from c), 'קרן חירום למתחילים',          'emergency fund basics',                'saving',    'seed'),
