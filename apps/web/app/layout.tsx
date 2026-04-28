@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Frank_Ruhl_Libre, Assistant } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+import { BackButton } from "@/components/BackButton";
 
 const frankRuhl = Frank_Ruhl_Libre({
   variable: "--font-display",
@@ -33,8 +34,9 @@ export default function RootLayout({
       dir="rtl"
       className={`${frankRuhl.variable} ${assistant.variable} h-full antialiased`}
     >
-      <body className="bg-cream text-navy min-h-full flex flex-col font-body">
+      <body className="bg-bg text-ink min-h-full flex flex-col font-body">
         <Nav />
+        <BackButton />
         {children}
       </body>
     </html>

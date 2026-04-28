@@ -69,7 +69,7 @@ export function DownloadButton({
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-3">
       {alreadyPosted ? (
-        <div className="text-muted bg-cream-soft border-navy/10 rounded-full border px-5 py-2 text-sm">
+        <div className="text-cream/70 bg-bg-card border-rule rounded-full border px-5 py-2 text-sm">
           הקרוסלה סומנה כפורסמה
         </div>
       ) : (
@@ -78,7 +78,7 @@ export function DownloadButton({
             type="button"
             onClick={handleDownload}
             disabled={busy || pending}
-            className="bg-navy text-cream hover:bg-navy-soft disabled:bg-navy/40 rounded-full px-6 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed"
+            className="bg-gold-base text-bg hover:bg-gold-warm disabled:bg-gold-deep disabled:text-cream/55 rounded-full px-6 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed"
           >
             {busy
               ? "מייצא PNG…"
@@ -90,7 +90,7 @@ export function DownloadButton({
             type="button"
             onClick={handleReject}
             disabled={busy || pending}
-            className="text-navy/70 hover:text-navy border-navy/20 hover:border-navy/40 rounded-full border bg-white px-5 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            className="text-cream/70 hover:text-cream border-rule hover:border-gold-warm/40 rounded-full border px-5 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             דחה
           </button>
@@ -98,7 +98,7 @@ export function DownloadButton({
       )}
 
       {error ? (
-        <p className="text-xs text-red-700" role="alert">
+        <p className="text-xs text-red-400" role="alert">
           {error}
         </p>
       ) : null}

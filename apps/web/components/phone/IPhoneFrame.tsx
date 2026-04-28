@@ -25,7 +25,7 @@ export function IPhoneFrame({ children }: { children: ReactNode }) {
         background: "#1c1c1e",
         borderRadius: RADIUS + BEZEL,
         boxShadow:
-          "0 30px 80px rgba(15,27,45,0.45), inset 0 0 0 1.5px rgba(255,255,255,0.08)",
+          "0 30px 80px rgba(0,0,0,0.55), inset 0 0 0 1.5px rgba(255,255,255,0.08)",
         position: "relative",
       }}
     >

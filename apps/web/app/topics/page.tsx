@@ -4,6 +4,7 @@ import { TopicStatusBadge } from "@/components/StatusBadge";
 import { triggerGenerationAction, cancelGenerationAction } from "./actions";
 import { TriggerButton } from "@/components/topics/TriggerButton";
 import { TopicAutoRefresh } from "@/components/topics/TopicAutoRefresh";
+import { PageHeader } from "@/components/reem/PageHeader";
 import type { TopicStatus, Theme } from "@reem/types";
 
 export const dynamic = "force-dynamic";
@@ -44,8 +45,6 @@ export default async function TopicsPage() {
   if (!data) return <ErrorShell message="לא נמצאו נושאים." />;
 
   const allTopics = data as TopicRow[];
-  // Exhausted topics are surfaced in their own collapsed section so the main
-  // list isn't cluttered with dead ends — but they're still findable.
   const topics = allTopics.filter((t) => t.status !== "exhausted");
   const exhausted = allTopics.filter((t) => t.status === "exhausted");
   const byTheme = new Map<Theme, TopicRow[]>();
@@ -66,80 +65,80 @@ export default async function TopicsPage() {
   const hasGenerating = (counts.generating ?? 0) > 0;
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
+    <main className="reem-page" dir="rtl">
       <TopicAutoRefresh hasGenerating={hasGenerating} />
-      <header className="mb-10 flex items-start justify-between gap-6">
-        <div>
-          <p className="font-display text-gold text-xs tracking-[0.25em] uppercase">
-            נושאים
-          </p>
-          <h1 className="font-display text-navy mt-2 text-4xl font-black">
-            בחר נושא להפקת קרוסלה
-          </h1>
-          <p className="text-muted mt-3 text-sm">
+      <PageHeader
+        eyebrow="המעקב שלי"
+        title="בחר נושא להפקת קרוסלה"
+        sub={
+          <>
             {topics.length} נושאים ·{" "}
-            <span className="text-navy font-semibold">
+            <span className="text-cream font-medium">
               {counts.available ?? 0}
             </span>{" "}
             פנויים · {counts.generating ?? 0} מייצרים ·{" "}
             {counts.pending_review ?? 0} ממתינים · {counts.posted ?? 0} פורסמו
-          </p>
-        </div>
+          </>
+        }
+        ornament
+      />
+
+      <div className="mb-12 flex justify-center">
         <Link
           href="/topics/new"
-          className="bg-navy text-cream hover:bg-navy-soft shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+          className="border-gold-warm text-cream hover:text-gold-warm border-b px-4 py-2 text-xs tracking-[0.36em] uppercase transition-colors"
         >
           + נושא חדש
         </Link>
-      </header>
+      </div>
 
-      <div className="space-y-12">
+      <div className="space-y-16">
         {THEME_ORDER.map((theme) => {
           const list = byTheme.get(theme) ?? [];
           if (list.length === 0) return null;
           return (
             <section key={theme}>
-              <h2 className="font-display text-navy mb-4 flex items-baseline gap-3 text-2xl font-black">
+              <h2 className="text-cream font-display mb-6 flex items-baseline justify-center gap-3 text-2xl italic">
                 {THEME_LABELS[theme]}
-                <span className="text-muted text-sm font-normal">
+                <span className="text-cream/55 font-body text-xs not-italic">
                   {list.length}
                 </span>
               </h2>
-              <ul className="divide-navy/10 border-navy/10 divide-y rounded-2xl border bg-white shadow-sm">
+              <ul className="border-rule divide-rule divide-y border-y">
                 {list.map((topic) => (
                   <li
                     key={topic.id}
-                    className="flex items-center justify-between gap-4 px-5 py-4"
+                    className="flex items-center justify-between gap-4 px-2 py-5"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-3">
-                        <p className="font-display text-navy truncate text-lg font-semibold">
+                        <p className="text-cream font-display truncate text-lg italic">
                           {topic.he_label}
                         </p>
                         <TopicStatusBadge status={topic.status} />
                         {topic.times_posted > 0 ? (
-                          <span className="text-muted bg-navy/5 rounded-full px-2 py-0.5 text-[11px] font-semibold">
+                          <span className="text-cream/55 bg-bg-card-2 rounded-full px-2 py-0.5 text-[11px]">
                             פורסם {topic.times_posted}×
                           </span>
                         ) : null}
                       </div>
                       <p
                         dir="ltr"
-                        className="text-muted mt-1 truncate text-xs"
+                        className="text-cream/45 mt-1 truncate text-xs"
                       >
                         {topic.en_query}
                       </p>
                     </div>
                     {topic.status === "generating" ? (
                       <div className="flex items-center gap-2">
-                        <span className="bg-navy/20 text-navy/50 rounded-full px-5 py-2 text-sm font-semibold">
+                        <span className="bg-gold-base/15 text-gold-warm rounded-full px-4 py-2 text-xs">
                           בעבודה…
                         </span>
                         <form action={cancelGenerationAction}>
                           <input type="hidden" name="topicId" value={topic.id} />
                           <button
                             type="submit"
-                            className="text-muted hover:text-red-700 rounded-full border border-navy/15 px-3 py-2 text-xs font-semibold transition-colors"
+                            className="text-cream/55 hover:text-cream border-rule rounded-full border px-3 py-2 text-xs transition-colors"
                           >
                             ביטול
                           </button>
@@ -167,31 +166,31 @@ export default async function TopicsPage() {
         })}
 
         {exhausted.length > 0 ? (
-          <details className="border-navy/10 rounded-2xl border bg-white/40 p-5 shadow-sm">
-            <summary className="font-display text-navy/70 cursor-pointer text-base font-semibold">
+          <details className="bg-bg-card border-rule rounded-md border p-5">
+            <summary className="text-cream/70 cursor-pointer text-sm font-medium">
               נושאים שמוצו{" "}
-              <span className="text-muted text-sm font-normal">
+              <span className="text-cream/45 text-xs font-normal">
                 ({exhausted.length})
               </span>
             </summary>
-            <ul className="divide-navy/10 mt-3 divide-y">
+            <ul className="divide-rule mt-4 divide-y">
               {exhausted.map((t) => (
                 <li
                   key={t.id}
                   className="flex items-center justify-between gap-4 py-3"
                 >
                   <div className="min-w-0">
-                    <p className="text-navy/80 truncate text-sm font-semibold">
+                    <p className="text-cream/70 truncate text-sm">
                       {t.he_label}
                     </p>
                     <p
                       dir="ltr"
-                      className="text-muted mt-0.5 truncate text-xs"
+                      className="text-cream/45 mt-0.5 truncate text-xs"
                     >
                       {t.en_query}
                     </p>
                   </div>
-                  <span className="text-muted text-xs">
+                  <span className="text-cream/45 text-xs">
                     פורסם {t.times_posted}× · אזל
                   </span>
                 </li>
@@ -206,9 +205,9 @@ export default async function TopicsPage() {
 
 function ErrorShell({ message }: { message: string }) {
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16">
+    <main className="reem-page flex flex-1 items-center justify-center">
       <div className="max-w-md text-center">
-        <p className="text-muted">{message}</p>
+        <p className="text-cream/55">{message}</p>
       </div>
     </main>
   );

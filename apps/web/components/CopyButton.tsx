@@ -22,8 +22,6 @@ export function CopyButton({
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      // Clipboard API can fail on insecure contexts / Safari. Fall back to a
-      // hidden textarea + execCommand so this always works locally too.
       const ta = document.createElement("textarea");
       ta.value = text;
       ta.style.position = "fixed";
@@ -41,11 +39,11 @@ export function CopyButton({
     <button
       type="button"
       onClick={handleClick}
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
+      className={
         copied
-          ? "border-gold bg-gold/15 text-navy"
-          : "border-navy/20 text-navy hover:bg-navy/5"
-      }`}
+          ? "border-gold-warm bg-gold-base/10 text-gold-warm inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium transition-colors"
+          : "border-rule text-cream/70 hover:text-cream hover:border-gold-warm/40 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium transition-colors"
+      }
     >
       {copied ? copiedLabel : label}
     </button>

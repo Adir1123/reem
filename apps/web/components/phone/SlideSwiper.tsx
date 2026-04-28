@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { Slide, Language } from "@reem/types";
 import { SlideCanvas } from "@/components/slide/SlideCanvas";
+import type { Palette } from "@/components/slide/palette";
 
 // IG feed media uses 4:5 for portrait carousels. iPhone screen is 393px wide,
 // so the post media is 393x491. Slides render at native 1080x1350 and we scale
@@ -16,9 +17,10 @@ const SCALE = VIEWPORT_W / 1080;
 type Props = {
   slides: Slide[];
   lang: Language;
+  palette?: Palette;
 };
 
-export function SlideSwiper({ slides, lang }: Props) {
+export function SlideSwiper({ slides, lang, palette }: Props) {
   // axis:"x" + direction:"ltr": IG always swipes left/right regardless of
   // content language. Locking direction here prevents Embla from inheriting
   // the page's RTL <html> dir and reversing the slide order.
@@ -48,7 +50,10 @@ export function SlideSwiper({ slides, lang }: Props) {
   const total = slides.length;
 
   return (
-    <div style={{ width: VIEWPORT_W }}>
+    // direction:ltr is required because /preview's <main dir="rtl"> would
+    // otherwise flip the embla flex track right-to-left, parking slide 0
+    // off-canvas and rendering an empty viewport.
+    <div style={{ width: VIEWPORT_W, direction: "ltr" }}>
       <div
         ref={emblaRef}
         style={{
@@ -57,9 +62,11 @@ export function SlideSwiper({ slides, lang }: Props) {
           overflow: "hidden",
           background: "#000",
           cursor: "grab",
+          direction: "ltr",
         }}
       >
-        <div style={{ display: "flex", height: "100%" }}>
+        <div style={{ display: "flex", height: "100%", direction: "ltr" }}>
+
           {slides.map((slide) => (
             <div
               key={slide.n}
@@ -79,7 +86,12 @@ export function SlideSwiper({ slides, lang }: Props) {
                   transformOrigin: "top left",
                 }}
               >
-                <SlideCanvas slide={slide} lang={lang} totalSlides={total} />
+                <SlideCanvas
+                  slide={slide}
+                  lang={lang}
+                  totalSlides={total}
+                  palette={palette}
+                />
               </div>
             </div>
           ))}

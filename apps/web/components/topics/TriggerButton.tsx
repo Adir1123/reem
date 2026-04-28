@@ -21,7 +21,7 @@ export function TriggerButton({
     <button
       type="submit"
       disabled={isDisabled}
-      className="bg-navy text-cream hover:bg-navy-soft disabled:bg-navy/20 disabled:text-navy/50 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed"
+      className="border-gold-warm text-cream hover:text-gold-warm disabled:border-rule disabled:text-cream/35 inline-flex items-center gap-2 border-b px-4 py-2 text-xs tracking-[0.36em] uppercase transition-colors disabled:cursor-not-allowed"
     >
       {pending ? (
         <>

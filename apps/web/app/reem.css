@@ -1,0 +1,1157 @@
+/* reem.css — decoration layer for things Tailwind utilities can't express
+   cleanly: marquee hero positioning, editorial section ornaments, ticker
+   keyframes, reveal animations, dot-separated chips. Everything else uses
+   Tailwind utilities. Tokens are read from globals.css. */
+
+/* ── Hero base ─────────────────────────────────────────────────────────── */
+.reem-hero {
+  position: relative;
+  width: 100%;
+  /* Sticky <Nav> takes 76px above; subtract so hero fits viewport with no
+     residual scroll. dvh handles mobile browser-chrome resize. */
+  height: calc(100dvh - 76px);
+  min-height: calc(100dvh - 76px);
+  max-height: calc(100dvh - 76px);
+  overflow: hidden;
+  background: var(--bg);
+}
+.reem-hero-figure {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.reem-hero-figure video,
+.reem-hero-figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reem-hero-figure video {
+    display: none;
+  }
+}
+
+.reem-hero-veil-l {
+  position: absolute;
+  inset: 0;
+}
+.reem-hero-veil-r {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.reem-hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+/* ── Eyebrow / H1 / subhead / CTA shared structure ─────────────────────── */
+.reem-eyebrow {
+  margin: 0 0 28px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--gold-warm);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.reem-eyebrow-rule {
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  background: var(--gold-warm);
+  opacity: 0.7;
+}
+.reem-hero-text.is-in .reem-eyebrow {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reem-h1 {
+  margin: 0;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--cream);
+  text-shadow: 0 1px 30px rgba(0, 0, 0, 0.6);
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+.reem-h1-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(8px);
+  transition:
+    opacity 0.85s ease,
+    transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.85s ease;
+  transition-delay: var(--delay, 0ms);
+}
+.reem-hero-text.is-in .reem-h1-char {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reem-subhead {
+  margin: 24px 0 0;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--cream-soft);
+  letter-spacing: 0.005em;
+  font-style: italic;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.reem-hero-text.is-in .reem-subhead {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reem-cta-row {
+  margin-top: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.reem-hero-text.is-in .reem-cta-row {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reem-cta-primary {
+  appearance: none;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 32px;
+  background: var(--gold-base);
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.4s ease;
+  box-shadow:
+    0 0 0 rgba(212, 168, 97, 0),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: reem-cta-breathe 5s ease-in-out infinite;
+}
+@keyframes reem-cta-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 24px rgba(212, 168, 97, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 38px rgba(212, 168, 97, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+}
+.reem-cta-primary:hover {
+  background: var(--gold-warm);
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 50px rgba(212, 168, 97, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.reem-cta-arrow {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+.reem-cta-primary:hover .reem-cta-arrow {
+  transform: translateX(-4px);
+}
+
+.reem-cta-ghost {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--gold-deep);
+  color: var(--cream);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  padding: 17px 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease;
+}
+.reem-cta-ghost:hover {
+  border-color: var(--gold-warm);
+  background: var(--gold-soft);
+  color: var(--cream);
+}
+
+/* ── Marquee variant overrides ─────────────────────────────────────────── */
+/* Text column is anchored physically to viewport bottom-LEFT (NOT inline-start)
+   intentionally — even with <html dir="rtl">. Hebrew text inside the column
+   reads right-to-left, but the column itself is a deliberate cinematic-poster
+   anchor on the left side of the frame, mirroring the design's intent. */
+.reem-hero--marquee .reem-hero-text {
+  position: absolute;
+  top: 50%;
+  bottom: auto;
+  left: clamp(40px, 6vw, 96px);
+  right: auto;
+  width: min(520px, 46%);
+  max-width: min(520px, 46%);
+  transform: translateY(-50%);
+  text-align: right;
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+}
+/* Soft horizontal vignette: fully dark on the LEFT (where the text column
+   sits), fading to transparent so the figure on the right reads cleanly.
+   No bottom darkening — the hero is one fixed screen, no ticker. */
+.reem-hero--marquee .reem-hero-veil-l {
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.95) 0%,
+    rgba(10, 10, 10, 0.85) 22%,
+    rgba(10, 10, 10, 0.55) 42%,
+    rgba(10, 10, 10, 0.2) 60%,
+    rgba(10, 10, 10, 0) 100%
+  );
+}
+.reem-hero--marquee .reem-hero-veil-r {
+  background: radial-gradient(
+    ellipse at 100% 50%,
+    transparent 30%,
+    rgba(10, 10, 10, 0.45) 100%
+  );
+}
+
+/* Marquee eyebrow — diamond-decorated, gold rules either side */
+.reem-hero--marquee .reem-eyebrow {
+  margin-bottom: 28px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+}
+.reem-hero--marquee .reem-eyebrow-rule {
+  flex: 0 0 auto;
+  background: var(--gold-base);
+  height: 1px;
+  opacity: 0.7;
+}
+.reem-hero--marquee .reem-eyebrow-rule:first-child {
+  width: 28px;
+}
+.reem-hero--marquee .reem-eyebrow-rule:last-child {
+  width: 56px;
+  background: linear-gradient(90deg, var(--gold-base), transparent 95%);
+}
+.reem-hero--marquee .reem-eyebrow-text {
+  letter-spacing: 0.42em;
+  color: var(--gold-warm);
+  font-size: 11px;
+}
+
+.reem-hero--marquee .reem-h1 {
+  position: relative;
+  font-size: clamp(38px, 4.2vw, 60px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.008em;
+}
+.reem-hero--marquee .reem-h1::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 80px;
+  bottom: -22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-warm) 30%, var(--gold-warm) 100%);
+  opacity: 0.7;
+}
+.reem-hero--marquee .reem-subhead {
+  margin-top: 40px;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  font-style: italic;
+  color: var(--cream-soft);
+  max-width: 92%;
+  line-height: 1.5;
+}
+
+/* Marquee CTAs — gold underline primary, italic-serif ghost */
+.reem-hero--marquee .reem-cta-row {
+  margin-top: 36px;
+  gap: 28px;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+}
+.reem-hero--marquee .reem-cta-primary {
+  background: transparent;
+  color: var(--cream);
+  border: 0;
+  border-bottom: 1px solid var(--gold-warm);
+  border-radius: 0;
+  padding: 10px 0;
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  font-weight: 500;
+  animation: none;
+  box-shadow: none;
+}
+.reem-hero--marquee .reem-cta-primary:hover {
+  color: var(--gold-warm);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+.reem-hero--marquee .reem-cta-primary .reem-cta-arrow {
+  display: inline-block;
+  margin-right: 14px;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  color: var(--gold-warm);
+}
+.reem-hero--marquee .reem-cta-primary:hover .reem-cta-arrow {
+  transform: translateX(-8px);
+}
+.reem-hero--marquee .reem-cta-ghost {
+  border: 0;
+  background: transparent;
+  color: var(--cream-mute);
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  padding: 10px 0;
+}
+.reem-hero--marquee .reem-cta-ghost:hover {
+  color: var(--cream);
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reem-h1-char,
+  .reem-eyebrow,
+  .reem-subhead,
+  .reem-cta-row,
+  .reem-reveal {
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (max-width: 900px) {
+  .reem-hero--marquee .reem-h1 {
+    font-size: clamp(34px, 7vw, 52px);
+  }
+  .reem-hero--marquee .reem-hero-text {
+    width: calc(100% - 48px);
+    max-width: calc(100% - 48px);
+    left: 24px;
+  }
+}
+
+/* ── Reveal-on-scroll ──────────────────────────────────────────────────── */
+.reem-reveal {
+  opacity: 0;
+  transform: translateX(40px);
+  transition:
+    opacity 1.2s ease,
+    transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reem-reveal.is-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Carousel covers (visual grid on /carousels and /history) ─────────── */
+.reem-covers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 320px);
+  gap: 32px;
+  justify-content: center;
+}
+.reem-cover-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 320px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reem-cover-card:hover {
+  transform: translateY(-4px);
+}
+.reem-cover-card > div:first-child {
+  border: 1px solid var(--gold-soft);
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+.reem-cover-card:hover > div:first-child {
+  border-color: var(--gold-warm);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.55),
+    0 0 30px var(--gold-glow);
+}
+.reem-cover-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--cream-soft);
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  z-index: 2;
+}
+.reem-cover-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0 4px;
+  direction: rtl;
+}
+.reem-cover-topic {
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cream);
+  letter-spacing: 0;
+  line-height: 1.3;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reem-cover-date {
+  font-size: 11px;
+  color: var(--cream-mute);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  direction: ltr;
+}
+
+/* ── Editorial page chrome ─────────────────────────────────────────────── */
+.reem-page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 64px 56px 120px;
+}
+@media (max-width: 800px) {
+  .reem-page {
+    padding: 48px 24px 96px;
+  }
+}
+
+.reem-page-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.reem-page-header-eyebrow {
+  margin: 0 0 18px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  color: var(--gold-warm);
+  text-transform: uppercase;
+}
+.reem-page-header-title {
+  margin: 0;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(40px, 4.4vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  color: var(--cream);
+}
+.reem-page-header-sub {
+  margin: 16px auto 0;
+  max-width: 560px;
+  color: var(--cream-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.reem-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px auto 0;
+  max-width: 240px;
+}
+.reem-ornament-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 50%, transparent);
+}
+
+/* ── Editorial section ─────────────────────────────────────────────────── */
+.reem-section {
+  padding: 56px 0;
+}
+.reem-section + .reem-section {
+  border-top: 1px solid var(--rule);
+}
+.reem-section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 56px;
+  gap: 12px;
+}
+.reem-section-eyebrow {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  color: var(--gold-warm);
+  text-transform: uppercase;
+}
+.reem-section-title {
+  margin: 0;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--cream);
+}
+.reem-section-link {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--cream-soft);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 8px 0;
+  margin-top: 18px;
+}
+.reem-section-link:hover {
+  color: var(--gold-warm);
+}
+
+/* ── TOC list (numbered editorial recents) ─────────────────────────────── */
+.reem-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  counter-reset: reem-toc;
+}
+.reem-toc-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 110px 90px;
+  align-items: center;
+  gap: 28px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 28px 12px;
+  text-align: right;
+  direction: rtl;
+  color: var(--cream);
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  counter-increment: reem-toc;
+}
+.reem-toc-row:hover {
+  background: var(--gold-faint);
+}
+.reem-toc-row::before {
+  content: counter(reem-toc, decimal-leading-zero);
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--gold-warm);
+  opacity: 0.6;
+  grid-column: 1;
+  text-align: left;
+  direction: ltr;
+}
+.reem-toc-row-title {
+  grid-column: 2;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--cream);
+  letter-spacing: 0;
+}
+.reem-toc-row-meta {
+  grid-column: 3;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream-mute);
+  text-align: left;
+  direction: ltr;
+}
+.reem-toc-row-arrow {
+  grid-column: 4;
+  color: var(--gold-warm);
+  opacity: 0.5;
+  font-size: 18px;
+  text-align: left;
+}
+@media (max-width: 700px) {
+  .reem-toc-row {
+    grid-template-columns: 50px 1fr 60px;
+    gap: 14px;
+    padding: 20px 8px;
+  }
+  .reem-toc-row-title {
+    font-size: 18px;
+  }
+  .reem-toc-row-meta {
+    grid-column: 3;
+    font-size: 10px;
+  }
+  .reem-toc-row-arrow {
+    display: none;
+  }
+}
+
+/* ── Topics: dot-separated chips ───────────────────────────────────────── */
+.reem-topics {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.reem-topic {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--cream-soft);
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-size: 16px;
+  font-style: italic;
+  letter-spacing: 0;
+  padding: 8px 18px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+.reem-topic + .reem-topic::before {
+  content: "·";
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-base);
+  opacity: 0.7;
+}
+.reem-topic:hover,
+.reem-topic.is-on {
+  color: var(--gold-warm);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--gold-soft);
+}
+
+/* ── Nav (full restyle) ────────────────────────────────────────────────── */
+.reem-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid var(--rule);
+}
+.reem-nav-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 56px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+@media (max-width: 800px) {
+  .reem-nav-inner {
+    padding: 0 24px;
+  }
+}
+.reem-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+.reem-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-base);
+  color: var(--gold-warm);
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-weight: 500;
+  font-size: 14px;
+}
+.reem-logo-word {
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--cream);
+}
+.reem-nav-items {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.reem-nav-link {
+  position: relative;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--cream-soft);
+  opacity: 0.62;
+  letter-spacing: 0.01em;
+  padding: 6px 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  transition:
+    opacity 0.25s ease,
+    color 0.25s ease;
+}
+.reem-nav-link:hover,
+.reem-nav-link.is-active {
+  opacity: 1;
+  color: var(--cream);
+}
+.reem-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-warm) 35%,
+    var(--gold-warm) 65%,
+    transparent 100%
+  );
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reem-nav-link:hover::after,
+.reem-nav-link.is-active::after {
+  transform: scaleX(1);
+}
+@keyframes reem-glow-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+.reem-nav-link.is-active::after {
+  animation: reem-glow-pulse 4s ease-in-out infinite;
+}
+
+/* ── Form controls (editorial style: bottom-bordered) ──────────────────── */
+.reem-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.reem-field-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--cream-mute);
+  text-transform: uppercase;
+}
+.reem-field-input,
+.reem-field-textarea,
+.reem-field-select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--gold-soft);
+  color: var(--cream);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px 4px;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.3s ease;
+}
+.reem-field-input:focus,
+.reem-field-textarea:focus,
+.reem-field-select:focus {
+  border-bottom-color: var(--gold-warm);
+}
+.reem-field-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ── Carousel stack (layered card carousel on /carousels) ──────────────── */
+.reem-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+.reem-stack-frame {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  height: 475px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reem-stack-deck {
+  position: relative;
+  width: 380px;
+  height: 475px;
+  flex-shrink: 0;
+}
+.reem-stack-card {
+  position: absolute;
+  inset: 0;
+  width: 380px;
+  height: 475px;
+  transition:
+    transform 500ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 350ms ease;
+  cursor: pointer;
+  will-change: transform;
+}
+.reem-stack-card.is-active {
+  cursor: default;
+}
+.reem-stack-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.reem-stack-card-frame {
+  position: relative;
+  width: 380px;
+  height: 475px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #0a0a0a;
+  border: 1px solid var(--gold-soft);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.reem-stack-card.is-active .reem-stack-card-frame {
+  border-color: var(--gold-warm);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    0 0 60px var(--gold-glow);
+}
+.reem-stack-card-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.reem-stack-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--cream-soft);
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.reem-stack-arrow {
+  appearance: none;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid var(--gold-soft);
+  color: var(--gold-warm);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.3s ease;
+  flex-shrink: 0;
+}
+.reem-stack-arrow:hover:not(:disabled) {
+  border-color: var(--gold-warm);
+  background: var(--gold-faint);
+  transform: scale(1.06);
+}
+.reem-stack-arrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+.reem-stack-arrow-right {
+  margin-left: 32px;
+}
+.reem-stack-arrow-left {
+  margin-right: 32px;
+}
+
+.reem-stack-meta {
+  text-align: center;
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.reem-stack-counter {
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--gold-warm);
+  margin: 0;
+}
+.reem-stack-counter-sep {
+  opacity: 0.5;
+}
+.reem-stack-concept {
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--cream);
+  margin: 6px 0 0;
+  max-width: 560px;
+}
+.reem-stack-date {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-mute);
+  margin: 0;
+}
+.reem-stack-status {
+  margin-top: 6px;
+}
+.reem-stack-regenerate {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--gold-warm);
+  color: var(--gold-warm);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.reem-stack-regenerate:hover {
+  color: var(--cream);
+}
+
+/* /carousels page wrapper — tighter top/bottom padding so the stack and
+   meta fit one viewport without scroll on a typical desktop. */
+.reem-page--carousels {
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+
+/* /preview page wrapper — same tighter padding as /carousels since both host
+   a card stack as the primary content. */
+.reem-page--preview {
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+/* ── Back button (fixed top-right, every page except home) ─────────────── */
+.reem-back-btn {
+  position: fixed;
+  top: 92px; /* sticky nav (76px) + 16px breathing room */
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--gold-soft);
+  color: var(--gold-warm);
+  font-family: var(--font-display), "Frank Ruhl Libre", Georgia, serif;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 0.3s ease;
+}
+.reem-back-btn:hover {
+  border-color: var(--gold-warm);
+  background: var(--gold-faint);
+  color: var(--cream);
+  transform: scale(1.06);
+}
+@media (max-width: 700px) {
+  .reem-back-btn {
+    top: 86px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+/* ── Caption block (shown on /preview below the slide stack) ───────────── */
+.reem-caption-block {
+  width: 100%;
+  max-width: 640px;
+  margin: 32px auto 0;
+  text-align: center;
+  direction: rtl;
+}
+.reem-caption-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.reem-caption-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--gold-warm);
+  text-transform: uppercase;
+  margin: 0;
+}
+.reem-caption-text {
+  font-family: var(--font-body), "Assistant", sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cream-soft);
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 18px 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: right;
+  margin: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .reem-stack-arrow-right {
+    margin-left: 16px;
+  }
+  .reem-stack-arrow-left {
+    margin-right: 16px;
+  }
+  .reem-page--carousels {
+    overflow-y: auto;
+  }
+}

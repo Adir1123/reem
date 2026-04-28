@@ -1,20 +1,31 @@
 import Link from "next/link";
 import { getServiceClient } from "@/lib/supabase-server";
-import { IPhoneFrame } from "@/components/phone/IPhoneFrame";
-import { InstagramFeedPost } from "@/components/phone/InstagramFeedPost";
+import { SlideStack } from "@/components/reem/SlideStack";
 import { DownloadButton } from "@/components/phone/DownloadButton";
 import { CopyButton } from "@/components/CopyButton";
+import { getPalette } from "@/components/slide/palette";
 import type { Slide, Language, CarouselStatus } from "@reem/types";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
-  searchParams: Promise<{ runId?: string; idx?: string; lang?: string }>;
+  searchParams: Promise<{
+    runId?: string;
+    idx?: string;
+    lang?: string;
+    palette?: string;
+  }>;
 }
 
 export default async function PreviewPage({ searchParams }: Props) {
-  const { runId, idx, lang: langParam } = await searchParams;
+  const {
+    runId,
+    idx,
+    lang: langParam,
+    palette: paletteParam,
+  } = await searchParams;
   const lang: Language = langParam === "en" ? "en" : "he";
+  const palette = getPalette(paletteParam);
   const sb = getServiceClient();
 
   let query = sb
@@ -36,11 +47,6 @@ export default async function PreviewPage({ searchParams }: Props) {
     return <ErrorShell message="אין שקופיות בשפה זו." />;
   }
 
-  // The visible caption mirrors whatever lang the user is previewing. The
-  // ZIP, however, always ships the Hebrew version because that's what the
-  // client posts to Instagram. Real captions populated by the deriveCaption
-  // Haiku helper at generation time; the synthesize fallback covers older
-  // rows generated before that helper landed.
   const slidesHe = (data.slides_he ?? []) as Slide[];
   const captionHe =
     data.caption_he ??
@@ -51,54 +57,68 @@ export default async function PreviewPage({ searchParams }: Props) {
   const status = data.status as CarouselStatus;
   const filenameSlug = buildFilenameSlug(data.concept, data.idx);
 
-  const params = new URLSearchParams();
-  if (runId) params.set("runId", runId);
-  if (idx) params.set("idx", idx);
-  const otherLang = lang === "he" ? "en" : "he";
-  params.set("lang", otherLang);
-  const toggleHref = `/preview?${params.toString()}`;
+  // Build dedicated language hrefs so each label is a real link — clicking
+  // either always lands on that language, regardless of current state.
+  const baseParams = new URLSearchParams();
+  if (runId) baseParams.set("runId", runId);
+  if (idx) baseParams.set("idx", idx);
+  const heParams = new URLSearchParams(baseParams);
+  heParams.set("lang", "he");
+  const enParams = new URLSearchParams(baseParams);
+  enParams.set("lang", "en");
+  const heHref = `/preview?${heParams.toString()}`;
+  const enHref = `/preview?${enParams.toString()}`;
 
   return (
-    <main className="bg-cream-soft flex flex-1 flex-col items-center gap-6 px-6 py-10">
-      <header className="w-full max-w-2xl text-center">
-        <p className="font-display text-gold text-xs tracking-[0.25em] uppercase">
-          תצוגת אינסטגרם
-        </p>
-        <h1 className="font-display text-navy mt-2 text-2xl font-black">
-          {data.concept}
-        </h1>
-        <p className="text-muted mt-1 text-xs">
-          run {data.run_id.slice(0, 8)} · קרוסלה #{data.idx + 1} · {slides.length}{" "}
-          שקופיות
-        </p>
-        <p className="mt-3 text-sm">
-          <span
-            className={
-              lang === "he" ? "text-navy font-semibold" : "text-muted"
-            }
-          >
-            עברית
-          </span>
-          <span className="text-muted mx-2">|</span>
-          <Link
-            href={toggleHref}
-            className={
-              lang === "en"
-                ? "text-navy font-semibold"
-                : "text-muted hover:text-navy"
-            }
-          >
-            English
-          </Link>
-        </p>
-      </header>
+    <main className="reem-page reem-page--preview flex flex-col items-center" dir="rtl">
+      <div className="mb-8 flex items-center gap-4 text-sm">
+        <Link
+          href={heHref}
+          className={
+            lang === "he"
+              ? "text-cream font-medium"
+              : "text-cream/45 hover:text-cream"
+          }
+        >
+          עברית
+        </Link>
+        <span className="text-cream/30">|</span>
+        <Link
+          href={enHref}
+          className={
+            lang === "en"
+              ? "text-cream font-medium"
+              : "text-cream/45 hover:text-cream"
+          }
+        >
+          English
+        </Link>
+      </div>
 
-      <IPhoneFrame>
-        <InstagramFeedPost slides={slides} lang={lang} caption={caption} />
-      </IPhoneFrame>
+      <SlideStack slides={slides} lang={lang} palette={palette} />
+
+      {paletteParam ? (
+        <p className="text-cream/55 mt-3 text-xs">
+          palette: <span className="text-gold-warm">{paletteParam}</span>
+        </p>
+      ) : null}
+
+      {caption ? (
+        <section className="reem-caption-block">
+          <div className="reem-caption-head">
+            <p className="reem-caption-eyebrow">
+              {lang === "he" ? "כותרת לאינסטגרם" : "Instagram Caption"}
+            </p>
+            <CopyButton text={caption} />
+          </div>
+          <pre className="reem-caption-text" dir={lang === "he" ? "rtl" : "ltr"}>
+            {caption}
+          </pre>
+        </section>
+      ) : null}
 
       {slidesHe.length > 0 ? (
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <DownloadButton
             carouselId={data.id}
             slidesHe={slidesHe}
@@ -106,16 +126,12 @@ export default async function PreviewPage({ searchParams }: Props) {
             filenameSlug={filenameSlug}
             alreadyPosted={status === "posted"}
           />
-          <CopyButton text={caption} />
         </div>
       ) : null}
     </main>
   );
 }
 
-// Slugifies the concept for use as a ZIP filename. Strips Hebrew (since
-// browsers and IG handle it inconsistently in download dialogs) and falls
-// back to the carousel index if nothing useful remains.
 function buildFilenameSlug(concept: string, idx: number): string {
   const ascii = concept
     .toLowerCase()
@@ -127,9 +143,6 @@ function buildFilenameSlug(concept: string, idx: number): string {
   return `${base}-${idx + 1}`;
 }
 
-// Stopgap caption: derive from hook slide text + canned hashtags. Replace
-// once the Haiku deriveCaption helper lands and populates carousels.caption_he
-// / caption_en at generation time.
 function synthesizeCaption(slides: Slide[], lang: Language): string {
   const hook = slides[0];
   const tags =
@@ -141,9 +154,9 @@ function synthesizeCaption(slides: Slide[], lang: Language): string {
 
 function ErrorShell({ message }: { message: string }) {
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16">
+    <main className="reem-page flex flex-1 items-center justify-center">
       <div className="max-w-md text-center">
-        <p className="text-muted">{message}</p>
+        <p className="text-cream/55">{message}</p>
       </div>
     </main>
   );
