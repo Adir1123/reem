@@ -27,9 +27,9 @@ SKILL_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = SKILL_ROOT / "output"
 REF_DIR = Path("C:/Users/adirg/CC-projects/reem-v2/reem-docs/ref")
 
-NAVY = "#0F1B2D"
-CREAM = "#F5EFE4"
-GOLD = "#C9A34A"
+NAVY = "#0A0A0A"
+CREAM = "#ECE1C8"
+GOLD = "#B8924A"
 HANDLE = "@personalfinancetips"
 
 
