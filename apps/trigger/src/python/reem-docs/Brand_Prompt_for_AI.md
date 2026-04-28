@@ -10,9 +10,9 @@ Use this brand system for every piece of content you create for me.
 - Feel: Clean + Trustworthy + Smart
 
 ## COLOURS (use these hex codes only)
-- Deep Navy #0F1B2D — backgrounds, primary surfaces
-- Warm Cream #F5F1EA — text on dark, breathing space
-- Soft Gold #C9A961 — headlines, key numbers, CTAs, highlights
+- Charcoal Black #0A0A0A — backgrounds, primary surfaces
+- Warm Cream #ECE1C8 — text on dark, breathing space
+- Antique Gold #B8924A — headlines, key numbers, CTAs, highlights
 
 ## TYPOGRAPHY (Google Fonts)
 - Headlines: Fraunces, Bold (700). Use italic for emphasis words.

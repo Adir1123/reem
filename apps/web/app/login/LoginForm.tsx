@@ -44,9 +44,9 @@ export function LoginForm({ next, initialError }: Props) {
 
   if (submitted) {
     return (
-      <div className="border-gold/30 bg-gold/10 mt-6 rounded-xl border p-4 text-sm">
-        <p className="text-navy font-semibold">בדוק את תיבת הדואר.</p>
-        <p className="text-muted mt-1">
+      <div className="border-gold-warm/30 bg-gold-base/10 mt-6 rounded-md border p-4 text-sm">
+        <p className="text-cream font-medium">בדוק את תיבת הדואר.</p>
+        <p className="text-cream/55 mt-1">
           שלחנו ל-{email} קישור התחברות חד-פעמי. תוקפו שעה.
         </p>
       </div>
@@ -55,11 +55,8 @@ export function LoginForm({ next, initialError }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-      <div>
-        <label
-          htmlFor="email"
-          className="text-navy/70 mb-2 block text-xs font-semibold tracking-[0.1em] uppercase"
-        >
+      <div className="reem-field">
+        <label htmlFor="email" className="reem-field-label">
           אימייל
         </label>
         <input
@@ -70,19 +67,19 @@ export function LoginForm({ next, initialError }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
-          className="border-navy/20 focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-base outline-none"
+          className="reem-field-input"
           placeholder="you@example.com"
         />
       </div>
       <button
         type="submit"
         disabled={pending || !email}
-        className="bg-navy text-cream hover:bg-navy-soft disabled:bg-navy/40 w-full rounded-full py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed"
+        className="bg-gold-base text-bg hover:bg-gold-warm disabled:bg-gold-deep disabled:text-cream/55 w-full rounded-full py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed"
       >
         {pending ? "שולח…" : "שלח לי קישור"}
       </button>
       {error ? (
-        <p className="text-xs text-red-700" role="alert">
+        <p className="text-xs text-red-400" role="alert">
           {error}
         </p>
       ) : null}

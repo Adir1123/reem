@@ -1,28 +1,66 @@
 @import "tailwindcss";
+@import "./reem.css";
 
 :root {
-  --navy: #0f1b2d;
-  --cream: #f5f1ea;
-  --gold: #c9a961;
-  --navy-soft: #1a2740;
-  --cream-soft: #ece7dd;
-  --gold-soft: #d9bd80;
-  --muted: #6b7280;
+  /* New black-and-gold palette (source of truth) */
+  --bg: #0a0a0a;
+  --bg-card: #141414;
+  --bg-card-2: #181614;
 
-  --background: var(--cream);
-  --foreground: var(--navy);
+  --ink: #ece1c8;
+  --cream-soft: rgba(236, 225, 200, 0.78);
+  --cream-mute: rgba(236, 225, 200, 0.48);
+  --cream-faint: rgba(236, 225, 200, 0.22);
+
+  --gold-base: #b8924a;
+  --gold-warm: #d4a861;
+  --gold-deep: #7a5e2d;
+  --gold-glow: rgba(212, 168, 97, 0.35);
+
+  --rule: rgba(184, 146, 74, 0.15);
+  --gold-faint: rgba(184, 146, 74, 0.04);
+
+  /* Backwards-compat aliases — every existing `bg-navy`, `text-gold`, etc.
+     resolves through these to the new palette without a flag-day rename. */
+  --navy: var(--bg);
+  --cream: var(--ink);
+  --gold: var(--gold-base);
+  --navy-soft: var(--bg-card);
+  /* `bg-cream-soft` historically meant "soft page surface" (a near-cream tint).
+     In the new dark theme that intent maps to an elevated card surface, NOT
+     to a near-white block on top of black. Map to bg-card-2 so existing
+     callers keep producing visually sensible surfaces. */
+  --cream-soft-color: var(--bg-card-2);
+  --gold-soft: rgba(184, 146, 74, 0.12);
+  --muted: rgba(236, 225, 200, 0.55);
+
+  --background: var(--bg);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Legacy semantic names — kept so existing utilities keep compiling. */
   --color-navy: var(--navy);
   --color-navy-soft: var(--navy-soft);
   --color-cream: var(--cream);
-  --color-cream-soft: var(--cream-soft);
+  --color-cream-soft: var(--cream-soft-color);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-muted: var(--muted);
+
+  /* New semantic names — preferred for new code. */
+  --color-bg: var(--bg);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-2: var(--bg-card-2);
+  --color-ink: var(--ink);
+  --color-gold-base: var(--gold-base);
+  --color-gold-warm: var(--gold-warm);
+  --color-gold-deep: var(--gold-deep);
+  --color-rule: var(--rule);
+
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-sans: var(--font-body);

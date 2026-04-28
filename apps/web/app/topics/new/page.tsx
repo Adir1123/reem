@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHeader } from "@/components/reem/PageHeader";
 import { createTopicAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -13,29 +14,20 @@ const THEMES: { value: string; label: string }[] = [
 
 export default function NewTopicPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
-      <header className="mb-10">
-        <p className="font-display text-gold text-xs tracking-[0.25em] uppercase">
-          נושא חדש
-        </p>
-        <h1 className="font-display text-navy mt-2 text-4xl font-black">
-          הוסף נושא להפקה
-        </h1>
-        <p className="text-muted mt-3 text-sm">
-          התווית בעברית תוצג בלוח. החיפוש באנגלית מועבר לקריאת המקורות
-          בפייפליין — חשוב שיהיה ספציפי וענייני.
-        </p>
-      </header>
+    <main className="reem-page" dir="rtl">
+      <PageHeader
+        eyebrow="נושא חדש"
+        title="הוסף נושא להפקה"
+        sub="התווית בעברית תוצג בלוח. החיפוש באנגלית מועבר לקריאת המקורות בפייפליין — חשוב שיהיה ספציפי וענייני."
+        ornament
+      />
 
       <form
         action={createTopicAction}
-        className="border-navy/10 space-y-6 rounded-2xl border bg-white p-8 shadow-sm"
+        className="mx-auto max-w-2xl"
       >
-        <div>
-          <label
-            htmlFor="he_label"
-            className="text-navy/70 mb-2 block text-xs font-semibold tracking-[0.1em] uppercase"
-          >
+        <div className="reem-field">
+          <label htmlFor="he_label" className="reem-field-label">
             תווית בעברית
           </label>
           <input
@@ -44,15 +36,12 @@ export default function NewTopicPage() {
             type="text"
             required
             placeholder="לדוגמה: איך לחסוך 1000 ש״ח בחודש"
-            className="border-navy/20 focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-base outline-none"
+            className="reem-field-input"
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="en_query"
-            className="text-navy/70 mb-2 block text-xs font-semibold tracking-[0.1em] uppercase"
-          >
+        <div className="reem-field">
+          <label htmlFor="en_query" className="reem-field-label">
             חיפוש באנגלית (לפייפליין)
           </label>
           <input
@@ -62,18 +51,15 @@ export default function NewTopicPage() {
             required
             dir="ltr"
             placeholder="how to save 1000 dollars a month"
-            className="border-navy/20 focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-base outline-none"
+            className="reem-field-input"
           />
-          <p className="text-muted mt-2 text-xs">
+          <p className="text-cream/45 mt-1 text-xs">
             חיפוש ממוקד עובד טוב יותר מנושא רחב. הימנע ממילים כלליות מדי.
           </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="theme"
-            className="text-navy/70 mb-2 block text-xs font-semibold tracking-[0.1em] uppercase"
-          >
+        <div className="reem-field">
+          <label htmlFor="theme" className="reem-field-label">
             קטגוריה
           </label>
           <select
@@ -81,21 +67,18 @@ export default function NewTopicPage() {
             name="theme"
             required
             defaultValue="saving"
-            className="border-navy/20 focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-base outline-none"
+            className="reem-field-select"
           >
             {THEMES.map((t) => (
-              <option key={t.value} value={t.value}>
+              <option key={t.value} value={t.value} className="bg-bg-card">
                 {t.label}
               </option>
             ))}
           </select>
         </div>
 
-        <div>
-          <label
-            htmlFor="notes"
-            className="text-navy/70 mb-2 block text-xs font-semibold tracking-[0.1em] uppercase"
-          >
+        <div className="reem-field">
+          <label htmlFor="notes" className="reem-field-label">
             הערות (אופציונלי)
           </label>
           <textarea
@@ -103,20 +86,20 @@ export default function NewTopicPage() {
             name="notes"
             rows={3}
             placeholder="זווית, קהל יעד, או הקשר נוסף שיעזור בהפקה"
-            className="border-navy/20 focus:border-gold w-full resize-none rounded-xl border bg-white px-4 py-3 text-base outline-none"
+            className="reem-field-textarea"
           />
         </div>
 
-        <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="border-rule mt-8 flex items-center justify-between gap-4 border-t pt-6">
           <Link
             href="/topics"
-            className="text-muted hover:text-navy text-sm font-semibold transition-colors"
+            className="text-cream/55 hover:text-cream font-display text-sm italic transition-colors"
           >
             ביטול
           </Link>
           <button
             type="submit"
-            className="bg-navy text-cream hover:bg-navy-soft rounded-full px-6 py-3 text-sm font-semibold transition-colors"
+            className="border-gold-warm text-cream hover:text-gold-warm border-b px-4 py-2 text-xs tracking-[0.36em] uppercase transition-colors"
           >
             הוסף נושא
           </button>

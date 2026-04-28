@@ -32,7 +32,7 @@ export async function exportCarouselZip(opts: {
       width: 1080,
       height: 1350,
       cacheBust: true,
-      backgroundColor: "#0f1b2d",
+      backgroundColor: "#0a0a0a",
     });
     if (!blob) {
       throw new Error(`exportCarouselZip: snapshot returned null for slide ${i + 1}`);

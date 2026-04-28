@@ -27,10 +27,23 @@ SKILL_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = SKILL_ROOT / "output"
 REF_DIR = SKILL_ROOT / "reem-docs" / "ref"
 
-NAVY = "#0F1B2D"
-CREAM = "#F5EFE4"
-GOLD = "#C9A34A"
+PALETTES = {
+    "current": {"navy": "#0A0A0A", "cream": "#ECE1C8", "gold": "#B8924A"},
+    "legacy": {"navy": "#0F1B2D", "cream": "#F5EFE4", "gold": "#C9A34A"},
+}
+
+# Module-level constants — overridden by main() based on --palette flag before
+# render() runs. Default is the new black-and-gold brand palette.
+NAVY = PALETTES["current"]["navy"]
+CREAM = PALETTES["current"]["cream"]
+GOLD = PALETTES["current"]["gold"]
 HANDLE = "@personalfinancetips"
+
+
+def _hex_to_rgb_triplet(hex_str: str) -> str:
+    """'#0F1B2D' -> '15,27,45' for use in rgba() strings."""
+    v = hex_str.lstrip("#")
+    return f"{int(v[0:2], 16)},{int(v[2:4], 16)},{int(v[4:6], 16)}"
 
 
 def _latest_output() -> Path:
@@ -270,7 +283,7 @@ def render(data: dict) -> str:
   }}
   .bg-shade {{
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(15,27,45,0.35) 0%, rgba(15,27,45,0.75) 100%);
+    background: linear-gradient(180deg, rgba({_hex_to_rgb_triplet(NAVY)},0.35) 0%, rgba({_hex_to_rgb_triplet(NAVY)},0.75) 100%);
   }}
 
   .corner {{
@@ -386,13 +399,27 @@ def main():
     p = argparse.ArgumentParser(description="Render a carousel JSON as an HTML preview.")
     p.add_argument("path", nargs="?", help="Path to carousel JSON. Defaults to newest file in output/.")
     p.add_argument("--no-open", action="store_true", help="Just write the HTML file, don't open it.")
+    p.add_argument(
+        "--palette",
+        choices=list(PALETTES.keys()),
+        default="current",
+        help="Color palette: 'current' (black/cream/antique-gold, default) or 'legacy' (navy/cream/gold).",
+    )
     args = p.parse_args()
+
+    # Override module globals based on flag; render() reads them via f-strings.
+    global NAVY, CREAM, GOLD
+    palette = PALETTES[args.palette]
+    NAVY = palette["navy"]
+    CREAM = palette["cream"]
+    GOLD = palette["gold"]
 
     json_path = Path(args.path) if args.path else _latest_output()
     data = json.loads(json_path.read_text(encoding="utf-8"))
-    html_path = json_path.with_suffix(".html")
+    suffix = ".legacy.html" if args.palette == "legacy" else ".html"
+    html_path = json_path.with_suffix(suffix)
     html_path.write_text(render(data), encoding="utf-8")
-    print(f"Wrote {html_path}")
+    print(f"Wrote {html_path} (palette={args.palette})")
     if not args.no_open:
         webbrowser.open(html_path.as_uri())
 

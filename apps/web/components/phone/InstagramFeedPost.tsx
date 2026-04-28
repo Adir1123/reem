@@ -1,5 +1,6 @@
 import type { Slide, Language } from "@reem/types";
 import { SlideSwiper } from "./SlideSwiper";
+import { PALETTE_CURRENT, type Palette } from "@/components/slide/palette";
 import {
   HeartIcon,
   CommentIcon,
@@ -12,6 +13,7 @@ type Props = {
   slides: Slide[];
   lang: Language;
   caption: string;
+  palette?: Palette;
 };
 
 const USERNAME = "personalfinancetips";
@@ -20,7 +22,8 @@ const USERNAME = "personalfinancetips";
 // → likes → caption → time. All chrome forced LTR for layout (icons, dots,
 // timestamp); the caption and username are fine in RTL since IG mirrors
 // for Hebrew accounts anyway.
-export function InstagramFeedPost({ slides, lang, caption }: Props) {
+export function InstagramFeedPost({ slides, lang, caption, palette }: Props) {
+  const p = palette ?? PALETTE_CURRENT;
   return (
     <div
       style={{
@@ -49,8 +52,7 @@ export function InstagramFeedPost({ slides, lang, caption }: Props) {
             width: 32,
             height: 32,
             borderRadius: 999,
-            background:
-              "conic-gradient(from 180deg, #c9a961, #f5f1ea, #c9a961, #0f1b2d, #c9a961)",
+            background: `conic-gradient(from 180deg, ${p.gold}, ${p.cream}, ${p.gold}, ${p.navy}, ${p.gold})`,
             padding: 2,
             flexShrink: 0,
           }}
@@ -60,8 +62,8 @@ export function InstagramFeedPost({ slides, lang, caption }: Props) {
               width: "100%",
               height: "100%",
               borderRadius: 999,
-              background: "#0f1b2d",
-              color: "#c9a961",
+              background: p.navy,
+              color: p.gold,
               fontSize: 11,
               fontWeight: 700,
               display: "flex",
@@ -93,7 +95,7 @@ export function InstagramFeedPost({ slides, lang, caption }: Props) {
       </div>
 
       {/* Media swiper (393x491) + dot indicator below */}
-      <SlideSwiper slides={slides} lang={lang} />
+      <SlideSwiper slides={slides} lang={lang} palette={p} />
 
       {/* Action row */}
       <div

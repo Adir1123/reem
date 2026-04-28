@@ -1,55 +1,45 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/supabase-auth";
 import { signOutAction } from "@/app/auth/actions";
+import { NavLink } from "@/components/NavLink";
 
 // Top nav. Server component — fetches the current user and skips rendering
 // when nobody is signed in (covers /login and the brief unauthenticated
-// flash on protected routes before proxy.ts redirects).
+// flash on protected routes before proxy.ts redirects). Individual link
+// items are rendered via <NavLink> (client) so they can self-highlight
+// based on usePathname().
 export async function Nav() {
   const user = await getCurrentUser();
   if (!user) return null;
 
   return (
-    <nav className="bg-navy text-cream sticky top-0 z-50 border-b border-navy-soft">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
-        <Link
-          href="/"
-          className="font-display text-gold shrink-0 text-xl font-black tracking-[0.15em]"
-        >
-          PFT
+    <nav className="reem-nav" dir="rtl">
+      <div className="reem-nav-inner">
+        <Link href="/" className="reem-logo">
+          <span className="reem-logo-mark" aria-hidden="true">
+            ר
+          </span>
+          <span className="reem-logo-word">REEM</span>
         </Link>
-        <ul className="-mr-2 flex items-center gap-4 overflow-x-auto whitespace-nowrap pr-2 text-sm font-semibold sm:gap-5 sm:overflow-visible">
+        <ul className="reem-nav-items">
           <li>
-            <Link href="/" className="hover:text-gold transition-colors">
-              בית
-            </Link>
+            <NavLink href="/">בית</NavLink>
           </li>
           <li>
-            <Link href="/topics" className="hover:text-gold transition-colors">
-              נושאים
-            </Link>
+            <NavLink href="/topics">נושאים</NavLink>
           </li>
           <li>
-            <Link href="/carousels" className="hover:text-gold transition-colors">
-              קרוסלות
-            </Link>
+            <NavLink href="/carousels">קרוסלות</NavLink>
           </li>
           <li>
-            <Link href="/history" className="hover:text-gold transition-colors">
-              היסטוריה
-            </Link>
+            <NavLink href="/history">היסטוריה</NavLink>
           </li>
           <li>
-            <Link href="/settings" className="hover:text-gold transition-colors">
-              הגדרות
-            </Link>
+            <NavLink href="/settings">הגדרות</NavLink>
           </li>
           <li>
             <form action={signOutAction}>
-              <button
-                type="submit"
-                className="text-cream/60 hover:text-gold cursor-pointer transition-colors"
-              >
+              <button type="submit" className="reem-nav-link">
                 יציאה
               </button>
             </form>

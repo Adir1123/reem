@@ -16,11 +16,14 @@ const CAROUSEL_STATUS_LABELS: Record<CarouselStatus, string> = {
   rejected: "נדחה",
 };
 
+// Tone palette retuned for the black-and-gold dark theme. Old `text-navy`
+// would be invisible on the new dark surfaces — replaced with cream/gold
+// pairings that hold WCAG contrast.
 const TONE_CLASSES = {
-  neutral: "border-navy/15 bg-cream-soft text-navy",
-  warm: "border-gold/40 bg-gold/15 text-navy",
-  hot: "border-gold bg-gold text-navy",
-  cool: "border-navy/30 bg-navy text-cream",
+  neutral: "border-rule bg-bg-card text-ink/60",
+  warm: "border-gold-warm/40 bg-gold-base/10 text-gold-warm",
+  hot: "border-gold-warm bg-gold-warm text-bg",
+  cool: "border-rule bg-bg-card text-ink",
 } as const;
 
 type Tone = keyof typeof TONE_CLASSES;
