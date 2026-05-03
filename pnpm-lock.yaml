@@ -12,16 +12,16 @@ importers:
     dependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.90.0
-        version: 0.90.0(zod@4.3.6)
+        version: 0.90.0(zod@4.4.2)
       '@supabase/supabase-js':
         specifier: ^2.104.0
         version: 2.104.0
       '@trigger.dev/python':
         specifier: 4.4.4
-        version: 4.4.4(@trigger.dev/build@4.4.4(magicast@0.3.5)(typescript@5.9.3))(@trigger.dev/sdk@4.4.4(zod@4.3.6))
+        version: 4.4.4(@trigger.dev/build@4.4.4(magicast@0.3.5)(typescript@5.9.3))(@trigger.dev/sdk@4.4.4(zod@4.4.2))
       '@trigger.dev/sdk':
         specifier: 4.4.4
-        version: 4.4.4(zod@4.3.6)
+        version: 4.4.4(zod@4.4.2)
       dotenv:
         specifier: ^16.4.5
         version: 16.6.1
@@ -44,6 +44,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.90.0
+        version: 0.90.0(zod@4.4.2)
       '@supabase/ssr':
         specifier: ^0.10.2
         version: 0.10.2(@supabase/supabase-js@2.104.0)
@@ -52,7 +55,7 @@ importers:
         version: 2.104.0
       '@trigger.dev/sdk':
         specifier: 4.4.4
-        version: 4.4.4(zod@4.3.6)
+        version: 4.4.4(zod@4.4.2)
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.4)
@@ -71,6 +74,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      zod:
+        specifier: ^4.4.2
+        version: 4.4.2
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
@@ -3701,18 +3707,18 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.3.6:
-    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+  zod@4.4.2:
+    resolution: {integrity: sha512-IynmDyxsEsb9RKzO3J9+4SxXnl2FTFSzNBaKKaMV6tsSk0rw9gYw9gs+JFCq/qk2LCZ78KDwyj+Z289TijSkUw==}
 
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@anthropic-ai/sdk@0.90.0(zod@4.3.6)':
+  '@anthropic-ai/sdk@0.90.0(zod@4.4.2)':
     dependencies:
       json-schema-to-ts: 3.1.1
     optionalDependencies:
-      zod: 4.3.6
+      zod: 4.4.2
 
   '@arr/every@1.0.1': {}
 
@@ -4671,11 +4677,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/python@4.4.4(@trigger.dev/build@4.4.4(magicast@0.3.5)(typescript@5.9.3))(@trigger.dev/sdk@4.4.4(zod@4.3.6))':
+  '@trigger.dev/python@4.4.4(@trigger.dev/build@4.4.4(magicast@0.3.5)(typescript@5.9.3))(@trigger.dev/sdk@4.4.4(zod@4.4.2))':
     dependencies:
       '@trigger.dev/build': 4.4.4(magicast@0.3.5)(supports-color@10.2.2)(typescript@5.9.3)
       '@trigger.dev/core': 4.4.4(supports-color@10.2.2)
-      '@trigger.dev/sdk': 4.4.4(zod@4.3.6)
+      '@trigger.dev/sdk': 4.4.4(zod@4.4.2)
       tinyexec: 0.3.2
     transitivePeerDependencies:
       - bufferutil
@@ -4694,7 +4700,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/sdk@4.4.4(zod@4.3.6)':
+  '@trigger.dev/sdk@4.4.4(zod@4.4.2)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.36.0
@@ -4708,7 +4714,7 @@ snapshots:
       uncrypto: 0.1.3
       uuid: 9.0.1
       ws: 8.20.0
-      zod: 4.3.6
+      zod: 4.4.2
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -5665,8 +5671,8 @@ snapshots:
       '@babel/parser': 7.29.2
       eslint: 9.39.4(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.3.6
-      zod-validation-error: 4.0.2(zod@4.3.6)
+      zod: 4.4.2
+      zod-validation-error: 4.0.2(zod@4.4.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -7541,10 +7547,10 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  zod-validation-error@4.0.2(zod@4.3.6):
+  zod-validation-error@4.0.2(zod@4.4.2):
     dependencies:
-      zod: 4.3.6
+      zod: 4.4.2
 
   zod@3.25.76: {}
 
-  zod@4.3.6: {}
+  zod@4.4.2: {}

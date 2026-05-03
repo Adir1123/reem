@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getServiceClient } from "@/lib/supabase-server";
-import { SlideStack } from "@/components/reem/SlideStack";
+import { PreviewClient } from "@/components/slide/PreviewClient";
 import { DownloadButton } from "@/components/phone/DownloadButton";
 import { CopyButton } from "@/components/CopyButton";
 import { getPalette } from "@/components/slide/palette";
@@ -31,7 +31,7 @@ export default async function PreviewPage({ searchParams }: Props) {
   let query = sb
     .from("carousels")
     .select(
-      "id, run_id, idx, concept, angle, status, slides_he, slides_en, caption_he, caption_en, created_at",
+      "id, run_id, idx, concept, angle, status, slides_he, slides_en, slides_version, caption_he, caption_en, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(1);
@@ -95,7 +95,13 @@ export default async function PreviewPage({ searchParams }: Props) {
         </Link>
       </div>
 
-      <SlideStack slides={slides} lang={lang} palette={palette} />
+      <PreviewClient
+        carouselId={data.id}
+        initialSlides={slides}
+        lang={lang}
+        initialSlidesVersion={data.slides_version ?? 0}
+        palette={palette}
+      />
 
       {paletteParam ? (
         <p className="text-cream/55 mt-3 text-xs">

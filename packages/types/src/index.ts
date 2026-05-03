@@ -17,6 +17,22 @@ export type CarouselAngle =
 
 export type Language = "en" | "he";
 
+export type SizePreset = "sm" | "md" | "lg" | "xl";
+export type AlignPreset = "start" | "center" | "end";
+
+// Optional render-time overlay produced by the per-slide chat editor. Stored
+// inside the existing `Slide` JSONB blob so no DB schema change is needed.
+// Presets only — no raw px or hex — to keep brand drift impossible.
+export interface SlideStyle {
+  headline_size?: SizePreset;
+  body_size?: Exclude<SizePreset, "xl">;
+  eyebrow_size?: Exclude<SizePreset, "lg" | "xl">;
+  headline_align?: AlignPreset;
+  body_align?: AlignPreset;
+  hide_eyebrow?: boolean;
+  hide_step_number?: boolean;
+}
+
 export interface Slide {
   n: number;
   role: SlideRole;
@@ -29,6 +45,21 @@ export interface Slide {
   step_number: string | null;
   ref_image: string | null;
   visual_direction: string;
+  // undefined → brand defaults; the chat editor populates this when the user
+  // asks for visual tweaks ("תגדיל את הכותרת").
+  style?: SlideStyle;
+}
+
+// Shape returned by the chat editor's `apply_slide_edit` tool. Strict shallow
+// partial of the editable surface — anything not listed cannot be touched.
+export interface SlidePatch {
+  eyebrow?: string | null;
+  headline?: string;
+  headline_italic?: string | null;
+  body?: string;
+  body_emphasis?: string[];
+  step_number?: string | null;
+  style?: Partial<SlideStyle>;
 }
 
 export interface Carousel {

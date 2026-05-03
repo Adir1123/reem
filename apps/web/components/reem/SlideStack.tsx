@@ -15,25 +15,35 @@ interface Props {
   slides: Slide[];
   lang: Language;
   palette?: Palette;
+  /** Notified after every active-index change. Lets a parent (e.g. the chat
+   *  editor) scope itself to whichever slide the user is currently looking at. */
+  onActiveChange?: (idx: number) => void;
 }
 
 // Layered slide preview — same depth/animation pattern as <CarouselStack>,
 // but each card is a slide canvas. Right-arrow = previous slide, left-arrow
 // = next slide (RTL reading direction). Side cards are clickable to promote.
-export function SlideStack({ slides, lang, palette }: Props) {
-  const [activeIdx, setActiveIdx] = useState(0);
+export function SlideStack({ slides, lang, palette, onActiveChange }: Props) {
+  const [activeRaw, setActiveRaw] = useState(0);
   const total = slides.length;
 
   const goNext = useCallback(
-    () => setActiveIdx((i) => Math.min(total - 1, i + 1)),
+    () => setActiveRaw((i) => Math.min(total - 1, i + 1)),
     [total],
   );
-  const goPrev = useCallback(() => setActiveIdx((i) => Math.max(0, i - 1)), []);
+  const goPrev = useCallback(() => setActiveRaw((i) => Math.max(0, i - 1)), []);
 
-  // Reset to slide 0 when the slide set changes (e.g., language toggle).
+  // Clamp at render time instead of reset-on-change-via-effect. Language
+  // toggles in /preview are a full navigation (new mount), so the only way
+  // total can shrink under us is if the parent swaps in a shorter array
+  // mid-life (chat edits never change length). A clamp covers that without
+  // a setState-in-effect cascade.
+  const safeActive = Math.min(activeRaw, Math.max(0, total - 1));
+
+  // Bubble the current index up so the chat editor can scope itself.
   useEffect(() => {
-    setActiveIdx(0);
-  }, [slides]);
+    onActiveChange?.(safeActive);
+  }, [safeActive, onActiveChange]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -53,7 +63,7 @@ export function SlideStack({ slides, lang, palette }: Props) {
           type="button"
           className="reem-stack-arrow reem-stack-arrow-right"
           onClick={goPrev}
-          disabled={activeIdx === 0}
+          disabled={safeActive === 0}
           aria-label="שקופית קודמת"
         >
           <span aria-hidden="true">→</span>
@@ -61,7 +71,7 @@ export function SlideStack({ slides, lang, palette }: Props) {
 
         <div className="reem-stack-deck">
           {slides.map((s, i) => {
-            const offset = i - activeIdx;
+            const offset = i - safeActive;
             if (Math.abs(offset) > 2) return null;
             const tx = -offset * 56;
             const sc = 1 - Math.abs(offset) * 0.08;
@@ -78,7 +88,7 @@ export function SlideStack({ slides, lang, palette }: Props) {
                   opacity: op,
                   zIndex: z,
                 }}
-                onClick={isActive ? undefined : () => setActiveIdx(i)}
+                onClick={isActive ? undefined : () => setActiveRaw(i)}
               >
                 <div
                   className="reem-stack-card-link"
@@ -112,7 +122,7 @@ export function SlideStack({ slides, lang, palette }: Props) {
           type="button"
           className="reem-stack-arrow reem-stack-arrow-left"
           onClick={goNext}
-          disabled={activeIdx >= total - 1}
+          disabled={safeActive >= total - 1}
           aria-label="שקופית הבאה"
         >
           <span aria-hidden="true">←</span>
@@ -121,7 +131,7 @@ export function SlideStack({ slides, lang, palette }: Props) {
 
       <div className="reem-stack-meta">
         <p className="reem-stack-counter" dir="ltr">
-          {String(activeIdx + 1).padStart(2, "0")}{" "}
+          {String(safeActive + 1).padStart(2, "0")}{" "}
           <span className="reem-stack-counter-sep">/</span>{" "}
           {String(total).padStart(2, "0")}
         </p>

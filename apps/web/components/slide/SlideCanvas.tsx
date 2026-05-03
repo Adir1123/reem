@@ -1,4 +1,4 @@
-import type { Slide, Language } from "@reem/types";
+import type { Slide, Language, SlideStyle } from "@reem/types";
 import { splitHeadline, tokenizeEmphasis } from "./emphasis";
 import { PALETTE_CURRENT, type Palette } from "./palette";
 
@@ -11,6 +11,17 @@ interface Props {
   /** Optional palette override. Defaults to the current navy/cream/gold. */
   palette?: Palette;
 }
+
+// Single source of truth for the preset → px ladder. Defaults (`md`) match the
+// previously hardcoded values exactly, so a slide with `style === undefined`
+// renders byte-identical to before this refactor.
+const SIZE_MAP = {
+  headline:    { sm: 64, md: 76, lg: 88, xl: 100 },
+  body:        { sm: 24, md: 28, lg: 32 },
+  eyebrow:     { sm: 18, md: 22 },
+  ctaHeadline: { sm: 60, md: 72, lg: 84, xl: 96 },
+  ctaBody:     { sm: 26, md: 30, lg: 34 },
+} as const;
 
 // The renderer. Fixed 1080x1350 canvas. Parent wrappers scale it down for
 // on-screen preview; for PNG export we pass the un-transformed node to
@@ -92,7 +103,7 @@ export function SlideCanvas({ slide, lang, totalSlides, domId, palette }: Props)
       </div>
 
       {/* Step number — large ghosted chapter marker, top-right of canvas */}
-      {slide.step_number ? (
+      {slide.step_number && !slide.style?.hide_step_number ? (
         <div
           dir="ltr"
           style={{
@@ -161,6 +172,13 @@ function ContentBlock({
   const headlineTokens = splitHeadline(slide.headline, slide.headline_italic);
   const bodyTokens = tokenizeEmphasis(slide.body, slide.body_emphasis ?? []);
   const creamRgb = hexToRgbTriplet(palette.cream);
+  const style: SlideStyle = slide.style ?? {};
+  const headlineSize = SIZE_MAP.headline[style.headline_size ?? "md"];
+  const bodySize = SIZE_MAP.body[style.body_size ?? "md"];
+  const eyebrowSize = SIZE_MAP.eyebrow[style.eyebrow_size ?? "md"];
+  const headlineAlign = style.headline_align;
+  const bodyAlign = style.body_align;
+  const showEyebrow = !!slide.eyebrow && !style.hide_eyebrow;
 
   return (
     <div
@@ -174,7 +192,7 @@ function ContentBlock({
         gap: 28,
       }}
     >
-      {slide.eyebrow ? (
+      {showEyebrow ? (
         <div
           style={{
             display: "flex",
@@ -182,7 +200,7 @@ function ContentBlock({
             gap: 16,
             fontFamily: bodyFont,
             fontWeight: 600,
-            fontSize: 22,
+            fontSize: eyebrowSize,
             letterSpacing: "0.15em",
             textTransform: "uppercase",
             color: palette.gold,
@@ -205,10 +223,11 @@ function ContentBlock({
           margin: 0,
           fontFamily: displayFont,
           fontWeight: 900,
-          fontSize: 76,
+          fontSize: headlineSize,
           lineHeight: 1.1,
           letterSpacing: "-0.01em",
           color: palette.cream,
+          ...(headlineAlign ? { textAlign: headlineAlign } : null),
         }}
       >
         {headlineTokens.map((t, i) =>
@@ -235,9 +254,10 @@ function ContentBlock({
             margin: 0,
             fontFamily: bodyFont,
             fontWeight: 400,
-            fontSize: 28,
+            fontSize: bodySize,
             lineHeight: 1.55,
             color: `rgba(${creamRgb},0.9)`,
+            ...(bodyAlign ? { textAlign: bodyAlign } : null),
           }}
         >
           {bodyTokens.map((t, i) =>
@@ -280,6 +300,9 @@ function CTA({
     ? ""
     : (slide.body ?? "").replace(/@personalfinancetips/g, "").trim();
   const creamRgb = hexToRgbTriplet(palette.cream);
+  const style: SlideStyle = slide.style ?? {};
+  const ctaHeadlineSize = SIZE_MAP.ctaHeadline[style.headline_size ?? "md"];
+  const ctaBodySize = SIZE_MAP.ctaBody[style.body_size ?? "md"];
 
   return (
     <div
@@ -300,7 +323,7 @@ function CTA({
           margin: 0,
           fontFamily: displayFont,
           fontWeight: 900,
-          fontSize: 72,
+          fontSize: ctaHeadlineSize,
           lineHeight: 1.15,
           color: palette.cream,
         }}
@@ -313,7 +336,7 @@ function CTA({
             margin: 0,
             fontFamily: bodyFont,
             fontWeight: 400,
-            fontSize: 30,
+            fontSize: ctaBodySize,
             lineHeight: 1.5,
             color: `rgba(${creamRgb},0.85)`,
             maxWidth: 760,
