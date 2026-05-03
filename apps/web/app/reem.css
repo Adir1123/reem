@@ -1055,11 +1055,121 @@
   padding-bottom: 48px;
 }
 
-/* /preview page wrapper — same tighter padding as /carousels since both host
-   a card stack as the primary content. */
+/* /preview page wrapper — distinct from /carousels: tighter top padding so
+   the breadcrumb + segmented language toggle row sits flush, and slightly
+   more vertical breathing room overall to give the framed canvas air. */
 .reem-page--preview {
-  padding-top: 32px;
-  padding-bottom: 64px;
+  padding-top: 28px;
+  padding-bottom: 96px;
+}
+
+/* ── /preview top bar (breadcrumb left, language segment right) ────────── */
+.reem-preview-topbar {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.reem-preview-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream-soft);
+  text-decoration: none;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+.reem-preview-breadcrumb:hover {
+  color: var(--gold-warm);
+  border-color: var(--gold-warm);
+  background: var(--gold-faint);
+}
+
+.reem-preview-segment {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.4);
+}
+.reem-preview-segment-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--cream-mute);
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
+}
+.reem-preview-segment-btn:hover {
+  color: var(--cream);
+}
+.reem-preview-segment-btn.is-active {
+  color: var(--cream);
+  background: var(--gold-faint);
+  border: 1px solid var(--gold-warm);
+  padding: 5px 13px; /* compensate for the added border */
+}
+
+/* Status pill row sits centered under the page header. */
+.reem-preview-status {
+  display: flex;
+  justify-content: center;
+  margin: -32px 0 32px;
+}
+
+/* The slide stack sits inside a vertical frame — two thin gold gradient
+   rules flanking the deck. Same palette as /carousels, but spotlit. */
+.reem-preview-frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 12px 0;
+  width: 100%;
+}
+.reem-preview-frame-rule {
+  flex: 0 0 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, var(--gold-soft) 50%, transparent);
+}
+@media (max-width: 700px) {
+  .reem-preview-frame-rule {
+    display: none; /* on phones the rules crowd the deck */
+  }
+  .reem-preview-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}
+
+/* Run / idx / created-at line under the caption block. Helps the client
+   identify which generation a carousel came from when iterating. */
+.reem-preview-meta {
+  margin: 24px 0 0;
+  font-family: var(--font-body), "Assistant", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--cream-mute);
+  text-transform: uppercase;
 }
 
 /* ── Back button (fixed top-right, every page except home) ─────────────── */

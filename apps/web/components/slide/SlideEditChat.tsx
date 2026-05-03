@@ -8,7 +8,7 @@ import {
   useState,
   useTransition,
 } from "react";
-import type { Slide, Language } from "@reem/types";
+import type { EditScope, Slide, Language } from "@reem/types";
 import { SlideCanvas } from "./SlideCanvas";
 import {
   type ChatRow,
@@ -26,7 +26,11 @@ interface Props {
   /** Controlled by the parent (PreviewClient). Always reflects the latest
    *  slides_version we've successfully written. */
   slidesVersion: number;
+  /** Single-slide change callback (default this_slide flow). */
   onSlideChange: (next: Slide, newVersion: number) => void;
+  /** All-slides change callback — only fires when the server applied a
+   *  cross-slide patch. Caller swaps the entire local slides array. */
+  onAllSlidesChange: (next: Slide[], newVersion: number) => void;
 }
 
 const QUICK_CHIPS_HE: string[] = [
@@ -39,6 +43,14 @@ const QUICK_CHIPS_HE: string[] = [
   "יישר למרכז",
   "יישר לימין",
   "החזר ברירת מחדל",
+];
+
+const QUICK_CHIPS_ALL_HE: string[] = [
+  "תגדיל את הגוף בכל השקופיות",
+  "תקטין את הכותרות בכל השקופיות",
+  "תסתיר את ה-eyebrow בכל השקופיות",
+  "תסתיר את מספר השלב בכל השקופיות",
+  "החזר ברירת מחדל בכל השקופיות",
 ];
 
 const USD_TO_ILS = 3.7;
@@ -67,6 +79,7 @@ export function SlideEditChat({
   lang,
   slidesVersion,
   onSlideChange,
+  onAllSlidesChange,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<ChatRow[]>([]);
@@ -75,8 +88,9 @@ export function SlideEditChat({
   const [error, setError] = useState<string | null>(null);
   const [lastCost, setLastCost] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [listening, setListening] = useState(false);
-  const recogRef = useRef<unknown>(null);
+  // Two states only — `this_slide` (default, AI may broaden if user says so)
+  // and `all_slides` (locked carousel scope, AI must apply to every slide).
+  const [scope, setScope] = useState<EditScope>("this_slide");
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   // Reload chat history whenever the active slide / language / carousel changes.
@@ -134,6 +148,9 @@ export function SlideEditChat({
           lang,
           message: trimmed,
           slidesVersion,
+          // Only forward the toggle when the user explicitly locked it to all.
+          // Default `this_slide` lets the AI broaden when the user clearly says so.
+          lockedScope: scope === "all_slides" ? "all_slides" : undefined,
         });
         if (!result.ok) {
           setError(result.message);
@@ -145,7 +162,11 @@ export function SlideEditChat({
         setHistory(rows);
         setOptimistic([]);
         setLastCost(formatCostILS(result.cost.input_tokens, result.cost.output_tokens));
-        onSlideChange(result.mergedSlide, result.newSlidesVersion);
+        if (result.appliedScope === "all_slides" && result.mergedSlides) {
+          onAllSlidesChange(result.mergedSlides, result.newSlidesVersion);
+        } else if (result.mergedSlide) {
+          onSlideChange(result.mergedSlide, result.newSlidesVersion);
+        }
       });
     },
     [
@@ -154,7 +175,9 @@ export function SlideEditChat({
       slideIdx,
       lang,
       slidesVersion,
+      scope,
       onSlideChange,
+      onAllSlidesChange,
     ],
   );
 
@@ -174,56 +197,30 @@ export function SlideEditChat({
       }
       const rows = await loadSlideChatAction(carouselId, slideIdx, lang);
       setHistory(rows);
-      onSlideChange(result.mergedSlide, result.newSlidesVersion);
+      if (result.appliedScope === "all_slides" && result.mergedSlides) {
+        onAllSlidesChange(result.mergedSlides, result.newSlidesVersion);
+      } else if (result.mergedSlide) {
+        onSlideChange(result.mergedSlide, result.newSlidesVersion);
+      }
     });
-  }, [pending, carouselId, slideIdx, lang, slidesVersion, onSlideChange]);
-
-  // Hebrew dictation via Web Speech API. Silently no-ops on Safari/Firefox.
-  const toggleMic = useCallback(() => {
-    if (typeof window === "undefined") return;
-    type SpeechCtor = new () => {
-      lang: string;
-      continuous: boolean;
-      interimResults: boolean;
-      start: () => void;
-      stop: () => void;
-      onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void;
-      onend: () => void;
-      onerror: () => void;
-    };
-    const w = window as unknown as { SpeechRecognition?: SpeechCtor; webkitSpeechRecognition?: SpeechCtor };
-    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
-    if (!Ctor) return;
-    if (listening && recogRef.current) {
-      (recogRef.current as { stop: () => void }).stop();
-      return;
-    }
-    const recognition = new Ctor();
-    recognition.lang = "he-IL";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.onresult = (e) => {
-      const transcript = e.results[0]?.[0]?.transcript ?? "";
-      setInput((cur) => (cur ? cur + " " + transcript : transcript));
-    };
-    recognition.onend = () => {
-      setListening(false);
-      recogRef.current = null;
-    };
-    recognition.onerror = () => {
-      setListening(false);
-      recogRef.current = null;
-    };
-    recogRef.current = recognition;
-    setListening(true);
-    recognition.start();
-  }, [listening]);
+  }, [
+    pending,
+    carouselId,
+    slideIdx,
+    lang,
+    slidesVersion,
+    onSlideChange,
+    onAllSlidesChange,
+  ]);
 
   const merged = useMemo<(ChatRow | OptimisticBubble)[]>(
     () => [...history, ...optimistic],
     [history, optimistic],
   );
   const slideNumber = slide.n ?? slideIdx + 1;
+  const placeholder =
+    scope === "all_slides" ? "מה לשנות בכל השקופיות?" : "מה לשנות בשקופית?";
+  const chips = scope === "all_slides" ? QUICK_CHIPS_ALL_HE : QUICK_CHIPS_HE;
 
   return (
     <>
@@ -242,96 +239,124 @@ export function SlideEditChat({
           className="fixed bottom-0 left-0 top-0 z-50 flex w-[440px] max-w-[95vw] flex-col border-l border-[var(--rule)] bg-[var(--bg-card)] text-[var(--ink)] shadow-2xl shadow-black/60"
         >
           {/* Header */}
-          <header className="flex items-center justify-between gap-3 border-b border-[var(--rule)] px-4 py-3">
-            <div className="flex items-center gap-3">
-              <div
-                className="overflow-hidden rounded-md border border-[var(--rule)]"
-                style={{ width: 56, height: 70 }}
-              >
+          <header className="flex flex-col gap-3 border-b border-[var(--rule)] px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
                 <div
-                  style={{
-                    width: 1080,
-                    height: 1350,
-                    transform: `scale(${56 / 1080})`,
-                    transformOrigin: "top left",
-                  }}
+                  className="overflow-hidden rounded-md border border-[var(--rule)]"
+                  style={{ width: 56, height: 70 }}
                 >
-                  <SlideCanvas
-                    slide={slide}
-                    lang={lang}
-                    totalSlides={totalSlides}
-                  />
+                  <div
+                    style={{
+                      width: 1080,
+                      height: 1350,
+                      transform: `scale(${56 / 1080})`,
+                      transformOrigin: "top left",
+                    }}
+                  >
+                    <SlideCanvas
+                      slide={slide}
+                      lang={lang}
+                      totalSlides={totalSlides}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-semibold text-[var(--ink)]">
+                    עריכת שקופית #{slideNumber}
+                  </p>
+                  <p className="text-xs text-[var(--cream-mute)]">
+                    {lang === "he" ? "עברית" : "אנגלית"}
+                  </p>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <p className="text-sm font-semibold text-[var(--ink)]">
-                  עריכת שקופית #{slideNumber}
-                </p>
-                <p className="text-xs text-[var(--cream-mute)]">
-                  {lang === "he" ? "עברית" : "אנגלית"}
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-full p-2 text-[var(--cream-mute)] hover:bg-[var(--bg-card-2)] hover:text-[var(--ink)]"
+                aria-label="סגור"
+              >
+                ✕
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="rounded-full p-2 text-[var(--cream-mute)] hover:bg-[var(--bg-card-2)] hover:text-[var(--ink)]"
-              aria-label="סגור"
+
+            {/* Scope segmented control */}
+            <div
+              role="radiogroup"
+              aria-label="סקופ עריכה"
+              className="flex gap-1 rounded-md border border-[var(--rule)] p-1"
             >
-              ✕
-            </button>
+              <ScopeButton
+                active={scope === "this_slide"}
+                onClick={() => setScope("this_slide")}
+                label="שקופית זו"
+              />
+              <ScopeButton
+                active={scope === "all_slides"}
+                onClick={() => setScope("all_slides")}
+                label="כל השקופיות"
+              />
+            </div>
           </header>
 
           {/* Chat history */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
             {merged.length === 0 ? (
               <div className="rounded-md border border-dashed border-[var(--rule)] p-4 text-sm leading-6 text-[var(--cream-mute)]">
-                כתבו מה לשנות בשקופית. לדוגמה: &quot;תגדיל את הכותרת&quot; או &quot;תקצר את הגוף&quot;.
+                כתבו מה לשנות בשקופית. לדוגמה: &quot;תגדיל את הכותרת&quot;,
+                &quot;תקצר את הגוף&quot;, או &quot;תגדיל את הגוף בכל השקופיות&quot;.
               </div>
             ) : (
               <ul className="flex flex-col gap-3">
-                {merged.map((m) => (
-                  <li
-                    key={m.id}
-                    className={
-                      m.role === "user"
-                        ? "self-end max-w-[85%]"
-                        : "self-start max-w-[90%]"
-                    }
-                  >
-                    <div
+                {merged.map((m) => {
+                  const chatRow = "scope" in m ? m : null;
+                  const isAllSlides =
+                    chatRow?.scope === "all_slides" &&
+                    chatRow.role === "assistant";
+                  return (
+                    <li
+                      key={m.id}
                       className={
                         m.role === "user"
-                          ? "rounded-2xl rounded-bl-md bg-[var(--gold-deep)] px-3 py-2 text-sm text-[var(--ink)]"
-                          : "rounded-2xl rounded-br-md bg-[var(--bg-card-2)] px-3 py-2 text-sm text-[var(--ink)]"
+                          ? "self-end max-w-[85%]"
+                          : "self-start max-w-[90%]"
                       }
                     >
-                      {m.content}
-                    </div>
-                    {"diff_labels" in m && m.diff_labels && m.diff_labels.length > 0 ? (
-                      <p className="mt-1 text-xs text-[var(--gold-warm)]">
-                        שיניתי: {m.diff_labels.join(", ")}
-                      </p>
-                    ) : null}
-                    {"is_revertable" in m && m.is_revertable ? (
-                      <button
-                        type="button"
-                        onClick={revertLast}
-                        disabled={pending}
-                        className="mt-1 rounded border border-[var(--rule)] px-2 py-1 text-xs text-[var(--cream-mute)] hover:text-[var(--ink)] disabled:opacity-50"
+                      <div
+                        className={
+                          m.role === "user"
+                            ? "rounded-2xl rounded-bl-md bg-[var(--gold-deep)] px-3 py-2 text-sm text-[var(--ink)]"
+                            : "rounded-2xl rounded-br-md bg-[var(--bg-card-2)] px-3 py-2 text-sm text-[var(--ink)]"
+                        }
                       >
-                        בטל שינוי
-                      </button>
-                    ) : null}
-                  </li>
-                ))}
+                        {m.content}
+                      </div>
+                      {chatRow?.diff_labels && chatRow.diff_labels.length > 0 ? (
+                        <p className="mt-1 text-xs text-[var(--gold-warm)]">
+                          {isAllSlides ? "שיניתי בכל השקופיות: " : "שיניתי: "}
+                          {chatRow.diff_labels.join(", ")}
+                        </p>
+                      ) : null}
+                      {chatRow?.is_revertable ? (
+                        <button
+                          type="button"
+                          onClick={revertLast}
+                          disabled={pending}
+                          className="mt-1 rounded border border-[var(--rule)] px-2 py-1 text-xs text-[var(--cream-mute)] hover:text-[var(--ink)] disabled:opacity-50"
+                        >
+                          בטל שינוי
+                        </button>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
 
           {/* Quick chips */}
           <div className="flex flex-wrap gap-2 border-t border-[var(--rule)] px-4 py-2">
-            {QUICK_CHIPS_HE.map((chip) => (
+            {chips.map((chip) => (
               <button
                 key={chip}
                 type="button"
@@ -370,26 +395,12 @@ export function SlideEditChat({
                   send(input);
                 }
               }}
-              placeholder="מה לשנות בשקופית?"
+              placeholder={placeholder}
               rows={2}
               className="min-h-[44px] flex-1 resize-none rounded-md border border-[var(--rule)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--cream-faint)] focus:border-[var(--gold-warm)] focus:outline-none"
               disabled={pending}
               dir="rtl"
             />
-            <button
-              type="button"
-              onClick={toggleMic}
-              className={
-                "rounded-md border px-3 py-2 text-sm " +
-                (listening
-                  ? "border-[var(--gold-warm)] bg-[var(--gold-warm)] text-[var(--bg)]"
-                  : "border-[var(--rule)] text-[var(--cream-soft)] hover:bg-[var(--bg-card-2)]")
-              }
-              aria-label={listening ? "עצור הקלטה" : "הקלט בעברית"}
-              title={listening ? "עצור הקלטה" : "הקלט בעברית"}
-            >
-              🎤
-            </button>
             <button
               type="submit"
               disabled={pending || !input.trim()}
@@ -407,5 +418,32 @@ export function SlideEditChat({
         </aside>
       ) : null}
     </>
+  );
+}
+
+function ScopeButton({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={active}
+      onClick={onClick}
+      className={
+        "flex-1 rounded px-3 py-1.5 text-xs font-medium transition-colors " +
+        (active
+          ? "bg-[var(--gold-warm)] text-[var(--bg)]"
+          : "text-[var(--cream-soft)] hover:bg-[var(--bg-card-2)]")
+      }
+    >
+      {label}
+    </button>
   );
 }

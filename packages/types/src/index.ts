@@ -50,6 +50,11 @@ export interface Slide {
   style?: SlideStyle;
 }
 
+// "this_slide" → patch lands on the active slide only (default).
+// "all_slides" → patch is mergeSlide'd over every slide in the carousel.
+// Server enforces that all_slides is restricted to style + nullable text fields.
+export type EditScope = "this_slide" | "all_slides";
+
 // Shape returned by the chat editor's `apply_slide_edit` tool. Strict shallow
 // partial of the editable surface — anything not listed cannot be touched.
 export interface SlidePatch {
@@ -60,6 +65,7 @@ export interface SlidePatch {
   body_emphasis?: string[];
   step_number?: string | null;
   style?: Partial<SlideStyle>;
+  scope?: EditScope;
 }
 
 export interface Carousel {

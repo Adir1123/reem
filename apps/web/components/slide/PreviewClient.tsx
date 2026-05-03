@@ -38,6 +38,15 @@ export function PreviewClient({
     [activeIdx],
   );
 
+  // Cross-slide edit committed — replace the whole array in one shot.
+  const handleAllSlidesChange = useCallback(
+    (next: Slide[], newVersion: number) => {
+      setSlides(next);
+      setVersion(newVersion);
+    },
+    [],
+  );
+
   const activeSlide = slides[activeIdx];
 
   return (
@@ -57,6 +66,7 @@ export function PreviewClient({
           lang={lang}
           slidesVersion={version}
           onSlideChange={handleSlideChange}
+          onAllSlidesChange={handleAllSlidesChange}
         />
       ) : null}
     </>

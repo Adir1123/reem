@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import type Anthropic from "@anthropic-ai/sdk";
-import type { Slide, SlidePatch, Language } from "@reem/types";
+import type { EditScope, Slide, SlidePatch, Language } from "@reem/types";
 import { getServiceClient } from "@/lib/supabase-server";
 import { getAnthropicClient, SLIDE_EDITOR_MODEL } from "@/lib/anthropic";
 import {
@@ -15,6 +15,9 @@ import {
   validateHebrewText,
   sanitizeHebrewText,
   diffSlideHebrew,
+  resolveScope,
+  assertCrossSlideAllowed,
+  CrossSlideTextError,
 } from "@/lib/slideValidation";
 
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -26,11 +29,20 @@ function requireClientId(): string {
   return CLIENT_ID;
 }
 
+// DB column stores 'slide' / 'carousel'. Public type uses friendlier names.
+function dbScope(s: EditScope): "slide" | "carousel" {
+  return s === "all_slides" ? "carousel" : "slide";
+}
+function uiScope(s: "slide" | "carousel"): EditScope {
+  return s === "carousel" ? "all_slides" : "this_slide";
+}
+
 export interface ChatRow {
   id: string;
   role: "user" | "assistant";
   content: string;
   patch_json: SlidePatch | null;
+  scope: EditScope;
   created_at: string;
   // Hebrew labels for the edit-summary chip (e.g. ["כותרת","גודל גוף"]).
   diff_labels: string[] | null;
@@ -45,30 +57,45 @@ interface SlideChatRow {
   content: string;
   patch_json: SlidePatch | null;
   pre_slide_json: Slide | null;
+  pre_slides_json: Slide[] | null;
+  scope: "slide" | "carousel";
   created_at: string;
 }
 
 function toChatRows(rows: SlideChatRow[]): ChatRow[] {
-  // Mark the latest assistant row that carries a patch as revertable.
+  // Mark the latest assistant row that carries a patch + a usable snapshot
+  // (per-slide OR carousel) as revertable.
   let latestRevertableId: string | null = null;
   for (let i = rows.length - 1; i >= 0; i--) {
     const r = rows[i];
-    if (r.role === "assistant" && r.patch_json && r.pre_slide_json) {
+    if (
+      r.role === "assistant" &&
+      r.patch_json &&
+      (r.pre_slide_json || (r.pre_slides_json && r.pre_slides_json.length > 0))
+    ) {
       latestRevertableId = r.id;
       break;
     }
   }
   return rows.map((r) => {
     let diff: string[] | null = null;
-    if (r.role === "assistant" && r.patch_json && r.pre_slide_json) {
-      const merged = mergeSlide(r.pre_slide_json, r.patch_json);
-      diff = diffSlideHebrew(r.pre_slide_json, merged);
+    if (r.role === "assistant" && r.patch_json) {
+      const refSlide =
+        r.pre_slide_json ??
+        (r.pre_slides_json && r.pre_slides_json.length > 0
+          ? r.pre_slides_json[0]
+          : null);
+      if (refSlide) {
+        const merged = mergeSlide(refSlide, r.patch_json);
+        diff = diffSlideHebrew(refSlide, merged);
+      }
     }
     return {
       id: r.id,
       role: r.role,
       content: r.content,
       patch_json: r.patch_json,
+      scope: uiScope(r.scope),
       created_at: r.created_at,
       diff_labels: diff,
       is_revertable: r.id === latestRevertableId,
@@ -88,7 +115,9 @@ export async function loadSlideChatAction(
   const sb = getServiceClient();
   const { data, error } = await sb
     .from("slide_chats")
-    .select("id, role, content, patch_json, pre_slide_json, created_at")
+    .select(
+      "id, role, content, patch_json, pre_slide_json, pre_slides_json, scope, created_at",
+    )
     .eq("client_id", clientId)
     .eq("carousel_id", carouselId)
     .eq("slide_idx", slideIdx)
@@ -104,13 +133,21 @@ export async function loadSlideChatAction(
 export type EditSlideResult =
   | {
       ok: true;
-      mergedSlide: Slide;
+      // For this_slide: only mergedSlide is set. For all_slides: mergedSlides
+      // is the full updated array. Client picks based on appliedScope.
+      mergedSlide: Slide | null;
+      mergedSlides: Slide[] | null;
+      appliedScope: EditScope;
       newSlidesVersion: number;
       assistantText: string;
       diffLabels: string[];
       cost: { input_tokens: number; output_tokens: number };
     }
-  | { ok: false; code: "version_conflict" | "model_refused" | "internal"; message: string };
+  | {
+      ok: false;
+      code: "version_conflict" | "model_refused" | "internal";
+      message: string;
+    };
 
 export async function editSlideAction(input: {
   carouselId: string;
@@ -118,6 +155,7 @@ export async function editSlideAction(input: {
   lang: Language;
   message: string;
   slidesVersion: number;
+  lockedScope?: EditScope;
 }): Promise<EditSlideResult> {
   const clientId = requireClientId();
   if (!input.message.trim()) {
@@ -175,6 +213,7 @@ export async function editSlideAction(input: {
   const system = buildEditorSystem(
     input.lang,
     JSON.stringify(currentSlide, null, 2),
+    input.lockedScope,
   );
   const messages: Anthropic.MessageParam[] = [
     ...history.map((h) => ({ role: h.role, content: h.content })),
@@ -220,24 +259,41 @@ export async function editSlideAction(input: {
   }
 
   // 5. Validate + merge the patch (if any).
-  let mergedSlide: Slide = currentSlide;
   let patch: SlidePatch | null = null;
+  let appliedScope: EditScope = input.lockedScope ?? "this_slide";
+  let mergedSingle: Slide | null = null;
+  let mergedAll: Slide[] | null = null;
+
   if (toolInput.patch !== undefined && toolInput.patch !== null) {
     const parsed = SlidePatchSchema.safeParse(toolInput.patch);
     if (!parsed.success) {
-      // Surface as a refusal — the model gave us garbage, don't apply it.
       const msg =
         assistantText ||
         "לא הצלחתי להחיל את השינוי. נסח את הבקשה אחרת.";
-      await persistTurn(sb, clientId, input, msg, null, null, usage);
+      await persistTurn(sb, clientId, input, msg, null, null, null, "slide", usage);
       revalidatePath("/preview");
-      return {
-        ok: false,
-        code: "model_refused",
-        message: msg,
-      };
+      return { ok: false, code: "model_refused", message: msg };
     }
     patch = parsed.data;
+    appliedScope = resolveScope(patch.scope, input.lockedScope);
+
+    // Cross-slide guard: text fields are not allowed when scope=all_slides.
+    if (appliedScope === "all_slides") {
+      try {
+        // Fold the resolved scope into the patch so the guard sees it.
+        assertCrossSlideAllowed({ ...patch, scope: "all_slides" });
+      } catch (err) {
+        if (err instanceof CrossSlideTextError) {
+          const msg =
+            "שינויי תוכן עובדים על שקופית אחת בלבד. אם רוצה — נסח את זה שקופית-שקופית.";
+          await persistTurn(sb, clientId, input, msg, null, null, null, "slide", usage);
+          revalidatePath("/preview");
+          return { ok: false, code: "model_refused", message: msg };
+        }
+        throw err;
+      }
+    }
+
     if (input.lang === "he") {
       const textFields: (keyof SlidePatch)[] = [
         "headline",
@@ -252,12 +308,35 @@ export async function editSlideAction(input: {
         }
       }
     }
-    mergedSlide = mergeSlide(currentSlide, patch);
   }
 
-  // 6. CAS update — only succeeds if slides_version still matches.
-  const nextSlides = [...slides];
-  nextSlides[input.slideIdx] = mergedSlide;
+  // 6. Apply patch by scope, then CAS.
+  let nextSlides: Slide[];
+  if (patch && appliedScope === "all_slides") {
+    mergedAll = slides.map((s) => mergeSlide(s, patch as SlidePatch));
+    nextSlides = mergedAll;
+  } else if (patch) {
+    mergedSingle = mergeSlide(currentSlide, patch);
+    nextSlides = slides.map((s, i) => (i === input.slideIdx ? mergedSingle! : s));
+  } else {
+    // No patch — chitchat / refusal. Skip the CAS round-trip; persist the
+    // assistant text so the chat shows it, then return ok=false implicitly
+    // by falling through with a no-op result. Treat as text-only success so
+    // the conversation flows.
+    await persistTurn(sb, clientId, input, assistantText, null, null, null, "slide", usage);
+    revalidatePath("/preview");
+    return {
+      ok: true,
+      mergedSlide: null,
+      mergedSlides: null,
+      appliedScope: "this_slide",
+      newSlidesVersion: carousel.slides_version,
+      assistantText,
+      diffLabels: [],
+      cost: usage,
+    };
+  }
+
   const newVersion = carousel.slides_version + 1;
   const { data: casRows, error: casErr } = await sb
     .from("carousels")
@@ -284,16 +363,30 @@ export async function editSlideAction(input: {
     input,
     assistantText,
     patch,
-    patch ? currentSlide : null,
+    appliedScope === "this_slide" ? currentSlide : null,
+    appliedScope === "all_slides" ? slides : null,
+    dbScope(appliedScope),
     usage,
   );
 
   revalidatePath("/preview");
 
-  const diffLabels = patch ? diffSlideHebrew(currentSlide, mergedSlide) : [];
+  // Diff labels — always per-slide; the chat UI prefixes with "בכל השקופיות"
+  // when scope=all_slides.
+  const diffLabels = patch
+    ? diffSlideHebrew(
+        currentSlide,
+        appliedScope === "all_slides"
+          ? mergeSlide(currentSlide, patch)
+          : mergedSingle!,
+      )
+    : [];
+
   return {
     ok: true,
-    mergedSlide,
+    mergedSlide: mergedSingle,
+    mergedSlides: mergedAll,
+    appliedScope,
     newSlidesVersion: newVersion,
     assistantText,
     diffLabels,
@@ -308,6 +401,8 @@ async function persistTurn(
   assistantText: string,
   patch: SlidePatch | null,
   preSlide: Slide | null,
+  preSlides: Slide[] | null,
+  scope: "slide" | "carousel",
   usage: { input_tokens: number; output_tokens: number },
 ): Promise<void> {
   const base = {
@@ -317,13 +412,15 @@ async function persistTurn(
     lang: input.lang,
   };
   await sb.from("slide_chats").insert([
-    { ...base, role: "user", content: input.message },
+    { ...base, role: "user", content: input.message, scope },
     {
       ...base,
       role: "assistant",
       content: assistantText,
       patch_json: patch,
       pre_slide_json: preSlide,
+      pre_slides_json: preSlides,
+      scope,
       input_tokens: usage.input_tokens,
       output_tokens: usage.output_tokens,
     },
@@ -331,8 +428,8 @@ async function persistTurn(
 }
 
 // -------------------------------------------------------------------------
-// revertLastSlideEditAction — restores the slide JSON from the latest
-// assistant row's pre_slide_json snapshot. No model call.
+// revertLastSlideEditAction — restore from whichever snapshot the latest
+// assistant row carries (single slide OR full slides array). No model call.
 // -------------------------------------------------------------------------
 export async function revertLastSlideEditAction(input: {
   carouselId: string;
@@ -344,25 +441,25 @@ export async function revertLastSlideEditAction(input: {
   const sb = getServiceClient();
   const slidesCol = input.lang === "he" ? "slides_he" : "slides_en";
 
+  // Pull the most recent assistant row that has *some* snapshot.
   const { data: latest, error: latestErr } = await sb
     .from("slide_chats")
-    .select("id, pre_slide_json")
+    .select("id, scope, pre_slide_json, pre_slides_json")
     .eq("client_id", clientId)
     .eq("carousel_id", input.carouselId)
     .eq("slide_idx", input.slideIdx)
     .eq("lang", input.lang)
     .eq("role", "assistant")
-    .not("pre_slide_json", "is", null)
+    .or("pre_slide_json.not.is.null,pre_slides_json.not.is.null")
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (latestErr) {
     return { ok: false, code: "internal", message: latestErr.message };
   }
-  if (!latest?.pre_slide_json) {
+  if (!latest) {
     return { ok: false, code: "internal", message: "אין שינוי לבטל" };
   }
-  const restored = latest.pre_slide_json as Slide;
 
   const { data: carousel, error: loadErr } = await sb
     .from("carousels")
@@ -386,10 +483,26 @@ export async function revertLastSlideEditAction(input: {
   }
   const slides = (carousel[slidesCol] as Slide[]) ?? [];
   const currentSlide = slides[input.slideIdx];
-  const nextSlides = [...slides];
-  nextSlides[input.slideIdx] = restored;
-  const newVersion = carousel.slides_version + 1;
 
+  let nextSlides: Slide[];
+  let appliedScope: EditScope;
+  let mergedSingle: Slide | null = null;
+  let mergedAll: Slide[] | null = null;
+
+  if (latest.scope === "carousel" && latest.pre_slides_json) {
+    nextSlides = latest.pre_slides_json as Slide[];
+    appliedScope = "all_slides";
+    mergedAll = nextSlides;
+  } else if (latest.pre_slide_json) {
+    const restored = latest.pre_slide_json as Slide;
+    nextSlides = slides.map((s, i) => (i === input.slideIdx ? restored : s));
+    appliedScope = "this_slide";
+    mergedSingle = restored;
+  } else {
+    return { ok: false, code: "internal", message: "אין שינוי לבטל" };
+  }
+
+  const newVersion = carousel.slides_version + 1;
   const { data: casRows, error: casErr } = await sb
     .from("carousels")
     .update({ [slidesCol]: nextSlides, slides_version: newVersion })
@@ -409,10 +522,12 @@ export async function revertLastSlideEditAction(input: {
   }
 
   // Log the revert as an assistant turn so the chat history makes sense.
-  // We snapshot the *current* (pre-revert) slide so the user can re-revert
-  // (i.e. redo) by clicking בטל שינוי again on this very row.
-  const revertText = "בוטל השינוי האחרון.";
-  const diff = diffSlideHebrew(currentSlide, restored);
+  // Snapshot the *current* (pre-revert) state so the user can re-revert
+  // (i.e. redo) by clicking בטל שינוי again on this row.
+  const revertText =
+    appliedScope === "all_slides"
+      ? "בוטל השינוי האחרון בכל השקופיות."
+      : "בוטל השינוי האחרון.";
   await sb.from("slide_chats").insert([
     {
       client_id: clientId,
@@ -421,17 +536,28 @@ export async function revertLastSlideEditAction(input: {
       lang: input.lang,
       role: "assistant",
       content: revertText,
-      patch_json: restored,
-      pre_slide_json: currentSlide,
+      patch_json: appliedScope === "all_slides" ? mergedAll : mergedSingle,
+      pre_slide_json: appliedScope === "this_slide" ? currentSlide : null,
+      pre_slides_json: appliedScope === "all_slides" ? slides : null,
+      scope: dbScope(appliedScope),
       input_tokens: 0,
       output_tokens: 0,
     },
   ]);
 
   revalidatePath("/preview");
+
+  // For diff display — compare current slide against restored target.
+  const refTarget =
+    mergedSingle ??
+    (mergedAll ? mergedAll[input.slideIdx] : currentSlide);
+  const diff = diffSlideHebrew(currentSlide, refTarget);
+
   return {
     ok: true,
-    mergedSlide: restored,
+    mergedSlide: mergedSingle,
+    mergedSlides: mergedAll,
+    appliedScope,
     newSlidesVersion: newVersion,
     assistantText: revertText,
     diffLabels: diff,

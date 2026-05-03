@@ -3,7 +3,7 @@
 // apps/trigger/src/python/scripts/generate_carousels.py — keep both in sync.
 
 import { z } from "zod";
-import type { Slide, SlidePatch, SlideStyle } from "@reem/types";
+import type { EditScope, Slide, SlidePatch, SlideStyle } from "@reem/types";
 
 // ---------------------------------------------------------------------------
 // Schemas — strict shape used to validate the model's tool input.
@@ -30,8 +30,48 @@ export const SlidePatchSchema = z
     eyebrow: z.string().nullable().optional(),
     step_number: z.string().nullable().optional(),
     style: SlideStyleSchema.optional(),
+    scope: z.enum(["this_slide", "all_slides"]).optional(),
   })
   .strict();
+
+// ---------------------------------------------------------------------------
+// Cross-slide guard — when scope=all_slides, the patch may only carry style
+// fields and nullable text resets. Duplicating the same headline/body across
+// 7 different slides is never the intent and would destroy the carousel.
+// ---------------------------------------------------------------------------
+
+export class CrossSlideTextError extends Error {
+  constructor(field: string) {
+    super(`cross-slide patch may not set non-null text field \`${field}\``);
+    this.name = "CrossSlideTextError";
+  }
+}
+
+export function assertCrossSlideAllowed(patch: SlidePatch): void {
+  if (patch.scope !== "all_slides") return;
+  // Non-null text fields are forbidden cross-slide. Explicit nulls (resets
+  // like eyebrow=null) are fine — they're idempotent across slides.
+  if (typeof patch.headline === "string") throw new CrossSlideTextError("headline");
+  if (typeof patch.body === "string") throw new CrossSlideTextError("body");
+  if (typeof patch.eyebrow === "string") throw new CrossSlideTextError("eyebrow");
+  if (typeof patch.headline_italic === "string") {
+    throw new CrossSlideTextError("headline_italic");
+  }
+  if (typeof patch.step_number === "string") {
+    throw new CrossSlideTextError("step_number");
+  }
+}
+
+// Resolves the effective scope a turn will run with. Locked scope from the
+// user toggle wins over whatever the model emitted; otherwise we trust the
+// model's choice (defaulting to this_slide).
+export function resolveScope(
+  modelScope: EditScope | undefined,
+  lockedScope: EditScope | undefined,
+): EditScope {
+  if (lockedScope) return lockedScope;
+  return modelScope ?? "this_slide";
+}
 
 // ---------------------------------------------------------------------------
 // Hebrew rules — keep aligned with HEBREW_* constants in

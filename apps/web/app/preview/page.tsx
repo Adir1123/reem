@@ -1,10 +1,28 @@
 import Link from "next/link";
 import { getServiceClient } from "@/lib/supabase-server";
 import { PreviewClient } from "@/components/slide/PreviewClient";
+import { PageHeader } from "@/components/reem/PageHeader";
+import { CarouselStatusBadge } from "@/components/StatusBadge";
 import { DownloadButton } from "@/components/phone/DownloadButton";
 import { CopyButton } from "@/components/CopyButton";
 import { getPalette } from "@/components/slide/palette";
-import type { Slide, Language, CarouselStatus } from "@reem/types";
+import type {
+  Slide,
+  Language,
+  CarouselStatus,
+  CarouselAngle,
+} from "@reem/types";
+
+// Hebrew labels for the carousel angle. Used in the page sub-header so the
+// reader instantly sees what kind of carousel this is without thinking in
+// English.
+const ANGLE_HE: Record<CarouselAngle, string> = {
+  "hook-driven": "פתיח חזק",
+  practical: "פרקטי",
+  "counter-frame": "מסגור הפוך",
+  story: "סיפור",
+  data: "נתונים",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -69,39 +87,74 @@ export default async function PreviewPage({ searchParams }: Props) {
   const heHref = `/preview?${heParams.toString()}`;
   const enHref = `/preview?${enParams.toString()}`;
 
+  const angleLabel = ANGLE_HE[data.angle as CarouselAngle] ?? data.angle;
+  const subText = `${angleLabel} · ${slides.length} שקופיות`;
+  const runShort = (data.run_id as string).slice(-6);
+  const createdAt = new Date(data.created_at as string).toLocaleDateString(
+    "he-IL",
+    { day: "2-digit", month: "2-digit", year: "numeric" },
+  );
+
   return (
     <main className="reem-page reem-page--preview flex flex-col items-center" dir="rtl">
-      <div className="mb-8 flex items-center gap-4 text-sm">
-        <Link
-          href={heHref}
-          className={
-            lang === "he"
-              ? "text-cream font-medium"
-              : "text-cream/45 hover:text-cream"
-          }
-        >
-          עברית
+      {/* Top bar: breadcrumb (back to library) + segmented language toggle.
+          This is the cheapest "we navigated" signal — the user always sees
+          which page they're on AND a one-click way out. */}
+      <div className="reem-preview-topbar">
+        <Link href="/carousels" className="reem-preview-breadcrumb">
+          <span aria-hidden="true">←</span>
+          <span>הספרייה שלי</span>
         </Link>
-        <span className="text-cream/30">|</span>
-        <Link
-          href={enHref}
-          className={
-            lang === "en"
-              ? "text-cream font-medium"
-              : "text-cream/45 hover:text-cream"
-          }
-        >
-          English
-        </Link>
+        <div className="reem-preview-segment" role="group" aria-label="שפה">
+          <Link
+            href={heHref}
+            className={
+              "reem-preview-segment-btn" +
+              (lang === "he" ? " is-active" : "")
+            }
+          >
+            עברית
+          </Link>
+          <Link
+            href={enHref}
+            className={
+              "reem-preview-segment-btn" +
+              (lang === "en" ? " is-active" : "")
+            }
+          >
+            English
+          </Link>
+        </div>
       </div>
 
-      <PreviewClient
-        carouselId={data.id}
-        initialSlides={slides}
-        lang={lang}
-        initialSlidesVersion={data.slides_version ?? 0}
-        palette={palette}
+      <PageHeader
+        eyebrow="קרוסלה"
+        title={data.concept}
+        sub={subText}
+        ornament
       />
+
+      {/* Status pill — small but immediate signal that this carousel has its
+          own state, separate from the library list. */}
+      <div className="reem-preview-status">
+        <CarouselStatusBadge status={status} />
+      </div>
+
+      {/* The slide stack lives inside a frame with two thin gold rules
+          flanking it vertically, anchoring the canvas visually. The frame
+          rules are the signature visual move that distinguishes /preview
+          from /carousels — same palette, same deck, but framed. */}
+      <div className="reem-preview-frame">
+        <span className="reem-preview-frame-rule" aria-hidden="true" />
+        <PreviewClient
+          carouselId={data.id}
+          initialSlides={slides}
+          lang={lang}
+          initialSlidesVersion={data.slides_version ?? 0}
+          palette={palette}
+        />
+        <span className="reem-preview-frame-rule" aria-hidden="true" />
+      </div>
 
       {paletteParam ? (
         <p className="text-cream/55 mt-3 text-xs">
@@ -122,6 +175,10 @@ export default async function PreviewPage({ searchParams }: Props) {
           </pre>
         </section>
       ) : null}
+
+      <p className="reem-preview-meta" dir="ltr">
+        Run #{runShort} · #{(data.idx as number) + 1} · {createdAt}
+      </p>
 
       {slidesHe.length > 0 ? (
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
