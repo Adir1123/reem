@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Slide, Language, SlideStyle } from "@reem/types";
 import { splitHeadline, tokenizeEmphasis } from "./emphasis";
 import { PALETTE_CURRENT, type Palette } from "./palette";
@@ -22,6 +23,14 @@ const SIZE_MAP = {
   ctaHeadline: { sm: 60, md: 72, lg: 84, xl: 96 },
   ctaBody:     { sm: 26, md: 30, lg: 34 },
 } as const;
+
+// Inline padding from the canvas edge for the content block. Default
+// "normal" → 80, the previous hardcoded value.
+const PADDING_MAP = { tight: 48, normal: 80, wide: 128 } as const;
+
+// Vertical gap between eyebrow / headline / body inside the content block.
+// Default "normal" → 28, the previous hardcoded value.
+const GAP_MAP = { tight: 16, normal: 28, loose: 44 } as const;
 
 // The renderer. Fixed 1080x1350 canvas. Parent wrappers scale it down for
 // on-screen preview; for PNG export we pass the un-transformed node to
@@ -179,17 +188,29 @@ function ContentBlock({
   const headlineAlign = style.headline_align;
   const bodyAlign = style.body_align;
   const showEyebrow = !!slide.eyebrow && !style.hide_eyebrow;
+  const padding = PADDING_MAP[style.inline_padding ?? "normal"];
+  const gap = GAP_MAP[style.gap ?? "normal"];
+  // Vertical anchor. Default "bottom" preserves the original layout exactly
+  // (`bottom: 160`). "top" clears the PFT mark + step-number ghost (~y=200);
+  // "middle" centers via translateY(-50%).
+  const position = style.content_position ?? "bottom";
+  const positionStyle: CSSProperties =
+    position === "top"
+      ? { top: 220 }
+      : position === "middle"
+        ? { top: "50%", transform: "translateY(-50%)" }
+        : { bottom: 160 };
 
   return (
     <div
       style={{
         position: "absolute",
-        bottom: 160,
-        [inlineStart]: 80,
+        ...positionStyle,
+        [inlineStart]: padding,
         maxWidth: 920,
         display: "flex",
         flexDirection: "column",
-        gap: 28,
+        gap,
       }}
     >
       {showEyebrow ? (

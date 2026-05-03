@@ -23,6 +23,10 @@ export type AlignPreset = "start" | "center" | "end";
 // Optional render-time overlay produced by the per-slide chat editor. Stored
 // inside the existing `Slide` JSONB blob so no DB schema change is needed.
 // Presets only — no raw px or hex — to keep brand drift impossible.
+export type ContentPosition = "top" | "middle" | "bottom";
+export type SpacingPreset = "tight" | "normal" | "loose";
+export type PaddingPreset = "tight" | "normal" | "wide";
+
 export interface SlideStyle {
   headline_size?: SizePreset;
   body_size?: Exclude<SizePreset, "xl">;
@@ -31,6 +35,14 @@ export interface SlideStyle {
   body_align?: AlignPreset;
   hide_eyebrow?: boolean;
   hide_step_number?: boolean;
+  // Vertical anchor for the content block. Default "bottom" matches the
+  // hardcoded `bottom: 160` layout that shipped before this overlay existed.
+  content_position?: ContentPosition;
+  // Spacing between eyebrow / headline / body inside the content block.
+  // Default "normal" → 28px (the previous hardcoded value).
+  gap?: SpacingPreset;
+  // Inline padding from the canvas edge. Default "normal" → 80px.
+  inline_padding?: PaddingPreset;
 }
 
 export interface Slide {

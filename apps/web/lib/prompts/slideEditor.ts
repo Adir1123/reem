@@ -69,6 +69,17 @@ export const EDITOR_PREAMBLE_HE = `אתה עורך שקופיות בכיר עב�
 - \`style.eyebrow_size\`: sm / md
 - \`style.headline_align\`, \`style.body_align\`: start / center / end
 - \`style.hide_eyebrow\`, \`style.hide_step_number\`: true / false
+- \`style.content_position\`: top / middle / bottom (איפה גוש הטקסט יושב על השקופית; ברירת מחדל bottom)
+- \`style.gap\`: tight / normal / loose (מרווח בין eyebrow לכותרת לגוף; ברירת מחדל normal)
+- \`style.inline_padding\`: tight / normal / wide (כמה רווח מהקצה של השקופית; ברירת מחדל normal)
+
+דוגמאות מיפוי שפה → preset:
+- "תעלה את הכותרת" / "תעלה את הטקסט" → \`style.content_position: "top"\`
+- "תוריד את הכותרת" / "תחזיר למטה" → \`style.content_position: "bottom"\`
+- "תמרכז אנכית" → \`style.content_position: "middle"\`
+- "תרחיב מרווחים" → \`style.gap: "loose"\`
+- "תקרב את הטקסט לקצה" → \`style.inline_padding: "tight"\`
+- "תרחיק מהקצה" → \`style.inline_padding: "wide"\`
 
 מה אסור:
 - צבעים, גופנים, גודל בפיקסלים, החלפת תמונת רקע, הוספת אימוג'י, שינוי הסדר של השקופיות, שינוי המספר של השקופית.
@@ -131,6 +142,9 @@ export const APPLY_SLIDE_EDIT_TOOL: Anthropic.Tool = {
               body_align: { enum: ["start", "center", "end"] },
               hide_eyebrow: { type: "boolean" },
               hide_step_number: { type: "boolean" },
+              content_position: { enum: ["top", "middle", "bottom"] },
+              gap: { enum: ["tight", "normal", "loose"] },
+              inline_padding: { enum: ["tight", "normal", "wide"] },
             },
           },
           scope: {

@@ -18,6 +18,9 @@ export const SlideStyleSchema = z
     body_align: z.enum(["start", "center", "end"]).optional(),
     hide_eyebrow: z.boolean().optional(),
     hide_step_number: z.boolean().optional(),
+    content_position: z.enum(["top", "middle", "bottom"]).optional(),
+    gap: z.enum(["tight", "normal", "loose"]).optional(),
+    inline_padding: z.enum(["tight", "normal", "wide"]).optional(),
   })
   .strict();
 
@@ -182,6 +185,9 @@ const STYLE_LABELS_HE: Record<keyof SlideStyle, string> = {
   body_align: "יישור גוף",
   hide_eyebrow: "הסתרת eyebrow",
   hide_step_number: "הסתרת מספר שלב",
+  content_position: "מיקום תוכן",
+  gap: "ריווח",
+  inline_padding: "שוליים",
 };
 
 export function diffSlideHebrew(pre: Slide, post: Slide): string[] {
