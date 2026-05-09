@@ -7,7 +7,11 @@
       "Bash(cp -r /c/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel/references /c/Users/adirg/CC-projects/reem-v2/apps/trigger/src/python/)",
       "Bash(cp /c/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel/requirements.txt /c/Users/adirg/CC-projects/reem-v2/apps/trigger/src/python/)",
       "Bash(cp /c/Users/adirg/CC-projects/reem-v2/.claude/skills/reem-carousel/config.py /c/Users/adirg/CC-projects/reem-v2/apps/trigger/src/python/)",
-      "Bash(cp -r /c/Users/adirg/CC-projects/reem-v2/reem-docs /c/Users/adirg/CC-projects/reem-v2/apps/trigger/src/python/)"
+      "Bash(cp -r /c/Users/adirg/CC-projects/reem-v2/reem-docs /c/Users/adirg/CC-projects/reem-v2/apps/trigger/src/python/)",
+      "Bash(git check-ignore *)",
+      "Bash(git fetch *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
