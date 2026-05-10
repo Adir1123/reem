@@ -896,48 +896,28 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
         usage_c_total["output_tokens"] += (usage_c or {}).get("output_tokens", 0) or 0
         dur_c_total += dur_c or 0
 
+        # Critic only — no auto-rewrite. Scores are persisted on every slide
+        # so the dashboard can surface weak ones; manual fixes happen via the
+        # /preview chat editor. Skipping the rewrite loop keeps the pipeline
+        # within Trigger.dev's free-tier 600s maxDuration.
         if critic_report.get("any_regenerate"):
+            n_flagged = sum(
+                1
+                for c in critic_report.get("carousels", [])
+                for s in (c.get("slides") or [])
+                if s.get("recommend") != "ship"
+            )
             print(
-                "[Pass C] critic flagged at least one slide for regeneration; "
-                "running one more Pass B with critic notes injected.",
+                f"[Pass C] {n_flagged} slide(s) scored < 8 — shipping with "
+                f"critic_report attached for human review (no auto-rewrite).",
                 file=sys.stderr,
             )
-            # Build a compact critic-feedback string the writer can read.
-            critic_notes_md = _format_critic_feedback(critic_report)
-            try:
-                slides_he_by_id, usage_b2, dur_b2 = _pass_b_hebrew_with_feedback(
-                    client, carousels, model, he_exemplar_images, system_blocks,
-                    critic_notes_md,
-                )
-                for c in carousels:
-                    new_slides = slides_he_by_id.get(c.get("id"))
-                    if new_slides:
-                        c["slides_he"] = new_slides
-                        for s in new_slides:
-                            _strip_markdown_emphasis(s)
-                # Re-critic after the rewrite.
-                critic_report2, usage_c2, dur_c2 = _pass_c_critic(client, carousels, knowledge)
-                usage_c_total["input_tokens"] += (usage_c2 or {}).get("input_tokens", 0) or 0
-                usage_c_total["output_tokens"] += (usage_c2 or {}).get("output_tokens", 0) or 0
-                dur_c_total += dur_c2 or 0
-                # Track both rounds in the persisted report so the dashboard
-                # can show "after-rewrite" vs "before-rewrite" if useful.
-                critic_report = {
-                    "round_1": critic_report,
-                    "round_2": critic_report2,
-                    "carousels": critic_report2.get("carousels", []),
-                    "any_regenerate": critic_report2.get("any_regenerate", False),
-                }
-                # Add Pass B retry usage to overall totals.
-                if usage_b2 is not None:
-                    # piggyback onto Pass B usage counters
-                    pass  # we keep dur_b/usage_b unchanged; b2 cost tracked in run_stats below
-                dur_b = (dur_b or 0) + (dur_b2 or 0)
-            except ValueError as e:
-                warnings.append(f"Pass B regeneration after critic failed: {e}")
-                print(f"[Pass B retry] failed: {e}", file=sys.stderr)
+            warnings.append(
+                f"Pass C flagged {n_flagged} slide(s) for human review. "
+                f"See critic_report on the carousel row in DB."
+            )
         else:
-            print("[Pass C] all slides ≥ 8.0 — shipping without rewrite.", file=sys.stderr)
+            print("[Pass C] all slides ≥ 8.0 — shipping clean.", file=sys.stderr)
 
     # Enrich sources with metadata from the input transcripts.
     sources = []

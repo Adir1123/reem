@@ -219,9 +219,11 @@ def run(
         flush=True,
     )
 
-    # 1a. Expand query (Claude Haiku) — turns one topic into 3-5 related
-    #     search phrases for broader candidate-pool coverage.
-    expanded = expand_query(query, n=4)
+    # 1a. Expand query (Claude Haiku) — turns one topic into 1-2 related
+    #     search phrases for broader candidate-pool coverage. Trimmed from 4
+    #     to 2 to fit Trigger.dev free-tier 600s maxDuration; each Apify
+    #     search costs ~30-60s.
+    expanded = expand_query(query, n=2)
     if len(expanded) > 1:
         print(f"[1a/5] Query expansion → {len(expanded)} phrases:", file=sys.stderr)
         for q in expanded:
@@ -320,30 +322,41 @@ def run(
             print(f"         \u00d7 scrape failed: {e}", file=sys.stderr)
             failures.append({"url": url, "error": str(e)})
             continue
-        # Relevance gate (Haiku, ~$0.0005/call) — drop tangential transcripts.
-        verdict = verify_relevance(t.get("transcript", ""), query)
-        v_score = verdict.get("score")
-        v_reason = verdict.get("reason")
-        if (v_score or 0) < 7:
+        # Relevance gate (Haiku, ~$0.0005/call) — only verify the first 2
+        # scrapes per run to fit the 600s budget. Subsequent scrapes are
+        # trusted (ranking + allowlist already filtered hard).
+        verify_budget_used = sum(1 for a in accepted if a.get("_relevance", {}).get("score") is not None)
+        if verify_budget_used < 2:
+            verdict = verify_relevance(t.get("transcript", ""), query)
+            v_score = verdict.get("score")
+            v_reason = verdict.get("reason")
+            if (v_score or 0) < 7:
+                print(
+                    f"         \u00d7 relevance {v_score} \u2014 {v_reason}",
+                    file=sys.stderr,
+                )
+                relevance_drops.append({
+                    "url": url,
+                    "score": v_score,
+                    "reason": v_reason,
+                })
+                continue
+            merged = {**v, **t, "_relevance": verdict}
+            t_chars = t.get("transcript_chars", 0)
             print(
-                f"         \u00d7 relevance {v_score} \u2014 {v_reason}",
+                f"         \u2713 relevance {v_score} \u2014 transcript {t_chars} chars",
                 file=sys.stderr,
             )
-            relevance_drops.append({
-                "url": url,
-                "score": v_score,
-                "reason": v_reason,
-            })
-            continue
-        merged = {**v, **t, "_relevance": verdict}
+        else:
+            merged = {**v, **t, "_relevance": {"score": None, "reason": "not_verified_budget"}}
+            t_chars = t.get("transcript_chars", 0)
+            print(
+                f"         \u2713 scraped (relevance not verified, budget) \u2014 transcript {t_chars} chars",
+                file=sys.stderr,
+            )
         accepted.append(merged)
         if ch:
             seen_channels.add(ch)
-        t_chars = t.get("transcript_chars", 0)
-        print(
-            f"         \u2713 relevance {v_score} \u2014 transcript {t_chars} chars",
-            file=sys.stderr,
-        )
 
     if failures:
         warnings.extend(f"Transcript failed: {f['url']} ({f['error']})" for f in failures)
