@@ -29,6 +29,7 @@ import mimetypes
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -566,8 +567,12 @@ CRITIC_MODEL = "claude-sonnet-4-6"
 def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
     """Pass C — Hebrew quality critic. Scores every Hebrew slide on the 7
     weighted dimensions defined in qa-rubric-he.md and returns a structured
-    report. The pipeline uses this report to decide whether each slide ships
-    or needs regeneration.
+    report.
+
+    Performance: one Sonnet call per carousel scoring all 7 slides at once,
+    with carousels critiqued in parallel. The persisted `critic_report` shape
+    is identical to the per-slide-call version (each slide still becomes one
+    entry in `slides[]` with the same fields).
 
     Returns (critic_report, usage, duration). `critic_report` shape:
       {
@@ -593,7 +598,7 @@ def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
                 "You are a senior Hebrew copy editor for Israeli Instagram. Your job is to "
                 "score every Hebrew slide on a 1-10 scale across 7 weighted dimensions, "
                 "applying the rubric exactly as written. Be honest and specific. "
-                "You are forced to call the `score_slide` tool — do not write prose."
+                "You are forced to call the `score_slides_batch` tool — do not write prose."
             ),
         },
     ]
@@ -601,41 +606,139 @@ def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
     critic_system.extend(_knowledge_to_system_blocks(knowledge, include_rubric=True))
     critic_system[-1] = {**critic_system[-1], "cache_control": {"type": "ephemeral"}}
 
-    # Tool the critic must call. Schema mirrors qa-rubric-he.md output format.
-    tool = {
-        "name": "score_slide",
-        "description": "Apply the qa-rubric-he.md rubric to a single slide and return structured scores.",
+    # Per-slide score shape — identical to the original `score_slide` tool's
+    # input_schema so the persisted critic_report stays unchanged downstream.
+    slide_schema = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["slide_index", "hard_fails", "scores", "weighted_score", "recommend"],
+        "properties": {
+            "slide_index": {"type": "integer", "minimum": 0, "maximum": 6},
+            "hard_fails": {"type": "array", "items": {"type": "string"}},
+            "scores": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "nativeness", "voice_match", "term_correctness",
+                    "bidi_correctness", "punctuation_correctness", "pattern_fit",
+                    "specificity",
+                ],
+                "properties": {
+                    "nativeness": {"type": "number", "minimum": 0, "maximum": 10},
+                    "voice_match": {"type": "number", "minimum": 0, "maximum": 10},
+                    "term_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                    "bidi_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                    "punctuation_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                    "pattern_fit": {"type": "number", "minimum": 0, "maximum": 10},
+                    "specificity": {"type": "number", "minimum": 0, "maximum": 10},
+                },
+            },
+            "weighted_score": {"type": "number", "minimum": 0, "maximum": 10},
+            "recommend": {"enum": ["ship", "consider_regenerate", "regenerate"]},
+            "notes": {"type": "string"},
+        },
+    }
+    batched_tool = {
+        "name": "score_slides_batch",
+        "description": (
+            "Apply the qa-rubric-he.md rubric to ALL slides of one Hebrew "
+            "carousel at once and return an array of per-slide scores."
+        ),
         "input_schema": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["slide_index", "hard_fails", "scores", "weighted_score", "recommend"],
+            "required": ["slides"],
             "properties": {
-                "slide_index": {"type": "integer", "minimum": 0, "maximum": 6},
-                "hard_fails": {"type": "array", "items": {"type": "string"}},
-                "scores": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "required": [
-                        "nativeness", "voice_match", "term_correctness",
-                        "bidi_correctness", "punctuation_correctness", "pattern_fit",
-                        "specificity",
-                    ],
-                    "properties": {
-                        "nativeness": {"type": "number", "minimum": 0, "maximum": 10},
-                        "voice_match": {"type": "number", "minimum": 0, "maximum": 10},
-                        "term_correctness": {"type": "number", "minimum": 0, "maximum": 10},
-                        "bidi_correctness": {"type": "number", "minimum": 0, "maximum": 10},
-                        "punctuation_correctness": {"type": "number", "minimum": 0, "maximum": 10},
-                        "pattern_fit": {"type": "number", "minimum": 0, "maximum": 10},
-                        "specificity": {"type": "number", "minimum": 0, "maximum": 10},
-                    },
+                "slides": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 7,
+                    "items": slide_schema,
                 },
-                "weighted_score": {"type": "number", "minimum": 0, "maximum": 10},
-                "recommend": {"enum": ["ship", "consider_regenerate", "regenerate"]},
-                "notes": {"type": "string"},
             },
         },
     }
+
+    def _critic_one(c):
+        """One batched critic call for one carousel.
+        Returns (carousel_id, slide_reports, in_tokens, out_tokens, any_regen)."""
+        slides_he = c.get("slides_he", []) or []
+        slides_en = c.get("slides_en", []) or []
+        n = min(len(slides_he), 7)
+        if n == 0:
+            return c.get("id", "?"), [], 0, 0, False
+        pairs = [
+            {
+                "slide_index": i,
+                "english": slides_en[i] if i < len(slides_en) else {},
+                "hebrew": slides_he[i],
+            }
+            for i in range(n)
+        ]
+        user_content = [{
+            "type": "text",
+            "text": (
+                f"Score every Hebrew slide in this carousel against qa-rubric-he.md. "
+                f"Call `score_slides_batch` ONCE with an array of {n} entries, one "
+                f"per slide_index. Apply hard-fail checks first per slide; if any "
+                f"trigger, set hard_fails non-empty, weighted_score=0, "
+                f"recommend=regenerate.\n\n"
+                f"=== SLIDES (slide_index, english brief, hebrew output) ===\n"
+                f"{json.dumps(pairs, ensure_ascii=False, indent=2)}"
+            ),
+        }]
+        try:
+            resp = client.messages.create(
+                model=model,
+                max_tokens=4000,
+                system=critic_system,
+                tools=[batched_tool],
+                tool_choice={"type": "tool", "name": "score_slides_batch"},
+                messages=[{"role": "user", "content": user_content}],
+            )
+            tool_input = None
+            for block in resp.content:
+                if (
+                    getattr(block, "type", None) == "tool_use"
+                    and getattr(block, "name", None) == "score_slides_batch"
+                ):
+                    tool_input = getattr(block, "input", None)
+                    break
+            u = getattr(resp, "usage", None)
+            in_tok = (getattr(u, "input_tokens", 0) or 0) if u else 0
+            out_tok = (getattr(u, "output_tokens", 0) or 0) if u else 0
+            if tool_input is None or not isinstance(tool_input.get("slides"), list):
+                # Synthesise per-slide failure entries so the report still
+                # surfaces the issue (and triggers any_regen) rather than
+                # silently dropping the carousel.
+                slide_reports = [
+                    {
+                        "slide_index": i,
+                        "hard_fails": ["critic_no_tool_call"],
+                        "scores": {},
+                        "weighted_score": 0,
+                        "recommend": "regenerate",
+                        "notes": "Critic LLM did not call score_slides_batch.",
+                    }
+                    for i in range(n)
+                ]
+                return c.get("id", "?"), slide_reports, in_tok, out_tok, True
+            slide_reports = list(tool_input["slides"])
+            any_regen = any(s.get("recommend") != "ship" for s in slide_reports)
+            return c.get("id", "?"), slide_reports, in_tok, out_tok, any_regen
+        except Exception as e:  # noqa: BLE001 — never let critic crash the run
+            slide_reports = [
+                {
+                    "slide_index": i,
+                    "hard_fails": [f"critic_exception: {e}"],
+                    "scores": {},
+                    "weighted_score": 0,
+                    "recommend": "regenerate",
+                    "notes": str(e),
+                }
+                for i in range(n)
+            ]
+            return c.get("id", "?"), slide_reports, 0, 0, True
 
     out_carousels = []
     any_regen = False
@@ -643,76 +746,24 @@ def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
     total_out = 0
     t0 = time.time()
 
-    for c in carousels:
-        slides_he = c.get("slides_he", [])
-        slides_en = c.get("slides_en", [])
-        slide_reports = []
-        for i in range(min(len(slides_he), 7)):
-            user_content = [
-                {
-                    "type": "text",
-                    "text": (
-                        f"Score Hebrew slide_index={i} per qa-rubric-he.md.\n\n"
-                        f"=== ENGLISH BRIEF (source insight) ===\n"
-                        f"{json.dumps(slides_en[i] if i < len(slides_en) else {}, ensure_ascii=False, indent=2)}\n\n"
-                        f"=== HEBREW OUTPUT (the slide to score) ===\n"
-                        f"{json.dumps(slides_he[i], ensure_ascii=False, indent=2)}\n\n"
-                        f"Call score_slide with the result. Apply hard-fail checks first; "
-                        f"if any trigger, set hard_fails non-empty, weighted_score=0, recommend=regenerate."
-                    ),
-                }
-            ]
-            try:
-                resp = client.messages.create(
-                    model=model,
-                    max_tokens=1500,
-                    system=critic_system,
-                    tools=[tool],
-                    tool_choice={"type": "tool", "name": "score_slide"},
-                    messages=[{"role": "user", "content": user_content}],
-                )
-                # Pull the tool input.
-                tool_input = None
-                for block in resp.content:
-                    if getattr(block, "type", None) == "tool_use" and getattr(block, "name", None) == "score_slide":
-                        tool_input = getattr(block, "input", None)
-                        break
-                if tool_input is None:
-                    slide_reports.append({
-                        "slide_index": i,
-                        "hard_fails": ["critic_no_tool_call"],
-                        "scores": {},
-                        "weighted_score": 0,
-                        "recommend": "regenerate",
-                        "notes": "Critic LLM did not call the tool.",
-                    })
-                    any_regen = True
-                else:
-                    slide_reports.append(tool_input)
-                    if tool_input.get("recommend") != "ship":
-                        any_regen = True
-                u = getattr(resp, "usage", None)
-                total_in += getattr(u, "input_tokens", 0) or 0
-                total_out += getattr(u, "output_tokens", 0) or 0
-            except Exception as e:  # noqa: BLE001 — never let the critic crash the run
-                slide_reports.append({
-                    "slide_index": i,
-                    "hard_fails": [f"critic_exception: {e}"],
-                    "scores": {},
-                    "weighted_score": 0,
-                    "recommend": "regenerate",
-                    "notes": str(e),
-                })
+    if carousels:
+        with ThreadPoolExecutor(max_workers=len(carousels)) as ex:
+            futs = {ex.submit(_critic_one, c): c for c in carousels}
+            critic_results = {futs[f]: f.result() for f in as_completed(futs)}
+        for c in carousels:  # stable carousel order in output
+            cid, slide_reports, in_tok, out_tok, regen = critic_results[c]
+            total_in += in_tok
+            total_out += out_tok
+            if regen:
                 any_regen = True
-
-        scored = [s for s in slide_reports if isinstance(s.get("weighted_score"), (int, float))]
-        avg = sum(s["weighted_score"] for s in scored) / len(scored) if scored else 0
-        out_carousels.append({
-            "carousel_id": c.get("id", "?"),
-            "slides": slide_reports,
-            "carousel_average": round(avg, 2),
-            "carousel_recommend": "ship" if avg >= 8 and not any(s.get("recommend") == "regenerate" for s in slide_reports) else "regenerate",
-        })
+            scored = [s for s in slide_reports if isinstance(s.get("weighted_score"), (int, float))]
+            avg = sum(s["weighted_score"] for s in scored) / len(scored) if scored else 0
+            out_carousels.append({
+                "carousel_id": cid,
+                "slides": slide_reports,
+                "carousel_average": round(avg, 2),
+                "carousel_recommend": "ship" if avg >= 8 and not any(s.get("recommend") == "regenerate" for s in slide_reports) else "regenerate",
+            })
 
     duration = round(time.time() - t0, 1)
     return (
@@ -799,13 +850,19 @@ def _pass_b_hebrew_with_feedback(
     return by_id, usage, duration
 
 
-def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_strict=True):
+def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_strict=True, deadline_at=None):
     """Two-pass generation: EN authored in Pass A, HE re-authored (not
     translated) in Pass B using the Hebrew voice exemplars. Pass A retries up
-    to 4 times on hard-fail; Pass B retries up to 5 times on Hebrew hard-fail."""
+    to 2 times on hard-fail; Pass B retries up to 2 times on Hebrew hard-fail.
+
+    `deadline_at`: optional monotonic-clock deadline (time.monotonic()-relative).
+    Pass C critic is skipped if we're past it. Carousels still ship without
+    critic_report — they're complete; the score is just advisory."""
     from anthropic import Anthropic
 
-    client = Anthropic(api_key=require_anthropic_key())
+    # 180s per-call timeout so a single hung API call fails fast instead of
+    # eating the entire Trigger.dev 600s task budget.
+    client = Anthropic(api_key=require_anthropic_key(), timeout=180.0)
     brand, framework, typography, hook = _load_docs()
     knowledge = _load_knowledge()
     ref_images = _load_ref_images()
@@ -816,12 +873,17 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
 
     warnings: list[str] = []
 
-    # ---- Pass A (up to 4 attempts on hard-fail) ----
+    # ---- Pass A (up to 2 attempts on hard-fail) ----
+    # Retry budget trimmed from 4 to 2 to fit Trigger.dev free-tier 600s cap.
+    # Each Opus call costs ~30-90s; 4 retries on bad luck blew past the cap.
+    # With prompt caching warmed, attempt-1 success rate is high enough that
+    # 2 attempts is plenty.
+    PASS_A_MAX_ATTEMPTS = 2
     en_attempts = 0
     en_data = None
     usage_a = None
     dur_a = 0
-    while en_attempts < 4:
+    while en_attempts < PASS_A_MAX_ATTEMPTS:
         en_attempts += 1
         en_data, usage_a, dur_a = _pass_a_english(
             client, transcripts, n_carousels, model,
@@ -844,53 +906,125 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
         except ValueError as e:
             warnings.append(f"Pass A attempt {en_attempts} failed: {e}")
             print(f"[Pass A] attempt {en_attempts} failed: {e}", file=sys.stderr)
-            if en_attempts >= 4:
+            if en_attempts >= PASS_A_MAX_ATTEMPTS:
                 raise
     carousels = en_data["carousels"]
 
-    # ---- Pass B (up to 5 attempts on hard-fail) ----
-    attempts = 0
-    last_error = None
-    while attempts < 5:
-        attempts += 1
-        try:
-            slides_he_by_id, usage_b, dur_b = _pass_b_hebrew(
-                client, carousels, model, he_exemplar_images, system_blocks,
-            )
-            md_stripped_b = 0
-            for c in carousels:
-                c["slides_he"] = slides_he_by_id.get(c.get("id"), [])
-                for s in c["slides_he"]:
-                    md_stripped_b += _strip_markdown_emphasis(s)
-            if md_stripped_b:
-                warnings.append(
-                    f"Pass B: stripped {md_stripped_b} markdown emphasis marker(s) "
-                    f"from Hebrew slides."
+    # ---- Pass B Hebrew (per-carousel, parallel, up to 2 attempts each) ----
+    # Pass B used to be a single batched call that authored all carousels'
+    # Hebrew at once — splitting it per-carousel lets us run carousels
+    # concurrently (~2x faster wall time when n_carousels > 1) and gives each
+    # call its own 8K max_tokens budget instead of squeezing every carousel's
+    # Hebrew under one cap. Retry budget trimmed 5->2 for the same
+    # Trigger.dev 600s reason as Pass A. Prompt caching is shared via
+    # system_blocks, so the first carousel's call warms the cache for the rest.
+    from types import SimpleNamespace
+    PASS_B_MAX_ATTEMPTS = 2
+
+    def _pass_b_one_with_retries(c):
+        """Pass B for ONE carousel with up to PASS_B_MAX_ATTEMPTS validation
+        retries. Returns (slides_he, usage, duration, error, attempt_count,
+        local_warnings)."""
+        local_warnings: list[str] = []
+        last_error: ValueError | None = None
+        local_usage = None
+        local_duration = 0
+        attempt = 0
+        for attempt in range(1, PASS_B_MAX_ATTEMPTS + 1):
+            try:
+                by_id, usage, duration = _pass_b_hebrew(
+                    client, [c], model, he_exemplar_images, system_blocks,
                 )
-            # Validate the Hebrew side now that it's merged.
-            _validate_carousels(
-                {"carousels": carousels}, ref_names, warnings,
-                lang_keys=("slides_he",), strict=hebrew_strict,
-            )
-            last_error = None
-            break
-        except ValueError as e:
-            last_error = e
-            warnings.append(f"Pass B attempt {attempts} failed: {e}")
-            print(f"[Pass B] attempt {attempts} failed: {e}", file=sys.stderr)
-            if attempts >= 5:
-                # Give up — raise so the caller knows the Hebrew is suspect.
-                raise
-    # (If we broke out cleanly, last_error is None.)
+                local_usage = usage
+                local_duration = duration
+                slides_he = by_id.get(c.get("id"), [])
+                md_stripped = sum(_strip_markdown_emphasis(s) for s in slides_he)
+                if md_stripped:
+                    local_warnings.append(
+                        f"Pass B ({c.get('id')}): stripped {md_stripped} markdown "
+                        f"emphasis marker(s) from Hebrew slides."
+                    )
+                test = {"carousels": [{**c, "slides_he": slides_he}]}
+                _validate_carousels(
+                    test, ref_names, local_warnings,
+                    lang_keys=("slides_he",), strict=hebrew_strict,
+                )
+                return slides_he, local_usage, local_duration, None, attempt, local_warnings
+            except ValueError as e:
+                last_error = e
+                local_warnings.append(
+                    f"Pass B ({c.get('id')}) attempt {attempt} failed: {e}"
+                )
+                print(
+                    f"[Pass B / {c.get('id')}] attempt {attempt} failed: {e}",
+                    file=sys.stderr,
+                )
+        return None, local_usage, local_duration, last_error, attempt, local_warnings
+
+    usage_b: object | None = None
+    dur_b = 0
+    attempts = 1
+    if carousels:
+        with ThreadPoolExecutor(max_workers=len(carousels)) as ex:
+            futs = {ex.submit(_pass_b_one_with_retries, c): c for c in carousels}
+            b_results = {futs[f]: f.result() for f in as_completed(futs)}
+        any_error: ValueError | None = None
+        total_in = 0
+        total_out = 0
+        cache_read = 0
+        cache_creation = 0
+        max_dur = 0.0
+        max_attempts = 0
+        # Merge in carousel order (not completion order) for stable output.
+        for c in carousels:
+            slides_he, usage, duration, err, attempt_count, b_warnings = b_results[c]
+            warnings.extend(b_warnings)
+            if usage is not None:
+                total_in += getattr(usage, "input_tokens", 0) or 0
+                total_out += getattr(usage, "output_tokens", 0) or 0
+                cache_read += getattr(usage, "cache_read_input_tokens", 0) or 0
+                cache_creation += getattr(usage, "cache_creation_input_tokens", 0) or 0
+            max_dur = max(max_dur, float(duration or 0))
+            max_attempts = max(max_attempts, attempt_count or 0)
+            if err is not None and any_error is None:
+                any_error = err
+            c["slides_he"] = slides_he or []
+        usage_b = SimpleNamespace(
+            input_tokens=total_in,
+            output_tokens=total_out,
+            cache_read_input_tokens=cache_read,
+            cache_creation_input_tokens=cache_creation,
+        )
+        dur_b = max_dur
+        attempts = max_attempts or 1
+        if any_error is not None:
+            # Surface the first failing carousel's error so the caller knows
+            # the Hebrew is suspect on at least one carousel.
+            raise any_error
 
     # ---- Pass C — Hebrew quality critic (Sonnet 4.6 against qa-rubric) ----
-    # Scores every slide on 7 weighted dimensions. If any slide flunks (score
-    # < 8 or hard_fails non-empty), do ONE more Pass B attempt with the critic
-    # notes appended to the user prompt, then re-critic. Cap at 1 retry.
+    # Scores every slide on 7 weighted dimensions. Advisory only — no auto-
+    # rewrite. Now batched (1 call per carousel) + parallelized across carousels.
+    #
+    # Soft deadline: if the caller passed `deadline_at` (a monotonic-clock
+    # deadline) and we've already burned through it before reaching Pass C,
+    # skip critic entirely and append a warning. Carousels still ship with
+    # full EN+HE; only the critic_report is missing — that's the safety valve
+    # that guarantees we finish under Trigger.dev's 600s task cap.
     critic_report = None
     usage_c_total = {"input_tokens": 0, "output_tokens": 0}
     dur_c_total = 0
-    if knowledge:
+    if knowledge and deadline_at is not None and time.monotonic() > deadline_at:
+        warnings.append(
+            "Pass C critic skipped: pipeline soft-deadline exceeded "
+            "(staying within Trigger.dev's 600s task cap). "
+            "Carousels shipped without critic scores; review manually."
+        )
+        print(
+            "[Pass C] SKIPPED — past soft deadline; shipping without critic scores.",
+            file=sys.stderr,
+        )
+    elif knowledge:
         critic_report, usage_c, dur_c = _pass_c_critic(client, carousels, knowledge)
         usage_c_total["input_tokens"] += (usage_c or {}).get("input_tokens", 0) or 0
         usage_c_total["output_tokens"] += (usage_c or {}).get("output_tokens", 0) or 0

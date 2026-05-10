@@ -20,10 +20,12 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import os
 import re
 import sys
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
@@ -209,6 +211,11 @@ def run(
     exclude_video_ids=None,
 ):
     t0 = time.time()
+    # Monotonic clock for the soft deadline that Pass C critic checks before
+    # running. PIPELINE_DEADLINE_SECONDS defaults to 540s (9 min) to leave a
+    # ~60s safety margin under Trigger.dev's free-tier 600s task cap.
+    t_mono_start = time.monotonic()
+    deadline_at = t_mono_start + float(os.environ.get("PIPELINE_DEADLINE_SECONDS", "540"))
     warnings = []
     exclude_set = set(exclude_video_ids or [])
     # Heartbeat so Trigger.dev's run viewer shows life immediately rather
@@ -232,33 +239,50 @@ def run(
         print(f"[1a/5] Query expansion skipped (using literal query)", file=sys.stderr)
 
     # 1b. Search each expanded query and merge candidates by video_id.
+    #     Parallel fan-out: Apify YouTube searches block ~30-60s each, so
+    #     running them concurrently shaves a full search worth of wall-time
+    #     off the pipeline (≈30-60s saved per extra expanded query).
     over_fetch = max(10, n_videos * 4) + len(exclude_set)
     candidates_by_id = {}
-    for q in expanded:
-        try:
-            results = search(q, count=over_fetch, months=months)
-        except Exception as e:  # noqa: BLE001
-            warnings.append(f"Search failed for {q!r}: {e}")
-            print(f"       search failed for {q!r}: {e}", file=sys.stderr)
+
+    def _run_searches(queries, months_window):
+        results: dict[str, list | Exception] = {}
+        if not queries:
+            return results
+        with ThreadPoolExecutor(max_workers=len(queries)) as ex:
+            futures = {
+                ex.submit(search, q, count=over_fetch, months=months_window): q
+                for q in queries
+            }
+            for fut in as_completed(futures):
+                q = futures[fut]
+                try:
+                    results[q] = fut.result()
+                except Exception as exc:  # noqa: BLE001
+                    results[q] = exc
+        return results
+
+    for q, r in _run_searches(expanded, months).items():
+        if isinstance(r, Exception):
+            warnings.append(f"Search failed for {q!r}: {r}")
+            print(f"       search failed for {q!r}: {r}", file=sys.stderr)
             continue
-        for r in results:
-            vid = r.get("video_id")
+        for rec in r:
+            vid = rec.get("video_id")
             if vid and vid not in candidates_by_id:
-                candidates_by_id[vid] = r
+                candidates_by_id[vid] = rec
     candidates = list(candidates_by_id.values())
 
     if not candidates:
         print("[1b/5] no results in window, retrying with no date filter", file=sys.stderr)
         warnings.append(f"No results within {months} months; fell back to all-time.")
-        for q in expanded:
-            try:
-                results = search(q, count=over_fetch, months=0)
-            except Exception:
+        for q, r in _run_searches(expanded, 0).items():
+            if isinstance(r, Exception):
                 continue
-            for r in results:
-                vid = r.get("video_id")
+            for rec in r:
+                vid = rec.get("video_id")
                 if vid and vid not in candidates_by_id:
-                    candidates_by_id[vid] = r
+                    candidates_by_id[vid] = rec
         candidates = list(candidates_by_id.values())
     if not candidates:
         raise RuntimeError(f"No YouTube results for {query!r} or its expansions")
@@ -299,15 +323,43 @@ def run(
     seen_channels = set()
     failures = []
     relevance_drops = []
+    # Pre-scrape the top K candidates in parallel so per-video Apify latency
+    # (~30-60s each, blocking) collapses to the slowest video instead of summing.
+    # K is sized with slack on top of n_videos so channel-diversity / relevance
+    # drops still have alternates without falling back to serial scraping.
+    SCRAPE_POOL_SIZE = min(len(scored), n_videos + 3)
+    scrape_pool = scored[:SCRAPE_POOL_SIZE]
+    print(
+        f"[3a/5] Scraping top {len(scrape_pool)} candidates in parallel "
+        f"(target {n_videos})",
+        file=sys.stderr,
+    )
+    scrapes_by_url: dict = {}
+    if scrape_pool:
+        with ThreadPoolExecutor(max_workers=len(scrape_pool)) as _ex:
+            _futs = {
+                _ex.submit(scrape_one, apify, v["url"], APIFY_TRANSCRIPT_ACTOR): v["url"]
+                for v in scrape_pool
+            }
+            for _fut in as_completed(_futs):
+                _url = _futs[_fut]
+                try:
+                    scrapes_by_url[_url] = _fut.result()
+                except Exception as _exc:  # noqa: BLE001
+                    scrapes_by_url[_url] = _exc
+                    print(
+                        f"       scrape failed: {_url} - {_exc}",
+                        file=sys.stderr,
+                    )
     cursor = 0
-    print(f"[3/5] Walking ranked candidates: scrape + verify relevance per video", file=sys.stderr)
-    while len(accepted) < n_videos and cursor < len(scored):
-        v = scored[cursor]
+    print(f"[3b/5] Selecting accepted videos in rank order", file=sys.stderr)
+    while len(accepted) < n_videos and cursor < len(scrape_pool):
+        v = scrape_pool[cursor]
         cursor += 1
         ch = (v.get("channel") or "").lower()
         # Channel-diversity preference: skip if we already accepted this channel,
         # but allow on a second pass if we run out of unique channels.
-        if ch and ch in seen_channels and len(scored) - cursor > (n_videos - len(accepted)):
+        if ch and ch in seen_channels and len(scrape_pool) - cursor > (n_videos - len(accepted)):
             continue
         url = v["url"]
         ratio = v.get("engagement_ratio")
@@ -317,7 +369,12 @@ def run(
             file=sys.stderr,
         )
         try:
-            t = _scrape_one(apify, url, actor=APIFY_TRANSCRIPT_ACTOR)
+            _res = scrapes_by_url.get(url)
+            if isinstance(_res, Exception):
+                raise _res
+            if _res is None:
+                raise RuntimeError("no scrape result")
+            t = _res
         except Exception as e:  # noqa: BLE001
             print(f"         \u00d7 scrape failed: {e}", file=sys.stderr)
             failures.append({"url": url, "error": str(e)})
@@ -358,6 +415,31 @@ def run(
         if ch:
             seen_channels.add(ch)
 
+    # Fallback: if the parallel pool exhausted with too few accepts (rare —
+    # e.g. multiple relevance drops), walk the rest of the ranked list
+    # serially. Preserves the original TopicExhausted / warnings semantics.
+    if len(accepted) < n_videos and len(scored) > len(scrape_pool):
+        print(
+            f"[3c/5] Pool exhausted with {len(accepted)}/{n_videos} accepts; "
+            f"falling back to serial scrape on "
+            f"{len(scored) - len(scrape_pool)} remaining candidates",
+            file=sys.stderr,
+        )
+        for v in scored[len(scrape_pool):]:
+            if len(accepted) >= n_videos:
+                break
+            ch = (v.get("channel") or "").lower()
+            url = v["url"]
+            try:
+                t = scrape_one(apify, url, actor=APIFY_TRANSCRIPT_ACTOR)
+            except Exception as exc:  # noqa: BLE001
+                failures.append({"url": url, "error": str(exc)})
+                continue
+            merged = {**v, **t, "_relevance": {"score": None, "reason": "not_verified_budget"}}
+            accepted.append(merged)
+            if ch:
+                seen_channels.add(ch)
+
     if failures:
         warnings.extend(f"Transcript failed: {f['url']} ({f['error']})" for f in failures)
     if relevance_drops:
@@ -383,7 +465,10 @@ def run(
         f"{n_carousels} carousel(s). hebrew_strict={hebrew_strict}",
         file=sys.stderr,
     )
-    result = generate(transcripts, query, n_carousels, hebrew_strict=hebrew_strict)
+    result = generate(
+        transcripts, query, n_carousels,
+        hebrew_strict=hebrew_strict, deadline_at=deadline_at,
+    )
     result["run_stats"]["videos_requested"] = n_videos
     result["run_stats"]["videos_succeeded"] = len(transcripts)
     result["run_stats"]["query_expansions"] = len(expanded)
