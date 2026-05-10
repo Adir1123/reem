@@ -31,8 +31,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from config import SCHEMA_VERSION  # noqa: E402
 from scripts.search_youtube import search  # noqa: E402
-from scripts.scrape_transcripts import scrape_many  # noqa: E402
+from scripts.scrape_transcripts import scrape_many, scrape_one  # noqa: E402
 from scripts.generate_carousels import generate  # noqa: E402
+from scripts.expand_query import expand as expand_query  # noqa: E402
+from scripts.verify_relevance import verify as verify_relevance  # noqa: E402
 
 
 def _force_utf8_streams():
@@ -45,16 +47,77 @@ def _slugify(text: str) -> str:
     return s[:60] or "run"
 
 
+_CHANNELS_PATH = Path(__file__).resolve().parent.parent / "data" / "channels.json"
+
+
+def _load_channel_lists():
+    """Load curated allowlist + blocklist of YouTube finance channels.
+    Returns (allowlist, blocklist) as lowercase string sets. Graceful fallback
+    to empty sets if the file is missing — pipeline still runs."""
+    try:
+        data = json.loads(_CHANNELS_PATH.read_text(encoding="utf-8"))
+        return (
+            {s.lower() for s in data.get("allowlist", [])},
+            {s.lower() for s in data.get("blocklist", [])},
+        )
+    except (FileNotFoundError, json.JSONDecodeError):
+        return set(), set()
+
+
+def _channel_match(channel, names):
+    """Case-insensitive substring match — `BiggerPockets Money` matches `BiggerPockets`."""
+    if not channel:
+        return False
+    ch = channel.lower()
+    return any(n in ch for n in names)
+
+
 def _rank_candidates(candidates, query):
-    """Score and sort candidates. Priority: relevance → engagement → recency → depth → diversity."""
+    """Score and sort candidates.
+
+    Ranking signals (composite):
+      - Title relevance (query keyword overlap)
+      - Channel allowlist boost (+10 to relevance for trusted finance channels)
+      - Composite engagement: log10(views) * (engagement_ratio + 0.1) * duration_score
+        Penalizes Shorts (<3min) and over-long deep-dives (>30min); rewards
+        the 8-30min explainer sweet spot.
+      - Caption quality (creator-uploaded preferred over auto, when exposed)
+      - Recency (newer first)
+
+    Channels on the blocklist are filtered out entirely before scoring.
+    """
+    import math
+
+    allowlist, blocklist = _load_channel_lists()
     q_terms = [t.lower() for t in re.findall(r"[A-Za-z\u0590-\u05FFA-Za-z0-9]+", query) if len(t) > 2]
 
     def relevance(c):
         title = (c.get("title") or "").lower()
-        return sum(1 for t in q_terms if t in title)
+        score = sum(1 for t in q_terms if t in title)
+        if _channel_match(c.get("channel"), allowlist):
+            score += 10
+        return score
 
-    def engagement(c):
-        return c.get("engagement_ratio") or 0.0
+    def engagement_composite(c):
+        views = c.get("views") or 0
+        ratio = c.get("engagement_ratio") or 0.0
+        dur = c.get("duration_seconds") or 0
+        if views <= 0:
+            return 0.0
+        view_score = math.log10(max(views, 10))
+        if dur < 60:
+            duration_score = 0.2
+        elif dur < 3 * 60:
+            duration_score = 0.5
+        elif dur < 8 * 60:
+            duration_score = 0.85
+        elif dur <= 30 * 60:
+            duration_score = 1.0
+        elif dur <= 60 * 60:
+            duration_score = 0.85
+        else:
+            duration_score = 0.7
+        return view_score * (ratio + 0.1) * duration_score
 
     def recency(c):
         d = c.get("upload_date")
@@ -65,13 +128,19 @@ def _rank_candidates(candidates, query):
         except ValueError:
             return 0
 
-    def depth(c):
-        dur = c.get("duration_seconds") or 0
-        return 1 if dur >= 8 * 60 else 0
+    def caption_quality(c):
+        return 1 if c.get("has_creator_subtitles") is True else 0
+
+    filtered = [c for c in candidates if not _channel_match(c.get("channel"), blocklist)]
 
     scored = sorted(
-        candidates,
-        key=lambda c: (relevance(c), engagement(c), depth(c), recency(c)),
+        filtered,
+        key=lambda c: (
+            relevance(c),
+            caption_quality(c),
+            engagement_composite(c),
+            recency(c),
+        ),
         reverse=True,
     )
     return scored
@@ -127,75 +196,163 @@ def run(
     warnings = []
     exclude_set = set(exclude_video_ids or [])
 
-    # 1. Search — over-fetch so we have room to filter for diversity/depth.
-    print(f"[1/4] Searching YouTube for: {query!r}", file=sys.stderr)
-    # Re-runs need extra headroom because we're going to filter out N
-    # already-used videos before ranking.
-    over_fetch = max(10, n_videos * 4) + len(exclude_set)
-    candidates = search(query, count=over_fetch, months=months)
-    if not candidates:
-        print("       no results in window, retrying with no date filter", file=sys.stderr)
-        warnings.append(f"No results within {months} months; fell back to all-time.")
-        candidates = search(query, count=over_fetch, months=0)
-    if not candidates:
-        raise RuntimeError(f"No YouTube results for {query!r}")
+    # 1a. Expand query (Claude Haiku) — turns one topic into 3-5 related
+    #     search phrases for broader candidate-pool coverage.
+    expanded = expand_query(query, n=4)
+    if len(expanded) > 1:
+        print(f"[1a/5] Query expansion → {len(expanded)} phrases:", file=sys.stderr)
+        for q in expanded:
+            print(f"       \u2022 {q}", file=sys.stderr)
+    else:
+        print(f"[1a/5] Query expansion skipped (using literal query)", file=sys.stderr)
 
-    # Filter out already-used videos for re-runs.
+    # 1b. Search each expanded query and merge candidates by video_id.
+    over_fetch = max(10, n_videos * 4) + len(exclude_set)
+    candidates_by_id = {}
+    for q in expanded:
+        try:
+            results = search(q, count=over_fetch, months=months)
+        except Exception as e:  # noqa: BLE001
+            warnings.append(f"Search failed for {q!r}: {e}")
+            print(f"       search failed for {q!r}: {e}", file=sys.stderr)
+            continue
+        for r in results:
+            vid = r.get("video_id")
+            if vid and vid not in candidates_by_id:
+                candidates_by_id[vid] = r
+    candidates = list(candidates_by_id.values())
+
+    if not candidates:
+        print("[1b/5] no results in window, retrying with no date filter", file=sys.stderr)
+        warnings.append(f"No results within {months} months; fell back to all-time.")
+        for q in expanded:
+            try:
+                results = search(q, count=over_fetch, months=0)
+            except Exception:
+                continue
+            for r in results:
+                vid = r.get("video_id")
+                if vid and vid not in candidates_by_id:
+                    candidates_by_id[vid] = r
+        candidates = list(candidates_by_id.values())
+    if not candidates:
+        raise RuntimeError(f"No YouTube results for {query!r} or its expansions")
+
+    # 1c. Drop already-used video ids (exclusion list from re-runs).
     if exclude_set:
         before = len(candidates)
         candidates = [c for c in candidates if c.get("video_id") not in exclude_set]
         skipped = before - len(candidates)
         print(
-            f"       got {before} candidates, skipped {skipped} previously-used → {len(candidates)} fresh",
+            f"[1c/5] {before} candidates merged from {len(expanded)} searches; "
+            f"skipped {skipped} previously-used → {len(candidates)} fresh",
             file=sys.stderr,
         )
         if not candidates:
             raise TopicExhausted(query, before, len(exclude_set))
     else:
-        print(f"       got {len(candidates)} candidates", file=sys.stderr)
-
-    # 2. Rank + select.
-    print(f"[2/4] Auto-selecting top {n_videos} videos", file=sys.stderr)
-    scored = _rank_candidates(candidates, query)
-    selected = _pick_diverse(scored, n_videos)
-    if len(selected) < n_videos:
-        warnings.append(
-            f"Only {len(selected)} fresh videos available after exclusions "
-            f"(requested {n_videos}); proceeding with what's available."
-        )
-    for i, v in enumerate(selected, 1):
-        ratio = v.get("engagement_ratio")
-        ratio_s = f"{ratio:.2f}x" if ratio else "N/A"
         print(
-            f"       {i}. [{ratio_s}] {v['title']}  —  {v['channel']}",
+            f"[1c/5] {len(candidates)} candidates merged from {len(expanded)} searches",
             file=sys.stderr,
         )
 
-    # 3. Scrape.
-    print(f"[3/4] Scraping transcripts via Apify", file=sys.stderr)
-    scraped, failures = scrape_many([v["url"] for v in selected])
+    # 2. Rank with allowlist + composite engagement metric.
+    print(f"[2/5] Ranking + selecting (channel allowlist + composite engagement)", file=sys.stderr)
+    scored = _rank_candidates(candidates, query)
+
+    # 3+4. Iterative scrape + relevance verify. Walk the ranked list, scrape
+    #      each candidate; if scrape fails OR relevance < 7, skip and try
+    #      the next. Stop when we have n_videos accepted, or run out of
+    #      candidates with channel diversity preference.
+    from scripts.scrape_transcripts import scrape_one as _scrape_one
+    from apify_client import ApifyClient
+    from config import APIFY_TRANSCRIPT_ACTOR, require_apify_token
+
+    apify = ApifyClient(require_apify_token())
+
+    accepted = []
+    seen_channels = set()
+    failures = []
+    relevance_drops = []
+    cursor = 0
+    print(f"[3/5] Walking ranked candidates: scrape + verify relevance per video", file=sys.stderr)
+    while len(accepted) < n_videos and cursor < len(scored):
+        v = scored[cursor]
+        cursor += 1
+        ch = (v.get("channel") or "").lower()
+        # Channel-diversity preference: skip if we already accepted this channel,
+        # but allow on a second pass if we run out of unique channels.
+        if ch and ch in seen_channels and len(scored) - cursor > (n_videos - len(accepted)):
+            continue
+        url = v["url"]
+        ratio = v.get("engagement_ratio")
+        ratio_s = f"{ratio:.2f}x" if ratio else "N/A"
+        print(
+            f"       try [{cursor}/{len(scored)}] [{ratio_s}] {v['title']}  \u2014  {v['channel']}",
+            file=sys.stderr,
+        )
+        try:
+            t = _scrape_one(apify, url, actor=APIFY_TRANSCRIPT_ACTOR)
+        except Exception as e:  # noqa: BLE001
+            print(f"         \u00d7 scrape failed: {e}", file=sys.stderr)
+            failures.append({"url": url, "error": str(e)})
+            continue
+        # Relevance gate (Haiku, ~$0.0005/call) — drop tangential transcripts.
+        verdict = verify_relevance(t.get("transcript", ""), query)
+        v_score = verdict.get("score")
+        v_reason = verdict.get("reason")
+        if (v_score or 0) < 7:
+            print(
+                f"         \u00d7 relevance {v_score} \u2014 {v_reason}",
+                file=sys.stderr,
+            )
+            relevance_drops.append({
+                "url": url,
+                "score": v_score,
+                "reason": v_reason,
+            })
+            continue
+        merged = {**v, **t, "_relevance": verdict}
+        accepted.append(merged)
+        if ch:
+            seen_channels.add(ch)
+        t_chars = t.get("transcript_chars", 0)
+        print(
+            f"         \u2713 relevance {v_score} \u2014 transcript {t_chars} chars",
+            file=sys.stderr,
+        )
+
     if failures:
         warnings.extend(f"Transcript failed: {f['url']} ({f['error']})" for f in failures)
-    if not scraped:
-        raise RuntimeError("All transcript scrapes failed — nothing to feed the model.")
-    # Merge scraped transcript into the selected metadata (by URL).
-    by_url = {t["url"]: t for t in scraped}
-    transcripts = []
-    for v in selected:
-        t = by_url.get(v["url"])
-        if not t:
-            continue
-        transcripts.append({**v, **t})
+    if relevance_drops:
+        warnings.extend(
+            f"Relevance dropped: {d['url']} (score {d['score']}: {d['reason']})"
+            for d in relevance_drops
+        )
+    if not accepted:
+        raise RuntimeError(
+            "No candidates passed scrape + relevance verification. "
+            f"Tried {cursor}/{len(scored)} candidates."
+        )
+    if len(accepted) < n_videos:
+        warnings.append(
+            f"Only {len(accepted)}/{n_videos} candidates passed scrape + verify; "
+            f"proceeding with what we have."
+        )
+    transcripts = accepted
 
-    # 4. Generate — two-pass: EN first, then HE re-author.
+    # 5. Generate — three-pass: EN, HE re-author, HE critic.
     print(
-        f"[4/4] Calling Opus 4.7 — two-pass (EN then HE re-author). "
+        f"[5/5] Generating carousels \u2014 Pass A (EN) + Pass B (HE) + Pass C (critic). "
         f"{n_carousels} carousel(s). hebrew_strict={hebrew_strict}",
         file=sys.stderr,
     )
     result = generate(transcripts, query, n_carousels, hebrew_strict=hebrew_strict)
     result["run_stats"]["videos_requested"] = n_videos
     result["run_stats"]["videos_succeeded"] = len(transcripts)
+    result["run_stats"]["query_expansions"] = len(expanded)
+    result["run_stats"]["scrape_failures"] = len(failures)
+    result["run_stats"]["relevance_drops"] = len(relevance_drops)
     if warnings:
         existing = result.get("warnings", [])
         result["warnings"] = existing + warnings

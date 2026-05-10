@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -27,9 +28,16 @@ export function MarqueeHero() {
       <div className="reem-hero-figure" aria-hidden="true">
         {/* Poster image renders first so the video (which loads after) draws
             on top of it. Under prefers-reduced-motion the video is hidden
-            via CSS and this poster shows through. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/hero-figure.png" alt="" />
+            via CSS and this poster shows through. next/image gives us
+            optimized variants + lazy/priority loading semantics. */}
+        <Image
+          src="/hero-figure.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          style={{ objectFit: "cover", objectPosition: "center right" }}
+        />
         <video
           autoPlay
           muted

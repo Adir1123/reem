@@ -1,0 +1,221 @@
+{
+  "$schema": "internal",
+  "version": "1.0",
+  "description": "Hard-list of language policies for the Hebrew Pass B + Pass C critic. Three policies per term: keep_english (never translate), translate (always render in Hebrew), banned (never appear in any form). Plus structural rules at the bottom. Niche: Personal Finance Tips (US-style retirement / investing / debt content).",
+
+  "keep_english": {
+    "_note": "These terms are always rendered in their English form, regardless of slide role. Brand names, account types, and finance-specific abbreviations stay English because their Hebrew translations either don't exist or sound stilted to a finance-literate Israeli reader.",
+
+    "account_types_and_concepts": [
+      "Roth IRA",
+      "Traditional IRA",
+      "Backdoor Roth",
+      "Mega Backdoor",
+      "401k",
+      "401(k)",
+      "403b",
+      "403(b)",
+      "457",
+      "457(b)",
+      "HSA",
+      "FSA",
+      "529",
+      "RMD",
+      "ETF",
+      "ETFs",
+      "REIT",
+      "REITs",
+      "ESPP",
+      "RSU",
+      "RSUs",
+      "ISO",
+      "NSO",
+      "AGI",
+      "MAGI",
+      "Pre-tax",
+      "Post-tax",
+      "Roth conversion"
+    ],
+
+    "indices_and_markets": [
+      "S&P 500",
+      "S&P",
+      "NASDAQ",
+      "Dow Jones",
+      "Russell 2000",
+      "VTI",
+      "VOO",
+      "VXUS",
+      "BND",
+      "QQQ",
+      "VTSAX",
+      "VFIAX",
+      "Total Market",
+      "Index fund",
+      "Mutual fund",
+      "Target Date Fund"
+    ],
+
+    "brokers_and_brands": [
+      "Vanguard",
+      "Fidelity",
+      "Charles Schwab",
+      "Schwab",
+      "Robinhood",
+      "Wealthfront",
+      "Betterment",
+      "Acorns",
+      "M1 Finance",
+      "SoFi",
+      "Chase",
+      "Bank of America",
+      "Capital One",
+      "American Express",
+      "Amex"
+    ],
+
+    "regulatory_and_authorities": [
+      "IRS",
+      "FDIC",
+      "SIPC",
+      "FAANG",
+      "FICO",
+      "FOMC",
+      "Federal Reserve",
+      "Fed",
+      "SEC",
+      "Treasury",
+      "Tax-loss harvesting",
+      "Wash-sale rule"
+    ],
+
+    "concepts_no_clean_hebrew_equivalent": [
+      "FIRE",
+      "Lean FIRE",
+      "Fat FIRE",
+      "Coast FIRE",
+      "Barista FIRE",
+      "Side hustle",
+      "Gig economy",
+      "Cashback",
+      "Compound interest"
+    ],
+
+    "english_plurals_for_compound_nouns": [
+      "ETFs",
+      "REITs",
+      "RSUs",
+      "401ks",
+      "IRAs"
+    ]
+  },
+
+  "translate_to_hebrew": [
+    { "en": "investment", "he": "השקעה", "context": "body copy" },
+    { "en": "investments", "he": "השקעות" },
+    { "en": "investor", "he": "משקיע" },
+    { "en": "investors", "he": "משקיעים" },
+    { "en": "savings", "he": "חיסכון" },
+    { "en": "saver", "he": "חוסך" },
+    { "en": "savers", "he": "חוסכים" },
+    { "en": "debt", "he": "חוב" },
+    { "en": "debts", "he": "חובות" },
+    { "en": "income", "he": "הכנסה" },
+    { "en": "expense", "he": "הוצאה" },
+    { "en": "expenses", "he": "הוצאות" },
+    { "en": "budget", "he": "תקציב" },
+    { "en": "loan", "he": "הלוואה" },
+    { "en": "loans", "he": "הלוואות" },
+    { "en": "tax", "he": "מס" },
+    { "en": "taxes", "he": "מסים" },
+    { "en": "interest", "he": "ריבית", "note": "ריבית דריבית = compound interest" },
+    { "en": "principal", "he": "קרן", "note": "as in loan principal" },
+    { "en": "stock", "he": "מניה" },
+    { "en": "stocks", "he": "מניות" },
+    { "en": "bond", "he": "אג״ח", "note": "Hebrew acronym for אגרת חוב" },
+    { "en": "bonds", "he": "אג״ח" },
+    { "en": "portfolio", "he": "תיק (השקעות)" },
+    { "en": "retirement", "he": "פנסיה", "note": "Israeli system" },
+    { "en": "mortgage", "he": "משכנתא" },
+    { "en": "rent", "he": "שכירות", "context": "as in 'paying rent'. For 'rent payment' use 'שכ״ד' (acronym)" },
+    { "en": "salary", "he": "משכורת" },
+    { "en": "wage", "he": "שכר" },
+    { "en": "raise", "he": "העלאת שכר", "context": "salary raise" },
+    { "en": "bonus", "he": "בונוס" },
+    { "en": "credit card", "he": "כרטיס אשראי" },
+    { "en": "credit score", "he": "דירוג אשראי" },
+    { "en": "emergency fund", "he": "קרן חירום" },
+    { "en": "user", "he": "משתמש" },
+    { "en": "users", "he": "משתמשים" },
+    { "en": "follower", "he": "עוקב" },
+    { "en": "followers", "he": "עוקבים" },
+    { "en": "comment", "he": "תגובה" },
+    { "en": "comments", "he": "תגובות" },
+    { "en": "post", "he": "פוסט", "note": "social media context — accepted loanword" },
+    { "en": "posts", "he": "פוסטים" },
+    { "en": "guide", "he": "מדריך", "note": "מדריך מלא in lead-magnet CTAs" },
+    { "en": "year", "he": "שנה", "note": "שנתיים for two years" },
+    { "en": "month", "he": "חודש" },
+    { "en": "week", "he": "שבוע", "note": "שבועיים for two weeks" },
+    { "en": "rule", "he": "כלל" },
+    { "en": "trick", "he": "טריק", "note": "loanword acceptable" },
+    { "en": "hack", "he": "טריק / שיטה", "note": "ALWAYS rephrase — never use 'האק' the transliteration" },
+    { "en": "money", "he": "כסף" },
+    { "en": "wealth", "he": "עושר / הון", "note": "עושר = abundance feel; הון = capital feel" },
+    { "en": "rich", "he": "עשיר" },
+    { "en": "poor", "he": "עני", "note": "use sparingly — feels harsh in finance content" },
+    { "en": "broke", "he": "מחוסר אמצעים", "note": "or rephrase the sentence — slang version 'פלת' is too casual" }
+  ],
+
+  "banned": [
+    { "term": "ברנד", "use_instead": "מותג", "reason": "Over-transliteration. Use 'מותג' (the proper Hebrew word for brand)." },
+    { "term": "טמפלייט", "use_instead": "תבנית / template (English)", "reason": "Over-transliteration." },
+    { "term": "קונטרול", "use_instead": "שליטה", "reason": "Over-transliteration." },
+    { "term": "האק", "use_instead": "טריק / שיטה", "reason": "Over-transliteration of 'hack' reads as cringe AI/marketing slop." },
+    { "term": "אינווסטמנט", "use_instead": "השקעה", "reason": "Over-transliteration. The Hebrew word השקעה is the standard finance term." },
+    { "term": "סייב", "use_instead": "לחסוך", "reason": "Over-transliteration of 'save'. Use the Hebrew verb." },
+    { "term": "ETF-ים", "use_instead": "ETFs (English plural)", "reason": "Hebrew -ים suffix on English root reads bad." },
+    { "term": "401k-ים", "use_instead": "401ks (English plural)", "reason": "Same — never -ים on English roots." },
+    { "term": "IRA-ים", "use_instead": "IRAs (English plural)", "reason": "Same." },
+    { "term": "ממש (as filler)", "use_instead": "drop or restructure", "reason": "Slang/filler. Banned in voice doc." },
+    { "term": "בלי מאמץ", "use_instead": "בקלות", "reason": "Affirmative phrasing preferred." },
+    { "term": "באמת (in headlines)", "use_instead": "drop", "reason": "English 'really' calque. Body usage is sometimes OK; in headlines it's a tell." },
+    { "term": "הנה", "use_instead": "drop", "reason": "Single strongest AI-slop opener for Hebrew. Hard ban as a sentence-starter." }
+  ],
+
+  "rules": {
+    "plural_marker": {
+      "rule": "Use English plural-s on English roots. Never use Hebrew '-ים' suffix on English nouns.",
+      "examples": {
+        "correct": ["ETFs", "REITs", "401ks", "IRAs", "RSUs"],
+        "wrong": ["ETF-ים", "REIT-ים", "401k-ים", "IRA-ים"]
+      }
+    },
+
+    "preposition_attachment": {
+      "rule": "When a Hebrew preposition prefixes an English finance term in HEADLINE / hero text, use a SPACE (no dash). For dense paragraph / inline body text, the dash form is acceptable.",
+      "examples": {
+        "headlines_use_space": ["ל Roth IRA", "ב 401k", "מ Vanguard", "עם ETF"],
+        "body_text_dash_ok": ["ל-Roth IRA", "ב-401k", "מ-Vanguard"]
+      },
+      "rationale": "In rendered slide imagery, the maqaf glyph clusters with English letterforms and reads as visual noise."
+    },
+
+    "english_density_per_role": {
+      "headline": "High tolerance — multiple English brand terms welcome (e.g. 'Roth IRA לפנסיה', '401k vs Roth IRA').",
+      "body": "Sparse — only 1–2 unavoidable specific terms per line (e.g. 'ETF', 'Vanguard', 'Roth'). 2+ English content words in a single body line = rewrite to flow as Hebrew."
+    },
+
+    "capitalization_in_lead_magnet_keywords": {
+      "rule": "When the keyword in a lead-magnet CTA is an English word, render it Capitalized (sentence-case). Acronyms stay all-caps.",
+      "correct_examples": ["\"Roth\"", "\"Vanguard\"", "\"ETF\"", "\"401k\""],
+      "wrong_examples": ["\"roth\"", "\"vanguard\"", "\"ETF IRA\"", "\"ROTH\""]
+    },
+
+    "currency_context": {
+      "rule": "Pick `$` when the source content is US-context (Roth IRA, 401k, US tax law) and `ש״ח` when the slide adapts to Israeli context (קרן השתלמות, פנסיה, mortgage figures).",
+      "us_context_examples": ["$5,000", "$0.04", "$7,000 הוא ספוט המקסימום"],
+      "israeli_context_examples": ["5,000 ש״ח לחודש", "₪10,000 לקרן השתלמות"]
+    }
+  }
+}

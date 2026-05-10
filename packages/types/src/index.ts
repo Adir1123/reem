@@ -17,7 +17,7 @@ export type CarouselAngle =
 
 export type Language = "en" | "he";
 
-export type SizePreset = "sm" | "md" | "lg" | "xl";
+export type SizePreset = "sm" | "md" | "lg" | "xl" | "xxl";
 export type AlignPreset = "start" | "center" | "end";
 
 // Optional render-time overlay produced by the per-slide chat editor. Stored
@@ -29,8 +29,8 @@ export type PaddingPreset = "tight" | "normal" | "wide";
 
 export interface SlideStyle {
   headline_size?: SizePreset;
-  body_size?: Exclude<SizePreset, "xl">;
-  eyebrow_size?: Exclude<SizePreset, "lg" | "xl">;
+  body_size?: SizePreset;
+  eyebrow_size?: SizePreset;
   headline_align?: AlignPreset;
   body_align?: AlignPreset;
   hide_eyebrow?: boolean;
@@ -122,6 +122,38 @@ export interface RunStats {
   cache_read_tokens: number;
 }
 
+export interface CriticSlideReport {
+  slide_index: number;
+  hard_fails: string[];
+  scores: {
+    nativeness?: number;
+    voice_match?: number;
+    term_correctness?: number;
+    bidi_correctness?: number;
+    punctuation_correctness?: number;
+    pattern_fit?: number;
+    specificity?: number;
+  };
+  weighted_score: number;
+  recommend: "ship" | "consider_regenerate" | "regenerate";
+  notes?: string;
+}
+
+export interface CriticCarouselReport {
+  carousel_id: string;
+  slides: CriticSlideReport[];
+  carousel_average: number;
+  carousel_recommend: "ship" | "regenerate";
+}
+
+export interface CriticReport {
+  carousels: CriticCarouselReport[];
+  any_regenerate: boolean;
+  // After a rewrite-on-flag, both rounds are kept for the dashboard.
+  round_1?: { carousels: CriticCarouselReport[]; any_regenerate: boolean };
+  round_2?: { carousels: CriticCarouselReport[]; any_regenerate: boolean };
+}
+
 export interface PipelineOutput {
   schema_version: SchemaVersion;
   query: string;
@@ -132,6 +164,7 @@ export interface PipelineOutput {
   recommendations_for_dashboard: Recommendations;
   run_stats: RunStats;
   warnings?: string[];
+  critic_report?: CriticReport | null;
 }
 
 // Database row shapes (rich types live with their respective layer).

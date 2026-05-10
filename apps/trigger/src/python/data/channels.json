@@ -1,0 +1,37 @@
+{
+  "$schema": "internal",
+  "version": "1.0",
+  "description": "Channel allowlist + blocklist for YouTube ranking. The pipeline applies these as ranking modifiers in run_pipeline.py:_rank_candidates().",
+  "_notes": [
+    "allowlist channels get a +10 boost on the relevance dimension — they outrank generic results.",
+    "blocklist channels are dropped entirely from consideration.",
+    "Match is case-insensitive on the channel display name; partial-match by substring (so 'BiggerPockets Money' matches 'BiggerPockets').",
+    "Add channels here as you discover good/bad ones. The file ships in git so all clients get the same list via fork-sync."
+  ],
+
+  "allowlist": [
+    "Ramit Sethi",
+    "I Will Teach You To Be Rich",
+    "The Money Guy",
+    "BiggerPockets",
+    "Two Cents",
+    "NerdWallet",
+    "Graham Stephan",
+    "Andrei Jikh",
+    "Rob Berger",
+    "Jeremy Schneider",
+    "Personal Finance Club",
+    "Humphrey Yang",
+    "Plain Bagel",
+    "Patrick Boyle",
+    "Joseph Carlson",
+    "Erika Kullberg"
+  ],
+
+  "blocklist": [
+    "Get Rich Quick",
+    "Stock Pumping Daily",
+    "Crypto Moon Shots",
+    "Insane Returns Now"
+  ]
+}

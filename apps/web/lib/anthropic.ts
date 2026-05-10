@@ -9,8 +9,21 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { decryptSecret } from "./encryption";
 import { getServiceClient } from "./supabase-server";
+import { enforceRateLimit } from "./rate-limit";
 
 export async function getAnthropicClient(clientId: string): Promise<Anthropic> {
+  // Per-client + global rate limit guards. A runaway loop or compromised key
+  // can no longer drain budget faster than the bucket allows. Defaults: 20
+  // requests/minute per client, 60/minute globally. Tune via the args.
+  enforceRateLimit(`anthropic:client:${clientId}`, {
+    capacity: 20,
+    refillPerSec: 20 / 60,
+  });
+  enforceRateLimit("anthropic:global", {
+    capacity: 60,
+    refillPerSec: 60 / 60,
+  });
+
   const sb = getServiceClient();
   const { data: settings, error } = await sb
     .from("app_settings")

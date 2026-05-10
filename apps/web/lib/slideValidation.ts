@@ -11,9 +11,9 @@ import type { EditScope, Slide, SlidePatch, SlideStyle } from "@reem/types";
 
 export const SlideStyleSchema = z
   .object({
-    headline_size: z.enum(["sm", "md", "lg", "xl"]).optional(),
-    body_size: z.enum(["sm", "md", "lg"]).optional(),
-    eyebrow_size: z.enum(["sm", "md"]).optional(),
+    headline_size: z.enum(["sm", "md", "lg", "xl", "xxl"]).optional(),
+    body_size: z.enum(["sm", "md", "lg", "xl", "xxl"]).optional(),
+    eyebrow_size: z.enum(["sm", "md", "lg", "xl", "xxl"]).optional(),
     headline_align: z.enum(["start", "center", "end"]).optional(),
     body_align: z.enum(["start", "center", "end"]).optional(),
     hide_eyebrow: z.boolean().optional(),

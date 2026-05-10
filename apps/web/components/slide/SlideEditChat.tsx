@@ -185,28 +185,30 @@ export function SlideEditChat({
     ],
   );
 
-  const revertLast = useCallback(() => {
-    if (pending) return;
-    setError(null);
-    startTransition(async () => {
-      const result = await revertLastSlideEditAction({
-        carouselId,
-        slideIdx,
-        lang,
-        slidesVersion,
+  const revertLast = useCallback(
+    (chatId?: string) => {
+      if (pending) return;
+      setError(null);
+      startTransition(async () => {
+        const result = await revertLastSlideEditAction({
+          carouselId,
+          slideIdx,
+          lang,
+          slidesVersion,
+          chatId,
+        });
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+        const rows = await loadSlideChatAction(carouselId, slideIdx, lang);
+        setHistory(rows);
+        if (result.appliedScope === "all_slides" && result.mergedSlides) {
+          onAllSlidesChange(result.mergedSlides, result.newSlidesVersion);
+        } else if (result.mergedSlide) {
+          onSlideChange(result.mergedSlide, result.newSlidesVersion);
+        }
       });
-      if (!result.ok) {
-        setError(result.message);
-        return;
-      }
-      const rows = await loadSlideChatAction(carouselId, slideIdx, lang);
-      setHistory(rows);
-      if (result.appliedScope === "all_slides" && result.mergedSlides) {
-        onAllSlidesChange(result.mergedSlides, result.newSlidesVersion);
-      } else if (result.mergedSlide) {
-        onSlideChange(result.mergedSlide, result.newSlidesVersion);
-      }
-    });
   }, [
     pending,
     carouselId,
@@ -344,11 +346,11 @@ export function SlideEditChat({
                       {chatRow?.is_revertable ? (
                         <button
                           type="button"
-                          onClick={revertLast}
+                          onClick={() => revertLast(m.id)}
                           disabled={pending}
                           className="mt-1 rounded border border-[var(--rule)] px-2 py-1 text-xs text-[var(--cream-mute)] hover:text-[var(--ink)] disabled:opacity-50"
                         >
-                          בטל שינוי
+                          בטל לכאן
                         </button>
                       ) : null}
                     </li>

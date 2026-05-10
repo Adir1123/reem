@@ -2,23 +2,31 @@
 @import "./reem.css";
 
 :root {
-  /* New black-and-gold palette (source of truth) */
-  --bg: #0a0a0a;
-  --bg-card: #141414;
-  --bg-card-2: #181614;
+  /* Warm Cream palette for the dashboard. Carousel slides themselves still
+     render on charcoal black via SlideCanvas + palette.ts — those are the
+     brand identity on Instagram and stay unchanged. */
+  --bg: #f5efdf;
+  --bg-card: #fbf6e8;
+  --bg-card-2: #ede5cd;
 
-  --ink: #ece1c8;
-  --cream-soft: rgba(236, 225, 200, 0.78);
-  --cream-mute: rgba(236, 225, 200, 0.48);
-  --cream-faint: rgba(236, 225, 200, 0.22);
+  --ink: #1a1a1a;
+  --cream-soft: rgba(26, 26, 26, 0.78);
+  --cream-mute: rgba(26, 26, 26, 0.48);
+  --cream-faint: rgba(26, 26, 26, 0.22);
 
   --gold-base: #b8924a;
   --gold-warm: #d4a861;
   --gold-deep: #7a5e2d;
   --gold-glow: rgba(212, 168, 97, 0.35);
 
-  --rule: rgba(184, 146, 74, 0.15);
-  --gold-faint: rgba(184, 146, 74, 0.04);
+  --rule: rgba(184, 146, 74, 0.18);
+  --gold-faint: rgba(184, 146, 74, 0.06);
+
+  /* RGB channel triplets so reem.css can compose its own alpha overlays
+     without hardcoding the bg/ink colors. Swap these in lockstep with --bg
+     and --ink above. */
+  --bg-rgb: 245, 239, 223;
+  --ink-rgb: 26, 26, 26;
 
   /* Backwards-compat aliases — every existing `bg-navy`, `text-gold`, etc.
      resolves through these to the new palette without a flag-day rename. */
@@ -32,7 +40,7 @@
      callers keep producing visually sensible surfaces. */
   --cream-soft-color: var(--bg-card-2);
   --gold-soft: rgba(184, 146, 74, 0.12);
-  --muted: rgba(236, 225, 200, 0.55);
+  --muted: rgba(var(--ink-rgb), 0.55);
 
   --background: var(--bg);
   --foreground: var(--ink);
@@ -70,4 +78,38 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), "Segoe UI", Arial, sans-serif;
+  /* Older client + Hebrew letterforms benefit from a slightly larger base
+     and taller line-height than English defaults. */
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+/* Visible focus rings on every interactive element. Browsers default to a
+   blue outline that fights the brand palette; this uses gold so keyboard
+   users get a brand-consistent, high-contrast focus indicator. */
+:focus-visible {
+  outline: 2px solid var(--gold-warm);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible,
+a:focus-visible {
+  box-shadow: 0 0 0 3px rgba(212, 168, 97, 0.25);
+}
+
+/* Skip-to-content link — invisible until tabbed to. WCAG AA compliance. */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  inset-inline-start: 16px;
+  z-index: 100;
+  padding: 12px 20px;
+  background: var(--gold-base);
+  color: var(--bg);
+  font-weight: 600;
+  border-radius: 6px;
+  transition: top 0.15s ease;
+}
+.skip-to-content:focus-visible {
+  top: 16px;
 }

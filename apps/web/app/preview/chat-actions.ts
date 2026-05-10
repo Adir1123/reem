@@ -63,20 +63,9 @@ interface SlideChatRow {
 }
 
 function toChatRows(rows: SlideChatRow[]): ChatRow[] {
-  // Mark the latest assistant row that carries a patch + a usable snapshot
-  // (per-slide OR carousel) as revertable.
-  let latestRevertableId: string | null = null;
-  for (let i = rows.length - 1; i >= 0; i--) {
-    const r = rows[i];
-    if (
-      r.role === "assistant" &&
-      r.patch_json &&
-      (r.pre_slide_json || (r.pre_slides_json && r.pre_slides_json.length > 0))
-    ) {
-      latestRevertableId = r.id;
-      break;
-    }
-  }
+  // Mark EVERY assistant row that carries a patch + a usable snapshot as
+  // revertable. Multi-step undo: clicking "בטל שינוי" on any past assistant
+  // turn rolls back to the state captured before that turn.
   return rows.map((r) => {
     let diff: string[] | null = null;
     if (r.role === "assistant" && r.patch_json) {
@@ -90,6 +79,11 @@ function toChatRows(rows: SlideChatRow[]): ChatRow[] {
         diff = diffSlideHebrew(refSlide, merged);
       }
     }
+    const hasSnapshot =
+      r.role === "assistant" &&
+      r.patch_json !== null &&
+      (r.pre_slide_json !== null ||
+        (r.pre_slides_json !== null && r.pre_slides_json.length > 0));
     return {
       id: r.id,
       role: r.role,
@@ -98,7 +92,7 @@ function toChatRows(rows: SlideChatRow[]): ChatRow[] {
       scope: uiScope(r.scope),
       created_at: r.created_at,
       diff_labels: diff,
-      is_revertable: r.id === latestRevertableId,
+      is_revertable: hasSnapshot,
     };
   });
 }
@@ -428,32 +422,42 @@ async function persistTurn(
 }
 
 // -------------------------------------------------------------------------
-// revertLastSlideEditAction — restore from whichever snapshot the latest
-// assistant row carries (single slide OR full slides array). No model call.
+// revertLastSlideEditAction — restore from a snapshot captured by an
+// assistant row. With no `chatId`, picks the most-recent revertable row
+// (single-step undo). With `chatId`, targets that specific row (multi-step
+// undo — "Undo to here" buttons on every revertable turn). No model call.
 // -------------------------------------------------------------------------
 export async function revertLastSlideEditAction(input: {
   carouselId: string;
   slideIdx: number;
   lang: Language;
   slidesVersion: number;
+  /** Specific assistant row to revert to. Omit for latest revertable. */
+  chatId?: string;
 }): Promise<EditSlideResult> {
   const clientId = requireClientId();
   const sb = getServiceClient();
   const slidesCol = input.lang === "he" ? "slides_he" : "slides_en";
 
-  // Pull the most recent assistant row that has *some* snapshot.
-  const { data: latest, error: latestErr } = await sb
+  // Pull either the targeted row (multi-step) or the most recent assistant
+  // row that has *some* snapshot (single-step).
+  const baseQuery = sb
     .from("slide_chats")
     .select("id, scope, pre_slide_json, pre_slides_json")
     .eq("client_id", clientId)
     .eq("carousel_id", input.carouselId)
     .eq("slide_idx", input.slideIdx)
     .eq("lang", input.lang)
-    .eq("role", "assistant")
-    .or("pre_slide_json.not.is.null,pre_slides_json.not.is.null")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .eq("role", "assistant");
+
+  const targeted = input.chatId
+    ? baseQuery.eq("id", input.chatId)
+    : baseQuery
+        .or("pre_slide_json.not.is.null,pre_slides_json.not.is.null")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+  const { data: latest, error: latestErr } = await targeted.maybeSingle();
   if (latestErr) {
     return { ok: false, code: "internal", message: latestErr.message };
   }

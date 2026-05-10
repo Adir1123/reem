@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # Node / pnpm — root + apps + packages.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      next:
+        patterns: ["next", "next-*", "@next/*", "eslint-config-next"]
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      anthropic:
+        patterns: ["@anthropic-ai/*", "anthropic"]
+      supabase:
+        patterns: ["@supabase/*"]
+      trigger:
+        patterns: ["@trigger.dev/*", "trigger.dev"]
+      tailwind:
+        patterns: ["tailwindcss", "@tailwindcss/*"]
+      types:
+        patterns: ["@types/*"]
+      dev-dependencies:
+        dependency-type: development
+
+  # Python (Trigger.dev worker pipeline).
+  - package-ecosystem: pip
+    directory: "/apps/trigger/src/python"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+
+  # GitHub Actions themselves.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly

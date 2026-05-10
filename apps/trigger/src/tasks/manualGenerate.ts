@@ -190,7 +190,13 @@ export const manualGenerate = task({
         return null;
       });
 
-      // 6. Persist carousels (pending_review).
+      // 6. Persist carousels (pending_review). Critic report (Pass C output)
+      //    is matched per-carousel by id and stored alongside the slides for
+      //    the dashboard to surface scores and flagged slides.
+      const criticByCarouselId = new Map<string, unknown>();
+      for (const cr of parsed.critic_report?.carousels ?? []) {
+        criticByCarouselId.set(cr.carousel_id, cr);
+      }
       const carouselRows = parsed.carousels.map((c, idx) => ({
         client_id: clientId,
         run_id: runId,
@@ -201,12 +207,26 @@ export const manualGenerate = task({
         slides_en: c.slides_en,
         caption_he: captions[idx]?.caption_he ?? null,
         caption_en: captions[idx]?.caption_en ?? null,
+        critic_report: criticByCarouselId.get(c.id) ?? null,
         status: "pending_review" as const,
       }));
       const { error: carErr } = await sb.from("carousels").insert(carouselRows);
       if (carErr) throw new Error(`Failed to insert carousels: ${carErr.message}`);
 
       // 7. Close run + flip topic to pending_review.
+      // Cost estimate: aggregate Anthropic spend across Pass A/B/C using
+      // current per-token rates. Approximations — exact billing is in the
+      // Anthropic console. Updates as model rates change.
+      const inT = parsed.run_stats?.input_tokens ?? 0;
+      const outT = parsed.run_stats?.output_tokens ?? 0;
+      // Conservative blended rates (Opus + Sonnet + Haiku usage in our pipeline).
+      // Opus: $15/M input, $75/M output. Sonnet: $3/M / $15/M. Haiku: $1/M / $5/M.
+      // Pass A+B (Opus) dominates input; Pass C (Sonnet) is small share.
+      // Using a weighted blended rate that overestimates slightly so we
+      // don't underbill ourselves.
+      const inputRatePerToken = 12 / 1_000_000;  // $12/M blended
+      const outputRatePerToken = 60 / 1_000_000; // $60/M blended
+      const costEstimate = inT * inputRatePerToken + outT * outputRatePerToken;
       const allWarnings = [...(parsed.warnings ?? []), ...captionWarnings];
       await sb
         .from("runs")
@@ -215,6 +235,7 @@ export const manualGenerate = task({
           finished_at: new Date().toISOString(),
           raw_json: parsed,
           warnings: allWarnings.length > 0 ? allWarnings : null,
+          cost_estimate: Number(costEstimate.toFixed(4)),
         })
         .eq("id", runId);
 

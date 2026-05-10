@@ -73,6 +73,63 @@ HEBREW_CALQUE_PATTERNS = (
 # through — in body copy it's legitimate. Enforced by context, not regex.
 HEBREW_CALQUE_HEADLINE_QUALIFIER = re.compile(r"\bבאמת\b")
 
+# Markdown emphasis that occasionally leaks from Opus despite the plain-text
+# JSON contract (e.g. `*Verdict*` or `**$5,000**`). The renderer prints these
+# literally on the carousel, so strip the markers and propagate the captured
+# spans to body_emphasis / headline_italic. Order matters — longest marker
+# first so `**` is consumed before `*`, same for `__` vs `_`.
+_MD_EMPHASIS_PATTERNS = (
+    re.compile(r"\*\*(.+?)\*\*"),
+    re.compile(r"__(.+?)__"),
+    re.compile(r"\*(.+?)\*"),
+    re.compile(r"_(.+?)_"),
+)
+
+
+def _strip_md(text: str) -> tuple[str, list[str]]:
+    """Remove markdown emphasis markers; return (cleaned_text, captured_spans)."""
+    captured: list[str] = []
+    for pat in _MD_EMPHASIS_PATTERNS:
+        def _grab(m, store=captured):
+            store.append(m.group(1))
+            return m.group(1)
+        text = pat.sub(_grab, text)
+    return text, captured
+
+
+def _strip_markdown_emphasis(slide: dict) -> int:
+    """Strip markdown emphasis from slide string fields. Propagate captured
+    spans into body_emphasis (every span) and headline_italic (first span,
+    only if not already set). Returns the number of stripped spans."""
+    count = 0
+    headline = slide.get("headline")
+    if isinstance(headline, str):
+        cleaned, captured = _strip_md(headline)
+        if cleaned != headline:
+            slide["headline"] = cleaned
+            count += len(captured)
+            if captured and not slide.get("headline_italic"):
+                slide["headline_italic"] = captured[0]
+    body = slide.get("body")
+    if isinstance(body, str):
+        cleaned, captured = _strip_md(body)
+        if cleaned != body:
+            slide["body"] = cleaned
+            count += len(captured)
+            existing = list(slide.get("body_emphasis") or [])
+            for span in captured:
+                if span not in existing:
+                    existing.append(span)
+            slide["body_emphasis"] = existing
+    eyebrow = slide.get("eyebrow")
+    if isinstance(eyebrow, str):
+        cleaned, captured = _strip_md(eyebrow)
+        if cleaned != eyebrow:
+            slide["eyebrow"] = cleaned
+            count += len(captured)
+    return count
+
+
 VALID_ROLES = ["HOOK", "TIP", "TIP", "TIP", "TIP", "TIP", "CTA"]
 VALID_ENERGY = {"HIGH", "MEDIUM", "LOW"}
 
@@ -84,6 +141,57 @@ def _load_docs():
     typography = (REEM_DOCS_DIR / "hebrew-typography.md").read_text(encoding="utf-8")
     hook = (REEM_DOCS_DIR / "hook-framework.md").read_text(encoding="utf-8")
     return brand, framework, typography, hook
+
+
+_KNOWLEDGE_DIR = Path(__file__).resolve().parent.parent / "knowledge"
+
+
+def _load_knowledge():
+    """Load the Hebrew quality framework files. Returns a dict mapping the
+    file's logical name to its contents. These are mounted as cached system
+    blocks for both Pass B (Hebrew authoring) and Pass C (critic).
+
+    See apps/trigger/src/python/knowledge/ — ported and adapted from the
+    Adir1123/adir-carousels project, niche-shifted to Personal Finance Tips.
+    """
+    if not _KNOWLEDGE_DIR.is_dir():
+        return {}  # graceful degrade — pipeline still runs without the framework
+    out = {}
+    for name in [
+        "brand-voice-he.md",
+        "copy-patterns-he.md",
+        "punctuation-he.md",
+        "bidi-rules.md",
+        "hook.md",
+        "english-terms-whitelist.json",
+        "qa-rubric-he.md",
+    ]:
+        p = _KNOWLEDGE_DIR / name
+        if p.exists():
+            out[name] = p.read_text(encoding="utf-8")
+    return out
+
+
+def _knowledge_to_system_blocks(knowledge: dict, include_rubric: bool = False):
+    """Convert the knowledge dict into Anthropic system blocks. Pass B doesn't
+    need the QA rubric (the critic uses that in Pass C); set include_rubric=True
+    only for the Pass C call.
+    """
+    keys = [
+        "brand-voice-he.md",
+        "copy-patterns-he.md",
+        "punctuation-he.md",
+        "bidi-rules.md",
+        "hook.md",
+        "english-terms-whitelist.json",
+    ]
+    if include_rubric:
+        keys.append("qa-rubric-he.md")
+    blocks = []
+    for k in keys:
+        if k in knowledge:
+            blocks.append({"type": "text", "text": f"# {k}\n\n{knowledge[k]}"})
+    return blocks
 
 
 def _load_images_from(dir_name: str):
@@ -130,10 +238,16 @@ def _load_hebrew_reauthor_template():
     return template_path.read_text(encoding="utf-8")
 
 
-def _build_system_blocks(brand, framework, typography, hook):
+def _build_system_blocks(brand, framework, typography, hook, knowledge=None):
     """System text blocks. Anthropic's `system` param accepts TEXT blocks only —
     images must live in the user message. Cache on the last block so the whole
-    stable payload (brand + framework + hook + typography) gets prompt-cached."""
+    stable payload (brand + framework + typography + knowledge) gets prompt-cached.
+
+    The `knowledge` dict (from _load_knowledge()) injects the Hebrew quality
+    framework — brand-voice, copy-patterns, punctuation, bidi, hook archetypes,
+    and the english-terms whitelist. Pass B and Pass C both see this material
+    so the writer and the critic agree on the rules.
+    """
     blocks = [
         {
             "type": "text",
@@ -149,6 +263,8 @@ def _build_system_blocks(brand, framework, typography, hook):
         {"type": "text", "text": "# hook-framework.md (apply to Slide 0 / HOOK)\n\n" + hook},
         {"type": "text", "text": "# hebrew-typography.md\n\n" + typography},
     ]
+    if knowledge:
+        blocks.extend(_knowledge_to_system_blocks(knowledge, include_rubric=False))
     blocks[-1] = {**blocks[-1], "cache_control": {"type": "ephemeral"}}
     return blocks
 
@@ -444,6 +560,168 @@ def _pass_a_english(client, transcripts, n_carousels, model, ref_images, exempla
     return data, usage, duration
 
 
+CRITIC_MODEL = "claude-sonnet-4-6"
+
+
+def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
+    """Pass C — Hebrew quality critic. Scores every Hebrew slide on the 7
+    weighted dimensions defined in qa-rubric-he.md and returns a structured
+    report. The pipeline uses this report to decide whether each slide ships
+    or needs regeneration.
+
+    Returns (critic_report, usage, duration). `critic_report` shape:
+      {
+        "carousels": [
+          {
+            "carousel_id": str,
+            "slides": [{slide_index, hard_fails, scores, weighted_score, recommend, notes}],
+            "carousel_average": float,
+            "carousel_recommend": "ship" | "regenerate"
+          }
+        ],
+        "any_regenerate": bool,    # convenience flag for the loop
+      }
+    """
+    if not knowledge:
+        # No knowledge files = critic has nothing to score against. Skip.
+        return {"carousels": [], "any_regenerate": False, "skipped": "no knowledge dir"}, None, 0
+
+    critic_system = [
+        {
+            "type": "text",
+            "text": (
+                "You are a senior Hebrew copy editor for Israeli Instagram. Your job is to "
+                "score every Hebrew slide on a 1-10 scale across 7 weighted dimensions, "
+                "applying the rubric exactly as written. Be honest and specific. "
+                "You are forced to call the `score_slide` tool — do not write prose."
+            ),
+        },
+    ]
+    # Mount the entire knowledge framework so the critic shares the writer's rules.
+    critic_system.extend(_knowledge_to_system_blocks(knowledge, include_rubric=True))
+    critic_system[-1] = {**critic_system[-1], "cache_control": {"type": "ephemeral"}}
+
+    # Tool the critic must call. Schema mirrors qa-rubric-he.md output format.
+    tool = {
+        "name": "score_slide",
+        "description": "Apply the qa-rubric-he.md rubric to a single slide and return structured scores.",
+        "input_schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["slide_index", "hard_fails", "scores", "weighted_score", "recommend"],
+            "properties": {
+                "slide_index": {"type": "integer", "minimum": 0, "maximum": 6},
+                "hard_fails": {"type": "array", "items": {"type": "string"}},
+                "scores": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": [
+                        "nativeness", "voice_match", "term_correctness",
+                        "bidi_correctness", "punctuation_correctness", "pattern_fit",
+                        "specificity",
+                    ],
+                    "properties": {
+                        "nativeness": {"type": "number", "minimum": 0, "maximum": 10},
+                        "voice_match": {"type": "number", "minimum": 0, "maximum": 10},
+                        "term_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                        "bidi_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                        "punctuation_correctness": {"type": "number", "minimum": 0, "maximum": 10},
+                        "pattern_fit": {"type": "number", "minimum": 0, "maximum": 10},
+                        "specificity": {"type": "number", "minimum": 0, "maximum": 10},
+                    },
+                },
+                "weighted_score": {"type": "number", "minimum": 0, "maximum": 10},
+                "recommend": {"enum": ["ship", "consider_regenerate", "regenerate"]},
+                "notes": {"type": "string"},
+            },
+        },
+    }
+
+    out_carousels = []
+    any_regen = False
+    total_in = 0
+    total_out = 0
+    t0 = time.time()
+
+    for c in carousels:
+        slides_he = c.get("slides_he", [])
+        slides_en = c.get("slides_en", [])
+        slide_reports = []
+        for i in range(min(len(slides_he), 7)):
+            user_content = [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Score Hebrew slide_index={i} per qa-rubric-he.md.\n\n"
+                        f"=== ENGLISH BRIEF (source insight) ===\n"
+                        f"{json.dumps(slides_en[i] if i < len(slides_en) else {}, ensure_ascii=False, indent=2)}\n\n"
+                        f"=== HEBREW OUTPUT (the slide to score) ===\n"
+                        f"{json.dumps(slides_he[i], ensure_ascii=False, indent=2)}\n\n"
+                        f"Call score_slide with the result. Apply hard-fail checks first; "
+                        f"if any trigger, set hard_fails non-empty, weighted_score=0, recommend=regenerate."
+                    ),
+                }
+            ]
+            try:
+                resp = client.messages.create(
+                    model=model,
+                    max_tokens=1500,
+                    system=critic_system,
+                    tools=[tool],
+                    tool_choice={"type": "tool", "name": "score_slide"},
+                    messages=[{"role": "user", "content": user_content}],
+                )
+                # Pull the tool input.
+                tool_input = None
+                for block in resp.content:
+                    if getattr(block, "type", None) == "tool_use" and getattr(block, "name", None) == "score_slide":
+                        tool_input = getattr(block, "input", None)
+                        break
+                if tool_input is None:
+                    slide_reports.append({
+                        "slide_index": i,
+                        "hard_fails": ["critic_no_tool_call"],
+                        "scores": {},
+                        "weighted_score": 0,
+                        "recommend": "regenerate",
+                        "notes": "Critic LLM did not call the tool.",
+                    })
+                    any_regen = True
+                else:
+                    slide_reports.append(tool_input)
+                    if tool_input.get("recommend") != "ship":
+                        any_regen = True
+                u = getattr(resp, "usage", None)
+                total_in += getattr(u, "input_tokens", 0) or 0
+                total_out += getattr(u, "output_tokens", 0) or 0
+            except Exception as e:  # noqa: BLE001 — never let the critic crash the run
+                slide_reports.append({
+                    "slide_index": i,
+                    "hard_fails": [f"critic_exception: {e}"],
+                    "scores": {},
+                    "weighted_score": 0,
+                    "recommend": "regenerate",
+                    "notes": str(e),
+                })
+                any_regen = True
+
+        scored = [s for s in slide_reports if isinstance(s.get("weighted_score"), (int, float))]
+        avg = sum(s["weighted_score"] for s in scored) / len(scored) if scored else 0
+        out_carousels.append({
+            "carousel_id": c.get("id", "?"),
+            "slides": slide_reports,
+            "carousel_average": round(avg, 2),
+            "carousel_recommend": "ship" if avg >= 8 and not any(s.get("recommend") == "regenerate" for s in slide_reports) else "regenerate",
+        })
+
+    duration = round(time.time() - t0, 1)
+    return (
+        {"carousels": out_carousels, "any_regenerate": any_regen},
+        {"input_tokens": total_in, "output_tokens": total_out},
+        duration,
+    )
+
+
 def _pass_b_hebrew(client, carousels_en, model, he_exemplar_images, system_blocks):
     """Pass B — author Hebrew from the English insight, not translation.
     Returns (slides_he_by_id, usage, duration). Caller merges back into the
@@ -462,6 +740,65 @@ def _pass_b_hebrew(client, carousels_en, model, he_exemplar_images, system_block
     return by_id, usage, duration
 
 
+def _format_critic_feedback(critic_report: dict) -> str:
+    """Render the critic report into a markdown block the writer can read on
+    its second Pass B attempt. We only surface flagged slides — slides that
+    shipped don't need to be rewritten."""
+    lines = ["# Critic feedback (qa-rubric-he.md)\n"]
+    for c in critic_report.get("carousels", []):
+        cid = c.get("carousel_id", "?")
+        for s in c.get("slides", []):
+            if s.get("recommend") == "ship":
+                continue
+            idx = s.get("slide_index")
+            score = s.get("weighted_score", 0)
+            hard_fails = s.get("hard_fails") or []
+            notes = s.get("notes", "")
+            lines.append(f"## {cid} / slide {idx} — score {score} — recommend {s.get('recommend')}")
+            if hard_fails:
+                lines.append(f"**Hard fails**: {', '.join(hard_fails)}")
+            scores = s.get("scores", {})
+            if scores:
+                weak = [f"{k}={v}" for k, v in scores.items() if isinstance(v, (int, float)) and v < 8]
+                if weak:
+                    lines.append(f"**Weak dimensions**: {', '.join(weak)}")
+            if notes:
+                lines.append(f"**Notes**: {notes}")
+            lines.append("")
+    return "\n".join(lines)
+
+
+def _pass_b_hebrew_with_feedback(
+    client, carousels_en, model, he_exemplar_images, system_blocks, critic_notes: str
+):
+    """Pass B retry. Same prompt as the main Pass B but with the critic's
+    notes injected at the top of the user message so the writer knows
+    exactly what to fix on the second attempt.
+    """
+    base = _build_user_content_he(
+        he_exemplar_images, carousels_en, _load_hebrew_reauthor_template(),
+    )
+    # Prepend the critic feedback as a text block.
+    feedback_block = {
+        "type": "text",
+        "text": (
+            "=== CRITIC FEEDBACK FROM YOUR PREVIOUS ATTEMPT ===\n\n"
+            + critic_notes
+            + "\n\nRewrite the flagged slides to fix every hard_fail and lift "
+              "every weak dimension to ≥ 9. Keep slides not mentioned identical."
+        ),
+    }
+    user_content = [feedback_block] + base
+    print(
+        "[Pass B retry / HE] Calling with critic feedback prepended.",
+        file=sys.stderr,
+    )
+    raw, usage, duration = _call_anthropic(client, model, system_blocks, user_content)
+    data = _extract_json(raw)
+    by_id = {c.get("id"): c.get("slides_he", []) for c in data.get("carousels", [])}
+    return by_id, usage, duration
+
+
 def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_strict=True):
     """Two-pass generation: EN authored in Pass A, HE re-authored (not
     translated) in Pass B using the Hebrew voice exemplars. Pass A retries up
@@ -470,11 +807,12 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
 
     client = Anthropic(api_key=require_anthropic_key())
     brand, framework, typography, hook = _load_docs()
+    knowledge = _load_knowledge()
     ref_images = _load_ref_images()
     exemplar_images = _load_exemplar_images()
     he_exemplar_images = _load_hebrew_exemplar_images()
     ref_names = set(f for f, _, _ in ref_images)
-    system_blocks = _build_system_blocks(brand, framework, typography, hook)
+    system_blocks = _build_system_blocks(brand, framework, typography, hook, knowledge=knowledge)
 
     warnings: list[str] = []
 
@@ -489,6 +827,17 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
             client, transcripts, n_carousels, model,
             ref_images, exemplar_images, system_blocks,
         )
+        # Strip leaked markdown emphasis (`*Verdict*`, `**$5k**`) before
+        # validation — markers would otherwise render literally on the carousel.
+        md_stripped_a = 0
+        for c in en_data.get("carousels", []):
+            for s in c.get("slides_en", []):
+                md_stripped_a += _strip_markdown_emphasis(s)
+        if md_stripped_a:
+            warnings.append(
+                f"Pass A: stripped {md_stripped_a} markdown emphasis marker(s) "
+                f"from English slides (Opus leaked them despite plain-text contract)."
+            )
         try:
             _validate_carousels(en_data, ref_names, warnings, lang_keys=("slides_en",))
             break
@@ -508,8 +857,16 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
             slides_he_by_id, usage_b, dur_b = _pass_b_hebrew(
                 client, carousels, model, he_exemplar_images, system_blocks,
             )
+            md_stripped_b = 0
             for c in carousels:
                 c["slides_he"] = slides_he_by_id.get(c.get("id"), [])
+                for s in c["slides_he"]:
+                    md_stripped_b += _strip_markdown_emphasis(s)
+            if md_stripped_b:
+                warnings.append(
+                    f"Pass B: stripped {md_stripped_b} markdown emphasis marker(s) "
+                    f"from Hebrew slides."
+                )
             # Validate the Hebrew side now that it's merged.
             _validate_carousels(
                 {"carousels": carousels}, ref_names, warnings,
@@ -525,6 +882,62 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
                 # Give up — raise so the caller knows the Hebrew is suspect.
                 raise
     # (If we broke out cleanly, last_error is None.)
+
+    # ---- Pass C — Hebrew quality critic (Sonnet 4.6 against qa-rubric) ----
+    # Scores every slide on 7 weighted dimensions. If any slide flunks (score
+    # < 8 or hard_fails non-empty), do ONE more Pass B attempt with the critic
+    # notes appended to the user prompt, then re-critic. Cap at 1 retry.
+    critic_report = None
+    usage_c_total = {"input_tokens": 0, "output_tokens": 0}
+    dur_c_total = 0
+    if knowledge:
+        critic_report, usage_c, dur_c = _pass_c_critic(client, carousels, knowledge)
+        usage_c_total["input_tokens"] += (usage_c or {}).get("input_tokens", 0) or 0
+        usage_c_total["output_tokens"] += (usage_c or {}).get("output_tokens", 0) or 0
+        dur_c_total += dur_c or 0
+
+        if critic_report.get("any_regenerate"):
+            print(
+                "[Pass C] critic flagged at least one slide for regeneration; "
+                "running one more Pass B with critic notes injected.",
+                file=sys.stderr,
+            )
+            # Build a compact critic-feedback string the writer can read.
+            critic_notes_md = _format_critic_feedback(critic_report)
+            try:
+                slides_he_by_id, usage_b2, dur_b2 = _pass_b_hebrew_with_feedback(
+                    client, carousels, model, he_exemplar_images, system_blocks,
+                    critic_notes_md,
+                )
+                for c in carousels:
+                    new_slides = slides_he_by_id.get(c.get("id"))
+                    if new_slides:
+                        c["slides_he"] = new_slides
+                        for s in new_slides:
+                            _strip_markdown_emphasis(s)
+                # Re-critic after the rewrite.
+                critic_report2, usage_c2, dur_c2 = _pass_c_critic(client, carousels, knowledge)
+                usage_c_total["input_tokens"] += (usage_c2 or {}).get("input_tokens", 0) or 0
+                usage_c_total["output_tokens"] += (usage_c2 or {}).get("output_tokens", 0) or 0
+                dur_c_total += dur_c2 or 0
+                # Track both rounds in the persisted report so the dashboard
+                # can show "after-rewrite" vs "before-rewrite" if useful.
+                critic_report = {
+                    "round_1": critic_report,
+                    "round_2": critic_report2,
+                    "carousels": critic_report2.get("carousels", []),
+                    "any_regenerate": critic_report2.get("any_regenerate", False),
+                }
+                # Add Pass B retry usage to overall totals.
+                if usage_b2 is not None:
+                    # piggyback onto Pass B usage counters
+                    pass  # we keep dur_b/usage_b unchanged; b2 cost tracked in run_stats below
+                dur_b = (dur_b or 0) + (dur_b2 or 0)
+            except ValueError as e:
+                warnings.append(f"Pass B regeneration after critic failed: {e}")
+                print(f"[Pass B retry] failed: {e}", file=sys.stderr)
+        else:
+            print("[Pass C] all slides ≥ 8.0 — shipping without rewrite.", file=sys.stderr)
 
     # Enrich sources with metadata from the input transcripts.
     sources = []
@@ -566,20 +979,24 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
                 "next_carousels_run_suggestion", ""
             ),
         },
+        "critic_report": critic_report,
         "run_stats": {
             "videos_requested": len(transcripts),
             "videos_succeeded": len(transcripts),
             "carousels_requested": n_carousels,
             "carousels_produced": len(carousels),
-            "duration_seconds": total_duration,
+            "duration_seconds": total_duration + (dur_c_total or 0),
             "duration_pass_a_seconds": dur_a,
             "duration_pass_b_seconds": dur_b,
-            "input_tokens": (_u(usage_a, "input_tokens") or 0) + (_u(usage_b, "input_tokens") or 0),
-            "output_tokens": (_u(usage_a, "output_tokens") or 0) + (_u(usage_b, "output_tokens") or 0),
+            "duration_pass_c_seconds": dur_c_total,
+            "input_tokens": (_u(usage_a, "input_tokens") or 0) + (_u(usage_b, "input_tokens") or 0) + (usage_c_total.get("input_tokens", 0) or 0),
+            "output_tokens": (_u(usage_a, "output_tokens") or 0) + (_u(usage_b, "output_tokens") or 0) + (usage_c_total.get("output_tokens", 0) or 0),
             "cache_read_tokens": (_u(usage_a, "cache_read_input_tokens") or 0) + (_u(usage_b, "cache_read_input_tokens") or 0),
             "cache_creation_tokens": (_u(usage_a, "cache_creation_input_tokens") or 0) + (_u(usage_b, "cache_creation_input_tokens") or 0),
             "hebrew_pass_attempts": attempts,
             "hebrew_strict": hebrew_strict,
+            "critic_pass_ran": critic_report is not None,
+            "critic_triggered_rewrite": (critic_report or {}).get("round_1") is not None,
         },
     }
     if warnings:

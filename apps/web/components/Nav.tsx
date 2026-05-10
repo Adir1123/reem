@@ -16,9 +16,14 @@ export async function Nav() {
     <nav className="reem-nav" dir="rtl">
       <div className="reem-nav-inner">
         <Link href="/" className="reem-logo">
-          <span className="reem-logo-mark" aria-hidden="true">
-            ר
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/reem-logo-bull.png"
+            alt="Reem"
+            className="reem-logo-img"
+            width={64}
+            height={64}
+          />
           <span className="reem-logo-word">REEM</span>
         </Link>
         <ul className="reem-nav-items">

@@ -13,15 +13,16 @@ interface Props {
   palette?: Palette;
 }
 
-// Single source of truth for the preset → px ladder. Defaults (`md`) match the
-// previously hardcoded values exactly, so a slide with `style === undefined`
-// renders byte-identical to before this refactor.
+// Single source of truth for the preset → px ladder. Body defaults bumped one
+// notch (md→lg) and the ladder extended to xl/xxl so the chat editor can keep
+// going if the client wants larger text. Existing slides without an explicit
+// `style.body_size` now render at 34px (was 28px).
 const SIZE_MAP = {
-  headline:    { sm: 64, md: 76, lg: 88, xl: 100 },
-  body:        { sm: 24, md: 28, lg: 32 },
-  eyebrow:     { sm: 18, md: 22 },
-  ctaHeadline: { sm: 60, md: 72, lg: 84, xl: 96 },
-  ctaBody:     { sm: 26, md: 30, lg: 34 },
+  headline:    { sm: 64, md: 76, lg: 88, xl: 100, xxl: 112 },
+  body:        { sm: 26, md: 30, lg: 34, xl: 38, xxl: 42 },
+  eyebrow:     { sm: 18, md: 22, lg: 26, xl: 30, xxl: 36 },
+  ctaHeadline: { sm: 60, md: 72, lg: 84, xl: 96, xxl: 108 },
+  ctaBody:     { sm: 28, md: 32, lg: 36, xl: 40, xxl: 44 },
 } as const;
 
 // Inline padding from the canvas edge for the content block. Default
@@ -111,13 +112,31 @@ export function SlideCanvas({ slide, lang, totalSlides, domId, palette }: Props)
         PFT
       </div>
 
-      {/* Step number — large ghosted chapter marker, top-right of canvas */}
+      {/* Top-right brand logo — bull-only crop with transparent background.
+          PNG already circular via alpha mask, no CSS clipping needed. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/reem-logo-bull.png"
+        alt=""
+        style={{
+          position: "absolute",
+          top: 32,
+          right: 32,
+          width: 160,
+          height: 160,
+          objectFit: "contain",
+          zIndex: 2,
+        }}
+      />
+
+      {/* Step number — ghosted chapter marker. Pushed below the logo so the
+          two top-right elements don't fight for the same pixels. */}
       {slide.step_number && !slide.style?.hide_step_number ? (
         <div
           dir="ltr"
           style={{
             position: "absolute",
-            top: 48,
+            top: 168,
             right: 64,
             fontFamily: displayFont,
             fontWeight: 900,
@@ -183,7 +202,7 @@ function ContentBlock({
   const creamRgb = hexToRgbTriplet(palette.cream);
   const style: SlideStyle = slide.style ?? {};
   const headlineSize = SIZE_MAP.headline[style.headline_size ?? "md"];
-  const bodySize = SIZE_MAP.body[style.body_size ?? "md"];
+  const bodySize = SIZE_MAP.body[style.body_size ?? "xxl"];
   const eyebrowSize = SIZE_MAP.eyebrow[style.eyebrow_size ?? "md"];
   const headlineAlign = style.headline_align;
   const bodyAlign = style.body_align;
@@ -323,7 +342,7 @@ function CTA({
   const creamRgb = hexToRgbTriplet(palette.cream);
   const style: SlideStyle = slide.style ?? {};
   const ctaHeadlineSize = SIZE_MAP.ctaHeadline[style.headline_size ?? "md"];
-  const ctaBodySize = SIZE_MAP.ctaBody[style.body_size ?? "md"];
+  const ctaBodySize = SIZE_MAP.ctaBody[style.body_size ?? "xxl"];
 
   return (
     <div

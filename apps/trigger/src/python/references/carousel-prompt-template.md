@@ -184,6 +184,18 @@ pickable assets.
 Return **only** a single JSON object. No prose, no markdown fences, no
 explanation.
 
+**No markdown formatting inside any string field.** Every string in the JSON is
+plain text rendered verbatim on the carousel canvas. This means:
+
+- Never wrap text in `*…*`, `**…**`, `_…_`, or `__…__`. The renderer prints those
+  asterisks and underscores literally on the slide.
+- If you want a word emphasised in italic gold inside a `headline`, put the exact
+  substring in `headline_italic` — do **not** add `*…*` around it in `headline`.
+- If you want a phrase emphasised inside `body`, add it to `body_emphasis` — do
+  **not** add markers around it in `body`.
+- The post-processor will strip `*` and `_` markers automatically as a safety
+  net, but earning a clean output without that fallback is the bar.
+
 ```json
 {
   "carousels": [

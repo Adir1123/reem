@@ -840,3 +840,66 @@ These are real mistakes from previous deploys. Reading these once will save you 
 ---
 
 End of runbook. If anything here is wrong or unclear when you next onboard a client, **fix this file and commit it back** so future-you doesn't trip on the same thing.
+
+---
+
+## Appendix A — `MASTER_ENCRYPTION_KEY` runbook (read before you ever change anything)
+
+The `MASTER_ENCRYPTION_KEY` is the only thing standing between the client's stored Anthropic / Apify / future API keys and a permanent, irrecoverable lockout. Treat this section as a fire-drill plan.
+
+### What it does
+
+The key is a 32-byte random base64 string used by `apps/web/lib/encryption.ts` to AES-256-GCM encrypt every secret the client pastes into `/settings`. Those ciphertexts live in `app_settings.anthropic_key_ciphertext` and `app_settings.apify_key_ciphertext` in Supabase.
+
+If the key is lost, **every encrypted column in Supabase becomes garbage**. You can recover only by:
+1. Generating a brand-new key
+2. Asking the client to paste fresh API keys via `/settings` (which re-encrypts under the new key)
+
+### Backup checklist (do this once per client, the day you onboard them)
+
+After you generate the key in §6.2:
+- [ ] Save in 1Password under the client's vault, label `MASTER_ENCRYPTION_KEY`. Mark "Never auto-fill, never share".
+- [ ] Save a second copy in your own personal 1Password as an emergency fallback. Label `client-X-MASTER_ENCRYPTION_KEY`.
+- [ ] Record the date you generated it in the client's onboarding notes.
+- [ ] Confirm Vercel env var matches Trigger.dev env var **byte-identical** — copy from a single source, never type by hand.
+
+### Rotation policy
+
+Default: **don't rotate**. The key is symmetric and never leaves the encrypted Vercel + Trigger.dev environment. There's no realistic exposure surface.
+
+Rotate only if:
+- A 1Password leak is confirmed (someone outside the client+you saw the vault)
+- A Vercel or Trigger.dev breach is announced affecting the project
+- The client explicitly asks for fresh keys (rare)
+
+### Rotation procedure
+
+1. Generate a new key: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`
+2. Save it in 1Password (both vaults), labeled with the rotation date.
+3. **In Supabase**: clear all ciphertext columns:
+   ```sql
+   update app_settings
+     set anthropic_key_ciphertext = null,
+         apify_key_ciphertext = null
+     where client_id = '<client_uuid>';
+   ```
+4. Update both env vars (Vercel + Trigger.dev) to the new key.
+5. Notify the client: "I rotated the encryption key — please paste your Anthropic and Apify keys back into /settings". They re-paste; the new ciphertexts are written under the new key.
+6. Verify: trigger one carousel generation. If it succeeds end-to-end, rotation is complete.
+
+### Recovery from key loss
+
+If the old key is gone (deleted from 1Password, lost laptop, etc.):
+1. Generate a new key per the rotation procedure above.
+2. Same DB cleanup + env-var update.
+3. Same client notification — they paste fresh keys.
+
+You will **not** be able to read the old encrypted ciphertexts. They become permanently unreadable. There is no decryption-on-the-fly recovery — AES-256-GCM with a lost key is, by design, recovery-proof.
+
+### Anti-patterns (never do these)
+
+- ❌ Commit the key to git, even temporarily (`.env` is gitignored — verify after every onboarding)
+- ❌ Type the key by hand into Vercel/Trigger.dev — copy-paste only, with a careful diff against 1Password
+- ❌ Use the same key across multiple clients — each client gets a unique key. Cross-client decryption is a security smell.
+- ❌ Email the key. Slack the key. Screenshot the key.
+- ❌ Skip the second 1Password copy. Single-source backups die with the source.

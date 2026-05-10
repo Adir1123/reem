@@ -35,9 +35,12 @@ export default function RootLayout({
       className={`${frankRuhl.variable} ${assistant.variable} h-full antialiased`}
     >
       <body className="bg-bg text-ink min-h-full flex flex-col font-body">
+        <a href="#main-content" className="skip-to-content">
+          דלג לתוכן הראשי
+        </a>
         <Nav />
         <BackButton />
-        {children}
+        <div id="main-content">{children}</div>
       </body>
     </html>
   );
