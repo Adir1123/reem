@@ -747,11 +747,15 @@ def _pass_c_critic(client, carousels, knowledge, model=CRITIC_MODEL):
     t0 = time.time()
 
     if carousels:
+        # Key by carousel INDEX (int), not the carousel dict — dicts are
+        # unhashable and can't be used as dict keys.
         with ThreadPoolExecutor(max_workers=len(carousels)) as ex:
-            futs = {ex.submit(_critic_one, c): c for c in carousels}
-            critic_results = {futs[f]: f.result() for f in as_completed(futs)}
-        for c in carousels:  # stable carousel order in output
-            cid, slide_reports, in_tok, out_tok, regen = critic_results[c]
+            futs = {ex.submit(_critic_one, c): i for i, c in enumerate(carousels)}
+            critic_results: list = [None] * len(carousels)
+            for f in as_completed(futs):
+                critic_results[futs[f]] = f.result()
+        for idx, c in enumerate(carousels):  # stable carousel order in output
+            cid, slide_reports, in_tok, out_tok, regen = critic_results[idx]
             total_in += in_tok
             total_out += out_tok
             if regen:
@@ -965,9 +969,13 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
     dur_b = 0
     attempts = 1
     if carousels:
+        # Key the result map by carousel INDEX (int), not the carousel dict —
+        # Python dicts are unhashable and can't be used as dict keys.
         with ThreadPoolExecutor(max_workers=len(carousels)) as ex:
-            futs = {ex.submit(_pass_b_one_with_retries, c): c for c in carousels}
-            b_results = {futs[f]: f.result() for f in as_completed(futs)}
+            futs = {ex.submit(_pass_b_one_with_retries, c): i for i, c in enumerate(carousels)}
+            b_results: list = [None] * len(carousels)
+            for f in as_completed(futs):
+                b_results[futs[f]] = f.result()
         any_error: ValueError | None = None
         total_in = 0
         total_out = 0
@@ -976,8 +984,8 @@ def generate(transcripts, query, n_carousels, model=CAROUSEL_MODEL, hebrew_stric
         max_dur = 0.0
         max_attempts = 0
         # Merge in carousel order (not completion order) for stable output.
-        for c in carousels:
-            slides_he, usage, duration, err, attempt_count, b_warnings = b_results[c]
+        for i, c in enumerate(carousels):
+            slides_he, usage, duration, err, attempt_count, b_warnings = b_results[i]
             warnings.extend(b_warnings)
             if usage is not None:
                 total_in += getattr(usage, "input_tokens", 0) or 0
