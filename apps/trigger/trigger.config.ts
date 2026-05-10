@@ -7,7 +7,12 @@ export default defineConfig({
   dirs: ["./src/tasks"],
   runtime: "node",
   logLevel: "info",
-  maxDuration: 600,
+  // Bumped from 600s after the new pipeline (query expansion + relevance
+  // verification + Pass C critic + optional Pass B rewrite) pushed worst-case
+  // runs past the old 10-min cap. Estimate: best case ~7 min, worst case
+  // (rewrite path + slow Apify scrapes) ~14 min. 1200s = 20 min gives 6 min
+  // of slack while staying well under Trigger.dev's per-task hard limits.
+  maxDuration: 1200,
   retries: {
     enabledInDev: false,
     default: {
