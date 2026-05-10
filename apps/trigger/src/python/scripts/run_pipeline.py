@@ -29,6 +29,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+# Force line-buffered stderr/stdout so [phase] log lines stream live to
+# Trigger.dev's run viewer instead of sitting in a pipe buffer until the
+# subprocess exits. Without this, `MAX_DURATION_EXCEEDED` kills the script
+# with the buffered logs lost — making hangs indistinguishable from slowness.
+try:
+    sys.stdout.reconfigure(line_buffering=True)  # type: ignore[attr-defined]
+    sys.stderr.reconfigure(line_buffering=True)  # type: ignore[attr-defined]
+except Exception:
+    # Fallback for older Python or wrapped streams
+    sys.stdout = io.TextIOWrapper(
+        sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True,
+    )
+    sys.stderr = io.TextIOWrapper(
+        sys.stderr.buffer, encoding="utf-8", errors="replace", line_buffering=True,
+    )
+
 from config import SCHEMA_VERSION  # noqa: E402
 from scripts.search_youtube import search  # noqa: E402
 from scripts.scrape_transcripts import scrape_many, scrape_one  # noqa: E402
@@ -195,6 +211,13 @@ def run(
     t0 = time.time()
     warnings = []
     exclude_set = set(exclude_video_ids or [])
+    # Heartbeat so Trigger.dev's run viewer shows life immediately rather
+    # than 10 minutes of silence on a buffered subprocess.
+    print(
+        f"[pipeline] starting: query={query!r} videos={n_videos} carousels={n_carousels}",
+        file=sys.stderr,
+        flush=True,
+    )
 
     # 1a. Expand query (Claude Haiku) — turns one topic into 3-5 related
     #     search phrases for broader candidate-pool coverage.
