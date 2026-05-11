@@ -13,7 +13,7 @@
     "@anthropic-ai/sdk": "^0.90.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.0",
-    "@trigger.dev/sdk": "4.4.4",
+    "@trigger.dev/sdk": "4.4.5",
     "embla-carousel-react": "^8.6.0",
     "html-to-image": "^1.11.13",
     "jszip": "^3.10.1",
