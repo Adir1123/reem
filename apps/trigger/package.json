@@ -11,7 +11,7 @@
   "dependencies": {
     "@trigger.dev/sdk": "4.4.4",
     "@trigger.dev/python": "4.4.4",
-    "@anthropic-ai/sdk": "^0.90.0",
+    "@anthropic-ai/sdk": "^0.95.1",
     "@supabase/supabase-js": "^2.104.0",
     "dotenv": "^16.4.5"
   },
